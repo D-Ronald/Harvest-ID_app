@@ -1,8 +1,6 @@
 from flet import *
 import back
 from utils.base import BasePageLoggedOut as BPLO
-from utils.base import convert_h
-from utils.base import convert_w
 from pages import login
 from pages.login import *
 

@@ -1,5 +1,6 @@
 import flet as ft
 from flet import * 
+from pages import  views
 from  pages.views import views_handler
 
 def main(page: ft.page):
@@ -20,7 +21,7 @@ def main(page: ft.page):
         "SF Pro Semibold": "Harvest-ID_app/assets/fonts/SFProText-Semibold.ttf",
         "SF Pro SemiboldItalic": "fonts/SFProText-SemiboldItalic.ttf",
     }
-
+    
     page.on_route_change = route_change
     page.go("/")
 

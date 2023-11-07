@@ -3,6 +3,8 @@ import back
 from utils.base import BasePageApp as BPA
 
 class HomeScreen(UserControl):
+    def __init__(self, pg):
+        super().__init__()
 
     def switch_page(self,pg):
         super().__init__()
@@ -13,15 +15,8 @@ class HomeScreen(UserControl):
     def build(self):
         return Column(
             controls=[
-                BPA(
-                    content= Column(
-                        horizontal_alignment= "center",
-                        controls = [
-                            Container(
-                                
-                            )
-                        ]
-                    )
+                Column(
+
                 )
             ]
         )

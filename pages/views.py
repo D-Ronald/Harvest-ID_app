@@ -1,11 +1,11 @@
 from flet import *
-from pages.login import LoginScreen
 from pages.logged_out import LoggedOutScreen
 from pages.home import HomeScreen
 from pages.register import RegisterScreen
-
+from pages.login import LoginScreen
 
 def views_handler(page):
+
     return{
         "/" : View(
             route = "/",

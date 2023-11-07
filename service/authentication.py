@@ -15,5 +15,11 @@ auth = firebase.auth()
 
 def siginup():
     email = user
-    passw = password
-    sigin = auth.create_user_with_email_and_password(email, password)
+    password = password_register.value
+    password_compair = password_register_confirm.value
+    if password == password_compair:
+        try:
+            sigin = auth.create_user_with_email_and_password(email, password)
+            return True
+        except:
+            return {print("As senhas são diferentes")}

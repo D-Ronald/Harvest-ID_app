@@ -8,7 +8,7 @@ user = TextField(
             color='#262626',
             height=60,
             width=250,
-            hint_text='Username',
+            hint_text='Email',
             hint_style=TextStyle(
                 color='#33000000',
                 font_family='SF Pro Regular'
@@ -21,13 +21,12 @@ password = TextField(
                 color='#262626',
                 height=60,
                 width=250,
-                hint_text='Password',
+                hint_text='Senha',
                 hint_style=TextStyle(
                     color='#33000000',
                     font_family='SF Pro Regular',
                 )
             )
-
 
 def login():
     email = user.value
@@ -40,7 +39,10 @@ def login():
         
 
 class LoginScreen(UserControl):
-    
+    def switch_page_logof(self):
+        self.pg.go("/")
+        back.back_ = "/"
+
     def switch_page_register(self):
         self.pg.go('/register')
         back.back_ = '/login'
@@ -82,28 +84,39 @@ class LoginScreen(UserControl):
                 controls=[
                 Container(padding=padding.only(left=18,top=25),
                     content=Row(
-                    controls=[
-                        Container(
-                        on_click=lambda _: self.page.go(back.back_),
-                        content=Image(
-                            src='assets/icons/back.png'
-                        ))
+                        alignment="end",
+                        controls=[
+                            Container(
+                                width=60,
+                                height=30,
+                                on_click=lambda _: self.switch_page_logof(),
+                                content=Image(
+                                    src='assets/images/back.png'
+                                )
+                                )
                     ])
                 ),
                 Container(
-                    height=100
+                    height=70
                 ),
                 Image(
                     src='assets/images/NameGray.png',
-                    width=200
+                    width=250
                 ),
                 Container(
-                    height=65
+                    height=10
+                ),
+                Container(
+                Text("ENTRAR",
+                    size=24,
+                    color='#192E2F',
+                    font_family='SF Pro SemiBold'
+                    )),
+                Container(
+                    height=100
                 ),
                 Container(
                     alignment=alignment.center,
-                    padding=padding.only(
-                    bottom=6),
                     bgcolor="#D9D9D9",
                     height=60,
                     width=343,
@@ -111,13 +124,10 @@ class LoginScreen(UserControl):
                     content= user
                 ),
                 Container(
-                    height=20
+                    height=35
                 ),
                 Container(
                     alignment=alignment.center,
-                    padding=padding.only(
-                    left=0,
-                    bottom=6),
                     bgcolor="#D9D9D9",
                     height=60,
                     width=343,
@@ -134,7 +144,7 @@ class LoginScreen(UserControl):
                     Container(
                         on_click=lambda _: print('forgot password'),
                         content=Text("Esqueceu a senha?",
-                        color='#3797EF',
+                        color='#192E2F',
                         font_family='SF Pro Medium',
                         size=12,
                         weight='w600',
@@ -155,8 +165,8 @@ class LoginScreen(UserControl):
                     controls=[
                     Container(
                         on_click=lambda _: self.pg.go('/login'),
-                        content=Text('Entrar com o facebook',
-                        color='#3797EF',
+                        content=Text('Entrar com o Google',
+                        color='#192E2F',
                         font_family='SF Pro SemiBold',
                         size=14,
                         text_align='center'
@@ -164,18 +174,16 @@ class LoginScreen(UserControl):
                     ]
                     ),
 
-                Container(height=40),
-                Container(
-                    padding=padding.symmetric(horizontal=20),  
+                Container(height=30),
+                Container(  
                     content = Row(
-                    alignment='spaceBetween',
+                    alignment='center',
                     controls=[
-                    Container(height=0.1,width=132,bgcolor='#000000'),
-                    Container(height=0.1,width=132,bgcolor='#000000'),
+                    Container(height=0.1,width=375,bgcolor='#000000'),
                     ]
                 ),
                 ),
-                Container(height=35),
+                Container(height=18),
                 Row(
                     spacing=0,
                     alignment='center',
@@ -192,7 +200,7 @@ class LoginScreen(UserControl):
                         Container(
                         on_click = lambda _: self.switch_page_register(),
                         content=Text("Registre-se.",
-                        color='#3797EF',
+                        color='#192E2F',
                         font_family='SF Pro Regular',
                         size=14,
                         text_align='center',

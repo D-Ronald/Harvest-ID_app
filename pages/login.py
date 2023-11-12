@@ -1,13 +1,16 @@
+from turtle import back
 from flet import *
 import back
 from utils.base import BasePageLogin as BPL
 from service import authentication as au
 
+permiss = False
+
 user = TextField(
             border=InputBorder.NONE,
             color='#262626',
-            height=60,
-            width=250,
+            height=55,
+            width=280,
             hint_text='Email',
             hint_style=TextStyle(
                 color='#33000000',
@@ -16,28 +19,41 @@ user = TextField(
         )
 
 password = TextField(
-                password= True,
+                password= False,
                 border=InputBorder.NONE,
                 color='#262626',
-                height=60,
-                width=250,
+                height=55,
+                width=280,
                 hint_text='Senha',
                 hint_style=TextStyle(
                     color='#33000000',
                     font_family='SF Pro Regular',
                 )
             )
+if (user != ""):
+    alert_resend_password = AlertDialog(
+        title=('Recuperação enviada')
+    )
 
+    
 def login():
     email = user.value
-    passw = password.value
+    passw = password.value 
     try:
         login = au.auth.sign_in_with_email_and_password(email, passw)
-        return True
+        permiss = True
+        return permiss
     except:
         return {print(email,passw), print("tente novamente")}
-        
 
+def reset_password():
+    email = user.value
+    try:
+        au.auth.send_password_reset_email(email)
+    except:
+        print("tente novamente")
+
+ 
 class LoginScreen(UserControl):
     def switch_page_logof(self):
         self.pg.go("/")
@@ -55,6 +71,9 @@ class LoginScreen(UserControl):
         test = login()
         if test == True:
             self.switch_page_home()
+            user.value = ""
+            password.value = ""
+
             
     def __init__(self,pg):
         super().__init__()
@@ -107,11 +126,13 @@ class LoginScreen(UserControl):
                     height=10
                 ),
                 Container(
-                Text("ENTRAR",
-                    size=24,
-                    color='#192E2F',
-                    font_family='SF Pro SemiBold'
-                    )),
+                    Text(
+                        "ENTRAR",
+                        size=24,
+                        color="#3E444F",
+                        font_family="SF Pro SemiBold"
+                    )
+                ),
                 Container(
                     height=100
                 ),
@@ -142,7 +163,7 @@ class LoginScreen(UserControl):
                     alignment='end',
                     controls=[
                     Container(
-                        on_click=lambda _: print('forgot password'),
+                        on_click=lambda _: reset_password(),
                         content=Text("Esqueceu a senha?",
                         color='#192E2F',
                         font_family='SF Pro Medium',

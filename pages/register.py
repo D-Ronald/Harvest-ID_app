@@ -7,9 +7,9 @@ from service import authentication as au
 
 user_register = TextField(
             border=InputBorder.NONE,
-            color='#262626',
-            height=60,
-            width=250,
+            color='#192E2F',
+            height=55,
+            width=280,
             hint_text='Email',
             hint_style=TextStyle(
                 color='#33000000',
@@ -20,12 +20,12 @@ user_register = TextField(
 password_register = TextField(
                 password= True,
                 border=InputBorder.NONE,
-                color='#262626',
-                height=60,
-                width=250,
+                color='#192E2F',
+                height=55,
+                width=280,
                 hint_text='Senha',
                 hint_style=TextStyle(
-                    color='#33000000',
+                    color='#20000000',
                     font_family='SF Pro Regular',
                 )
             )
@@ -33,15 +33,16 @@ password_register = TextField(
 password_register_confirm = TextField(
                 password= True,
                 border=InputBorder.NONE,
-                color='#262626',
-                height=60,
-                width=250,
-                hint_text='Senha',
+                color='#192E2F',
+                height=55,
+                width=280,
+                hint_text='Confirme a Senha',
                 hint_style=TextStyle(
                     color='#33000000',
                     font_family='SF Pro Regular',
                 )
             )
+
 
 def siginup():
     email = user_register.value

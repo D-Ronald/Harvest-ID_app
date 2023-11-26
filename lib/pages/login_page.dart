@@ -78,7 +78,9 @@ class LoginPage extends StatelessWidget {
                 textSize: 14.00,
                 textColor: blue_base,
                 padding: 10.00,
-                function: () {})
+                function: () {
+                  switch_view_page(context);
+                })
           ],
         ),
         spacing(context, 4),

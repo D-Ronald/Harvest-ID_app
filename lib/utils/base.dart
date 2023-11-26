@@ -51,15 +51,15 @@ ElevatedButton genericButton(context, backgroundColor, textColor, String text,
   );
 }
 
-ElevatedButton genericButtonIcon(
-    context,
-    backgroundColor,
-    textColor,
-    String text,
-    Icon icon,
-    int percentageHeight,
-    int percentageWidth,
-    function) {
+ElevatedButton genericIconButton({
+    required context,
+    required backgroundColor,
+    required textColor,
+    required String text,
+    required Icon icon,
+    required int percentageHeight,
+    required int percentageWidth,
+    required function}) {
   return ElevatedButton(
       onPressed: () {
         function();
@@ -185,8 +185,7 @@ Row imageButtonRowEnd({
 BottomNavigationBar navigationBar(
     {required PageController pageController,
     required backgroundColor,
-    required iconColor}) 
-    {
+    required iconColor}) {
   return BottomNavigationBar(
     backgroundColor: backgroundColor,
     onTap: (int page) {

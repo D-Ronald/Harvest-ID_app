@@ -8,7 +8,7 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: white_base,
+        color: Colors.red,
       ),
     );
   }

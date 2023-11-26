@@ -41,6 +41,9 @@ dependencies:
   cloud_firestore: ^4.13.2
   camera_camera: ^3.0.0
   image_picker: ^1.0.4
+  get: ^4.6.6
+  http: ^1.1.1
+  path_provider: ^2.0.5
 
 dev_dependencies:
   flutter_test:

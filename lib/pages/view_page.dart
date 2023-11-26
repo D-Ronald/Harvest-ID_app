@@ -19,7 +19,7 @@ class ViewPage extends StatelessWidget {
           //lista com as páginas que se relacionam diretamente com os ícones da barra de navegação
           children: [
             HomePage(),
-            CapturPage(),
+            CapturePage(),
             CadasterProperty_page(),
             DashboardPage(),
             ProfilePage()

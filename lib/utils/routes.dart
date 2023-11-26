@@ -25,7 +25,10 @@ switch_view_page(context) {
 
 openCamera(context) {
   return Navigator.push(context,
-      MaterialPageRoute(builder: (_) => CameraCamera(onFile: (file) => showPreview(file) async {
-        
-      })));
+      MaterialPageRoute(builder: (_) => CameraCamera(onFile: (file) => print(file))));
 }
+
+switchCapturePage(context){
+  return Navigator.pushNamed(context, "/Capture");
+}
+

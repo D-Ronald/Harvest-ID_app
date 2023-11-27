@@ -9,77 +9,58 @@ class AutenthicationService {
   FirebaseAuth _firebasseAuth = FirebaseAuth.instance;
 
   /// Função para registrar um usuário com email e senha
-  registerUser( {
+  registerUser({
     required context,
     required String? name,
     required String email,
     required String password,
     required String passwordConfirm,
   }) async {
-    if(password != passwordConfirm){
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("As senhas não coincidem!"),
-          backgroundColor: Colors.redAccent,
-        )
-      );
-    }else if(password == passwordConfirm)
-    try{
-      UserCredential userCredential = await _firebasseAuth
-      .createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    if (password != passwordConfirm) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("As senhas não coincidem!"),
+        backgroundColor: Colors.redAccent,
+      ));
+    } else if (password == passwordConfirm)
+      try {
+        UserCredential userCredential =
+            await _firebasseAuth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
 
-    if(userCredential != null){
-      userCredential.user!.updateDisplayName(name);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Usuário cadastrado com sucesso!"),
-          backgroundColor: Color.fromARGB(255, 29, 222, 129),
-        )
-      );
-      switchRegisterToLogin(context);
-      
-    }
-
-    }on FirebaseAuthException catch(e){
-      print(e.code);
-      if(e.code == "channel-error"){
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+        if (userCredential != null) {
+          userCredential.user!.updateDisplayName(name);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Usuário cadastrado com sucesso!"),
+            backgroundColor: Color.fromARGB(255, 29, 222, 129),
+          ));
+          switchRegisterToLogin(context);
+        }
+      } on FirebaseAuthException catch (e) {
+        print(e.code);
+        if (e.code == "channel-error") {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Preencha todos os campos."),
             backgroundColor: Colors.redAccent,
-          )
-        );
-
-      }else if(e.code == "email-already-in-use"){
-      
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          ));
+        } else if (e.code == "email-already-in-use") {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("O email já foi cadastrado!"),
             backgroundColor: Colors.redAccent,
-          )
-        );
-      }else if(e.code == "invalid-email"){
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          ));
+        } else if (e.code == "invalid-email") {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Email inválido!"),
             backgroundColor: Colors.redAccent,
-          )
-        );
-      }else if(e.code == "weak-password"){
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          ));
+        } else if (e.code == "weak-password") {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("A senha deve ter no mínimo 6 caracteres!"),
             backgroundColor: Colors.redAccent,
-          )
-        );
+          ));
+        }
       }
-    }
-    
   }
 
   /// Função para fazer login usando email e senha
@@ -87,44 +68,47 @@ class AutenthicationService {
     required context,
     required String email,
     required String password,
-  }) async
-  {
-    try{
-      UserCredential userCredential = await _firebasseAuth.signInWithEmailAndPassword(
-      email: email,
-      password: password,);
+  }) async {
+    try {
+      UserCredential userCredential =
+          await _firebasseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Login efetuado com sucesso!"),
+        backgroundColor: Color.fromARGB(255, 29, 222, 129),
+      ));
 
       switch_view_page(context);
-
-    }on FirebaseAuthException catch(e){
+    } on FirebaseAuthException catch (e) {
       print(e.code);
-      if(e.code == "invalid-credential"){
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Email ou senha inválidos. Tente Novamente! "),
-            backgroundColor: Colors.redAccent,
-          )
-        );
-      }else if(e.code =="channel-error"){
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Preencha todos os campos."),
-            backgroundColor: Colors.redAccent,
-          )
-        );
-      }else if(e.code =="invalid-email"){
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Email inválido!"),
-            backgroundColor: Colors.redAccent,
-          )
-        );
+      if (e.code == "invalid-credential") {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Email ou senha inválidos. Tente Novamente! "),
+          backgroundColor: Colors.redAccent,
+        ));
+      } else if (e.code == "channel-error") {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Preencha todos os campos."),
+          backgroundColor: Colors.redAccent,
+        ));
+      } else if (e.code == "invalid-email") {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Email inválido!"),
+          backgroundColor: Colors.redAccent,
+        ));
       }
     }
-    
+  }
+
+  resetPassword({required String email, context}) {
+    try {
+      _firebasseAuth.sendPasswordResetEmail(email: "email");
+      Navigator.of(context).pop();
+    } on FirebaseAuthException catch (e) {
+      print(e);
+    }
   }
 }
-

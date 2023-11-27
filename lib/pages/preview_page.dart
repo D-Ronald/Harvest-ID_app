@@ -9,10 +9,11 @@ import 'package:http/http.dart';
 
 class PreviewPage extends StatelessWidget {
   File? archive;
-  
+
   captureSucessfully(context) {
     if (archive != null) SendImage(file: archive).sendImage();
-    
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
   }
 
   PreviewPage({
@@ -42,12 +43,28 @@ class PreviewPage extends StatelessWidget {
                         padding: EdgeInsets.all(height(context, 8)),
                         child: CircleAvatar(
                             radius: width(context, 8),
-                            backgroundColor: black_base.withOpacity(0.6),
+                            backgroundColor: blackBase.withOpacity(0.6),
                             child: Center(
                               child: IconButton(
                                 icon: Icon(Icons.check,
-                                    color: white_base, size: 30),
+                                    color: whiteBase, size: 30),
                                 onPressed: () => captureSucessfully(context),
+                                iconSize: 60,
+                              ),
+                            )),
+                      )),
+                  Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: EdgeInsets.all(height(context, 8)),
+                        child: CircleAvatar(
+                            radius: width(context, 8),
+                            backgroundColor: blackBase.withOpacity(0.6),
+                            child: Center(
+                              child: IconButton(
+                                icon: Icon(Icons.close,
+                                    color: whiteBase, size: 30),
+                                onPressed: () => Navigator.of(context).pop(),
                                 iconSize: 60,
                               ),
                             )),

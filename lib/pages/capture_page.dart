@@ -33,7 +33,7 @@ class _CapturePageState extends State<CapturePage> {
         genericIconButton(
             context: context,
             backgroundColor: darkGreenBase,
-            textColor: white_base,
+            textColor: whiteBase,
             text: "Tire uma foto",
             icon: Icon(Icons.camera),
             percentageHeight: 8,

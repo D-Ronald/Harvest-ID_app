@@ -25,10 +25,9 @@ class ViewPage extends StatelessWidget {
             ProfilePage()
           ],
         ),
-        bottomNavigationBar:
-            navigationBar(
-            pageController: page_controller, 
-            backgroundColor: ligth_gray_base, 
-            iconColor: dark_gray_base));
+        bottomNavigationBar: navigationBar(
+            pageController: page_controller,
+            backgroundColor: mediumGrayBase,
+            iconColor: DarkGrayBase));
   }
 }

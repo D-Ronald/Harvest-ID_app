@@ -13,8 +13,6 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-
     return Scaffold(
         body: Center(
             child: Column(
@@ -28,7 +26,7 @@ class RegisterPage extends StatelessWidget {
           function: () {
             switch_initial_page(context);
           },
-          backgroundColor: white_base,
+          backgroundColor: whiteBase,
         ),
         spacing(context, 2),
         genericBigImage(
@@ -44,7 +42,7 @@ class RegisterPage extends StatelessWidget {
             Text(
               "CADASTRO",
               style: TextStyle(
-                color: dark_gray_base,
+                color: DarkGrayBase,
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
@@ -56,11 +54,11 @@ class RegisterPage extends StatelessWidget {
           context: context,
           controller: _nameController,
           labeltext: "Nome completo",
-          labelColor: dark_gray_base,
+          labelColor: DarkGrayBase,
           heightPercentage: 8,
           padding: 20,
-          color: black_base,
-          backgroundColor: ligth_gray_base,
+          color: blackBase,
+          backgroundColor: mediumGrayBase,
           borderRadius: 10.0,
         ),
         spacing(context, 2),
@@ -68,11 +66,11 @@ class RegisterPage extends StatelessWidget {
           context: context,
           controller: _emailController,
           labeltext: "E-mail",
-          labelColor: dark_gray_base,
+          labelColor: DarkGrayBase,
           heightPercentage: 8,
           padding: 20,
-          color: black_base,
-          backgroundColor: ligth_gray_base,
+          color: blackBase,
+          backgroundColor: mediumGrayBase,
           borderRadius: 10.0,
         ),
         spacing(context, 2),
@@ -80,11 +78,11 @@ class RegisterPage extends StatelessWidget {
           context: context,
           controller: _passwordController,
           labeltext: "Senha",
-          labelColor: dark_gray_base,
+          labelColor: DarkGrayBase,
           heightPercentage: 8,
           padding: 20,
-          color: black_base,
-          backgroundColor: ligth_gray_base,
+          color: blackBase,
+          backgroundColor: mediumGrayBase,
           borderRadius: 10.0,
         ),
         spacing(context, 2),
@@ -92,24 +90,24 @@ class RegisterPage extends StatelessWidget {
           context: context,
           controller: _passwordConfirmController,
           labeltext: "Confirmar senha",
-          labelColor: dark_gray_base,
+          labelColor: DarkGrayBase,
           heightPercentage: 8,
           padding: 20,
-          color: black_base,
-          backgroundColor: ligth_gray_base,
+          color: blackBase,
+          backgroundColor: mediumGrayBase,
           borderRadius: 10.0,
         ),
         spacing(context, 2),
         genericButton(
           context,
           darkGreenBase,
-          white_base,
+          whiteBase,
           "Criar conta",
           7,
           50,
           () {
             _autenthicationService.registerUser(
-              context: context,
+                context: context,
                 email: _emailController.text,
                 password: _passwordController.text,
                 name: _nameController.text,

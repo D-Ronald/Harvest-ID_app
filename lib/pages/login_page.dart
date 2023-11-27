@@ -1,3 +1,4 @@
+import 'package:debug_no_cell/pages/dialog_resend_password.dart';
 import 'package:debug_no_cell/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:debug_no_cell/utils/base.dart';
@@ -22,7 +23,7 @@ class LoginPage extends StatelessWidget {
           function: () {
             switch_initial_page(context);
           },
-          backgroundColor: white_base,
+          backgroundColor: whiteBase,
         ),
         spacing(context, 2),
         genericBigImage(
@@ -38,7 +39,7 @@ class LoginPage extends StatelessWidget {
             Text(
               "LOGIN",
               style: TextStyle(
-                color: dark_gray_base,
+                color: DarkGrayBase,
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
@@ -50,11 +51,11 @@ class LoginPage extends StatelessWidget {
           context: context,
           controller: _emailController,
           labeltext: "E-mail",
-          labelColor: dark_gray_base,
+          labelColor: DarkGrayBase,
           heightPercentage: 8,
           padding: 20,
-          color: black_base,
-          backgroundColor: ligth_gray_base,
+          color: blackBase,
+          backgroundColor: mediumGrayBase,
           borderRadius: 10.0,
         ),
         spacing(context, 4),
@@ -62,11 +63,11 @@ class LoginPage extends StatelessWidget {
           context: context,
           controller: _passwordController,
           labeltext: "Senha",
-          labelColor: dark_gray_base,
+          labelColor: DarkGrayBase,
           heightPercentage: 8,
           padding: 20,
-          color: black_base,
-          backgroundColor: ligth_gray_base,
+          color: blackBase,
+          backgroundColor: mediumGrayBase,
           borderRadius: 10.0,
         ),
         Row(
@@ -76,15 +77,15 @@ class LoginPage extends StatelessWidget {
                 context: context,
                 text: "Esqueceu sua senha?",
                 textSize: 14.00,
-                textColor: blue_base,
+                textColor: darkGreenBase,
                 padding: 10.00,
                 function: () {
-                  switch_view_page(context);
+                  DialogResendPassword().dialogResendPassword(context);
                 })
           ],
         ),
         spacing(context, 4),
-        genericButton(context, darkGreenBase, white_base, "Entrar", 7, 70, () {
+        genericButton(context, darkGreenBase, whiteBase, "Entrar", 7, 70, () {
           _autenthicationService.login(
               context: context,
               email: _emailController.text,

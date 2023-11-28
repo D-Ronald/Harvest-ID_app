@@ -13,7 +13,7 @@ main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: "/login",
       routes: {
-        "/": (context) => InitialPage(),
+        "/": (context) => const InitialPage(),
         "/Login": (context) => LoginPage(),
         "/Register": (context) => RegisterPage(),
         "/View": (context) => ViewPage(),

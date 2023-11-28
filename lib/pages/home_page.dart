@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tabela = CulturaRepository.tabela;
+    //final tabela = CulturaRepository.tabela;
 
     return Scaffold(
       body: Padding(

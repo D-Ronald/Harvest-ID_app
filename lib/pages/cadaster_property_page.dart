@@ -1,9 +1,15 @@
 import 'package:debug_no_cell/utils/routes.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:debug_no_cell/utils/base.dart';
 import 'package:debug_no_cell/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debug_no_cell/services/auth.dart';
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+}
 
 class CadasterProperty_page extends StatelessWidget {
   TextEditingController _CityController = TextEditingController();
@@ -12,17 +18,17 @@ class CadasterProperty_page extends StatelessWidget {
   TextEditingController _PropertyNameController = TextEditingController();
   TextEditingController _PropertySizeController = TextEditingController();
 
-  late FirebaseFirestore db;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(title: Text('Cadastre a Propriedade')),
         body: Center(
             child: Column(children: [
       genericBigImage(
           context: context,
           src: "assets/images/NameGray.png",
-          heightPercentage: 15,
+          heightPercentage: 5,
           widthPercentage: 50),
       spacing(context, 3),
       genericTextFormPassword(
@@ -80,7 +86,18 @@ class CadasterProperty_page extends StatelessWidget {
           backgroundColor: ligth_gray_base,
           borderRadius: 20),
       spacing(context, 5),
-      genericButton(context, darkGreenBase, white_base, "SALVAR", 8, 40, () {}),
+      ElevatedButton(onPressed: (){
+        CollectionReference collRef = FirebaseFirestore.instance.collection('propertys');
+        collRef.add({
+          'name': _PropertyNameController.text,
+          'size' : int.parse(_PropertySizeController.text),
+          'country' :_CountryController.text,
+          'state': _StateController.text,
+          'city': _CityController.text,
+
+        });
+      }
+      , child: const Text('SALVAR'))
     ])));
   }
 }

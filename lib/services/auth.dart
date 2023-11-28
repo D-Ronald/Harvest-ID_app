@@ -1,4 +1,3 @@
-/*responsável pela autenticação de usuário*/
 import 'package:debug_no_cell/utils/base.dart';
 import 'package:debug_no_cell/utils/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -154,6 +153,6 @@ class AutenthicationService extends ChangeNotifier {
       Navigator.of(context).pop();
     } on FirebaseAuthException catch (e) {
       print(e);
-    }
-  }
+}
+}
 }

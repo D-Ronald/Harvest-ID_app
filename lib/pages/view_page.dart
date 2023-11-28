@@ -19,16 +19,15 @@ class ViewPage extends StatelessWidget {
           //lista com as páginas que se relacionam diretamente com os ícones da barra de navegação
           children: [
             HomePage(),
-            CapturPage(),
+            CapturePage(),
             CadasterProperty_page(),
             DashboardPage(),
             ProfilePage()
           ],
         ),
-        bottomNavigationBar:
-            navigationBar(
-            pageController: page_controller, 
-            backgroundColor: ligth_gray_base, 
-            iconColor: dark_gray_base));
+        bottomNavigationBar: navigationBar(
+            pageController: page_controller,
+            backgroundColor: mediumGrayBase,
+            iconColor: DarkGrayBase));
   }
 }

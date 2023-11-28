@@ -13,8 +13,6 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-
     return Scaffold(
         body: Center(
             child: Column(
@@ -26,9 +24,9 @@ class RegisterPage extends StatelessWidget {
           heightPercentage: 5,
           widthPercentage: 8,
           function: () {
-            switch_initial_page(context);
+            switchInitialPage(context);
           },
-          backgroundColor: white_base,
+          backgroundColor: whiteBase,
         ),
         spacing(context, 2),
         genericBigImage(
@@ -44,7 +42,7 @@ class RegisterPage extends StatelessWidget {
             Text(
               "CADASTRO",
               style: TextStyle(
-                color: dark_gray_base,
+                color: DarkGrayBase,
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
@@ -52,64 +50,70 @@ class RegisterPage extends StatelessWidget {
           ],
         ),
         spacing(context, 4),
-        genericTextFormPassword(
+        genericTextForm(
           context: context,
           controller: _nameController,
+          keyboardType: TextInputType.name,
           labeltext: "Nome completo",
-          labelColor: dark_gray_base,
+          labelColor: DarkGrayBase,
           heightPercentage: 8,
           padding: 20,
-          color: black_base,
-          backgroundColor: ligth_gray_base,
+          color: blackBase,
+          backgroundColor: mediumGrayBase,
           borderRadius: 10.0,
         ),
         spacing(context, 2),
-        genericTextFormPassword(
+        genericTextForm(
           context: context,
           controller: _emailController,
+          keyboardType: TextInputType.emailAddress,
           labeltext: "E-mail",
-          labelColor: dark_gray_base,
+          labelColor: DarkGrayBase,
           heightPercentage: 8,
           padding: 20,
-          color: black_base,
-          backgroundColor: ligth_gray_base,
+          color: blackBase,
+          backgroundColor: mediumGrayBase,
           borderRadius: 10.0,
         ),
         spacing(context, 2),
-        genericTextFormPassword(
+        genericTextForm(
           context: context,
           controller: _passwordController,
+          keyboardType: TextInputType.visiblePassword,
+          obscureText: true,
           labeltext: "Senha",
-          labelColor: dark_gray_base,
+          labelColor: DarkGrayBase,
           heightPercentage: 8,
           padding: 20,
-          color: black_base,
-          backgroundColor: ligth_gray_base,
+          color: blackBase,
+          backgroundColor: mediumGrayBase,
           borderRadius: 10.0,
         ),
         spacing(context, 2),
-        genericTextFormPassword(
+        genericTextForm(
           context: context,
           controller: _passwordConfirmController,
+          keyboardType: TextInputType.visiblePassword,
+          obscureText: true,
           labeltext: "Confirmar senha",
-          labelColor: dark_gray_base,
+          labelColor: DarkGrayBase,
           heightPercentage: 8,
           padding: 20,
-          color: black_base,
-          backgroundColor: ligth_gray_base,
+          color: blackBase,
+          backgroundColor: mediumGrayBase,
           borderRadius: 10.0,
         ),
         spacing(context, 2),
         genericButton(
           context,
           darkGreenBase,
-          white_base,
+          whiteBase,
           "Criar conta",
           7,
           50,
           () {
             _autenthicationService.registerUser(
-              context: context,
+                context: context,
                 email: _emailController.text,
                 password: _passwordController.text,
                 name: _nameController.text,

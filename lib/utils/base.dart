@@ -2,12 +2,14 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 const darkGreenBase = Color.fromRGBO(19, 56, 58, 1);
-const dark_gray_base = Color.fromRGBO(62, 68, 69, 1);
-const ligth_gray_base = Color.fromRGBO(217, 217, 217, 1);
-const white_base = Color.fromRGBO(255, 255, 255, 1);
-const black_base = Color.fromRGBO(0, 0, 0, 1);
-const blue_base = Color.fromRGBO(1, 96, 113, 1);
+const DarkGrayBase = Color.fromRGBO(62, 68, 69, 1);
+const mediumGrayBase = Color.fromRGBO(217, 217, 217, 1);
+const lightGrayBase = Color.fromRGBO(250, 250, 250, 1);
+const whiteBase = Color.fromRGBO(255, 255, 255, 1);
+const blackBase = Color.fromRGBO(0, 0, 0, 1);
+const blueBase = Color.fromRGBO(1, 96, 113, 1);
 const transpartent = Color.fromRGBO(255, 255, 255, 0);
+const redBase = Colors.redAccent;
 
 ///Recebe um contexto atual da aplicação e um inteiro entre 0 e 100
 ///e o transforma em uma altura proporcional a altura da tela de qualquer dipositivo
@@ -51,15 +53,15 @@ ElevatedButton genericButton(context, backgroundColor, textColor, String text,
   );
 }
 
-ElevatedButton genericButtonIcon(
-    context,
-    backgroundColor,
-    textColor,
-    String text,
-    Icon icon,
-    int percentageHeight,
-    int percentageWidth,
-    function) {
+ElevatedButton genericIconButton(
+    {required context,
+    required backgroundColor,
+    required textColor,
+    required String text,
+    required Icon icon,
+    required int percentageHeight,
+    required int percentageWidth,
+    required function}) {
   return ElevatedButton(
       onPressed: () {
         function();
@@ -108,13 +110,16 @@ Container genericTextButton({
 
 ///A função retorna uma caixa de entradatexto na qual o objeto do tipo [TextEditingController]
 /// receberá o texto de entrada e o armazenará para que possa ser usado posteriormente.
-Container genericTextFormPassword(
+Container genericTextForm(
     {required context,
     required TextEditingController controller,
     required String labeltext,
     required labelColor,
     required int heightPercentage,
     required double padding,
+    TextInputType keyboardType = TextInputType.text,
+    bool obscureText = false,
+    bool filled =  true,
     required color,
     required backgroundColor,
     required double borderRadius}) {
@@ -122,12 +127,12 @@ Container genericTextFormPassword(
       height: height(context, heightPercentage),
       padding: EdgeInsets.symmetric(horizontal: padding, vertical: 0.00),
       child: TextField(
-        obscureText: false,
-        keyboardType: TextInputType.text,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
         controller: controller,
         decoration: InputDecoration(
           fillColor: backgroundColor,
-          filled: true,
+          filled: filled,
           hintText: labeltext,
           hintMaxLines: 1,
           hintStyle: TextStyle(
@@ -185,8 +190,7 @@ Row imageButtonRowEnd({
 BottomNavigationBar navigationBar(
     {required PageController pageController,
     required backgroundColor,
-    required iconColor}) 
-    {
+    required iconColor}) {
   return BottomNavigationBar(
     backgroundColor: backgroundColor,
     onTap: (int page) {

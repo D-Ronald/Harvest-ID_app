@@ -23,38 +23,37 @@ class InitialPage extends StatelessWidget {
                 ),
               ),
               spacing(context, 10),
-              genericButtonIcon(
-                  context,
-                  ligth_gray_base,
-                  black_base,
-                  "Acessar sua conta",
-                  Icon(Icons.login, color: black_base),
-                  7,
-                  70, () {
-                switch_login_page(context);
-              }),
+              genericIconButton(
+                  context: context,
+                  backgroundColor: mediumGrayBase,
+                  textColor: blackBase,
+                  text: "Acessar sua conta",
+                  icon: Icon(Icons.login, color: blackBase),
+                  percentageHeight: 7,
+                  percentageWidth: 70,
+                  function: () {
+                    switch_login_page(context);
+                  }),
               spacing(context, 5),
-              genericButtonIcon(
-                  context,
-                  ligth_gray_base,
-                  black_base,
-                  "Criar uma conta",
-                  Icon(Icons.people, color: black_base),
-                  7,
-                  70, () {
-                switch_register_page(context);
-              }),
+              genericIconButton(
+                  context: context,
+                  backgroundColor: mediumGrayBase,
+                  textColor: blackBase,
+                  text: "Criar uma conta",
+                  icon: Icon(Icons.people, color: blackBase),
+                  percentageHeight: 7,
+                  percentageWidth: 70,
+                  function: () {
+                    switch_register_page(context);
+                  }),
               spacing(context, 10),
               genericTextButton(
-                  context: context, 
+                  context: context,
                   text: "Acesse nossa central de ajuda.",
-                  textSize: 16.00, 
-                  textColor: blue_base,
+                  textSize: 16.00,
+                  textColor: whiteBase,
                   padding: 20.00,
-                  function: () {
-                    
-                  } 
-                  )
+                  function: () {})
             ],
           )),
     );

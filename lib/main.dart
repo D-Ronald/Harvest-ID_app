@@ -8,14 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-main() async{
+main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(
-    MyApp()
-  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -25,15 +23,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: "/login",  
+      initialRoute: "/login",
       routes: {
         "/": (context) => InitialPage(),
-        "/Login":(context) => LoginPage(),
-        "/Register":(context) => RegisterPage(),
-        "/View" : (context) => ViewPage(),
-        "/Capture":(context) => CapturePage(),
+        "/Login": (context) => LoginPage(),
+        "/Register": (context) => RegisterPage(),
+        "/View": (context) => ViewPage(),
+        "/Capture": (context) => CapturePage(),
         "/Preview": (context) => PreviewPage(),
-      },  
+      },
       title: "Harvest-ID",
     );
   }

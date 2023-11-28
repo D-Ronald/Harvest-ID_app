@@ -5,8 +5,32 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-class AutenthicationService {
+class AuthException implements Exception {
+  String message;
+  AuthException(this.message);
+}
+
+class AutenthicationService extends ChangeNotifier {
   FirebaseAuth _firebasseAuth = FirebaseAuth.instance;
+  User? user;
+  bool isLoading = true;
+
+  AuthService() {
+    _authCheck();
+  }
+
+  _authCheck() {
+    _firebasseAuth.authStateChanges().listen((User? user) {
+      user = (user == null) ? null : user;
+      isLoading = false;
+      notifyListeners();
+    });
+  }
+
+  _getUser() {
+    user = _firebasseAuth.currentUser;
+    notifyListeners();
+  }
 
   /// Função para registrar um usuário com email e senha
   registerUser({
@@ -21,7 +45,12 @@ class AutenthicationService {
         content: Text("As senhas não coincidem!"),
         backgroundColor: Colors.redAccent,
       ));
-    } else if (password == passwordConfirm)
+    } else if (name == "") {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Preencha todos os campos!"),
+        backgroundColor: Colors.redAccent,
+      ));
+    } else if (password == passwordConfirm && name != "") {
       try {
         UserCredential userCredential =
             await _firebasseAuth.createUserWithEmailAndPassword(
@@ -59,8 +88,14 @@ class AutenthicationService {
             content: Text("A senha deve ter no mínimo 6 caracteres!"),
             backgroundColor: Colors.redAccent,
           ));
+        } else if (e.code == "network-request-failed") {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Sem conexão com a internet!"),
+            backgroundColor: Colors.redAccent,
+          ));
         }
       }
+    }
   }
 
   /// Função para fazer login usando email e senha
@@ -99,8 +134,18 @@ class AutenthicationService {
           content: Text("Email inválido!"),
           backgroundColor: Colors.redAccent,
         ));
+      } else if (e.code == "network-request-failed") {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Sem conexão com a internet!"),
+          backgroundColor: Colors.redAccent,
+        ));
       }
     }
+  }
+
+  logout() async {
+    await _firebasseAuth.signOut();
+    _getUser();
   }
 
   resetPassword({required String email, context}) {

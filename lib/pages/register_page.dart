@@ -24,7 +24,7 @@ class RegisterPage extends StatelessWidget {
           heightPercentage: 5,
           widthPercentage: 8,
           function: () {
-            switch_initial_page(context);
+            switchInitialPage(context);
           },
           backgroundColor: whiteBase,
         ),
@@ -50,9 +50,10 @@ class RegisterPage extends StatelessWidget {
           ],
         ),
         spacing(context, 4),
-        genericTextFormPassword(
+        genericTextForm(
           context: context,
           controller: _nameController,
+          keyboardType: TextInputType.name,
           labeltext: "Nome completo",
           labelColor: DarkGrayBase,
           heightPercentage: 8,
@@ -62,9 +63,10 @@ class RegisterPage extends StatelessWidget {
           borderRadius: 10.0,
         ),
         spacing(context, 2),
-        genericTextFormPassword(
+        genericTextForm(
           context: context,
           controller: _emailController,
+          keyboardType: TextInputType.emailAddress,
           labeltext: "E-mail",
           labelColor: DarkGrayBase,
           heightPercentage: 8,
@@ -74,9 +76,11 @@ class RegisterPage extends StatelessWidget {
           borderRadius: 10.0,
         ),
         spacing(context, 2),
-        genericTextFormPassword(
+        genericTextForm(
           context: context,
           controller: _passwordController,
+          keyboardType: TextInputType.visiblePassword,
+          obscureText: true,
           labeltext: "Senha",
           labelColor: DarkGrayBase,
           heightPercentage: 8,
@@ -86,9 +90,11 @@ class RegisterPage extends StatelessWidget {
           borderRadius: 10.0,
         ),
         spacing(context, 2),
-        genericTextFormPassword(
+        genericTextForm(
           context: context,
           controller: _passwordConfirmController,
+          keyboardType: TextInputType.visiblePassword,
+          obscureText: true,
           labeltext: "Confirmar senha",
           labelColor: DarkGrayBase,
           heightPercentage: 8,

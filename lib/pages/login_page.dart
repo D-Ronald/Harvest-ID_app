@@ -21,7 +21,7 @@ class LoginPage extends StatelessWidget {
           heightPercentage: 5,
           widthPercentage: 8,
           function: () {
-            switch_initial_page(context);
+            switchInitialPage(context);
           },
           backgroundColor: whiteBase,
         ),
@@ -47,28 +47,31 @@ class LoginPage extends StatelessWidget {
           ],
         ),
         spacing(context, 4),
-        genericTextFormPassword(
+        genericTextForm(
           context: context,
           controller: _emailController,
           labeltext: "E-mail",
           labelColor: DarkGrayBase,
+          keyboardType: TextInputType.emailAddress,
           heightPercentage: 8,
-          padding: 20,
+          padding: 20, 
           color: blackBase,
           backgroundColor: mediumGrayBase,
-          borderRadius: 10.0,
+          borderRadius: 20.0,
         ),
         spacing(context, 4),
-        genericTextFormPassword(
+        genericTextForm(
           context: context,
           controller: _passwordController,
           labeltext: "Senha",
           labelColor: DarkGrayBase,
+          keyboardType: TextInputType.visiblePassword,
+          obscureText: true,
           heightPercentage: 8,
           padding: 20,
           color: blackBase,
           backgroundColor: mediumGrayBase,
-          borderRadius: 10.0,
+          borderRadius: 20.0,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,

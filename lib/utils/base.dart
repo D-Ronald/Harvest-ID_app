@@ -110,13 +110,16 @@ Container genericTextButton({
 
 ///A função retorna uma caixa de entradatexto na qual o objeto do tipo [TextEditingController]
 /// receberá o texto de entrada e o armazenará para que possa ser usado posteriormente.
-Container genericTextFormPassword(
+Container genericTextForm(
     {required context,
     required TextEditingController controller,
     required String labeltext,
     required labelColor,
     required int heightPercentage,
     required double padding,
+    TextInputType keyboardType = TextInputType.text,
+    bool obscureText = false,
+    bool filled =  true,
     required color,
     required backgroundColor,
     required double borderRadius}) {
@@ -124,12 +127,12 @@ Container genericTextFormPassword(
       height: height(context, heightPercentage),
       padding: EdgeInsets.symmetric(horizontal: padding, vertical: 0.00),
       child: TextField(
-        obscureText: false,
-        keyboardType: TextInputType.text,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
         controller: controller,
         decoration: InputDecoration(
           fillColor: backgroundColor,
-          filled: true,
+          filled: filled,
           hintText: labeltext,
           hintMaxLines: 1,
           hintStyle: TextStyle(

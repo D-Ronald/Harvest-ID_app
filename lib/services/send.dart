@@ -7,31 +7,28 @@ class SendImage {
   final File? file;
   const SendImage({this.file});
 
-  treatArchive(File? file){
-    if (file!= null) {
+  treatArchive(File? file) {
+    if (file != null) {
       String archiveString = "$file";
-      String aux= "";
+      String aux = "";
       print(archiveString);
-      for(int i = 0; i < archiveString.length - 1; i++) {
-        if(i>6){
+      for (int i = 0; i < archiveString.length - 1; i++) {
+        if (i > 6) {
           String a = archiveString[i];
-          aux += ""+a;
-          
+          aux += "" + a;
         }
-        
       }
-      archiveString =aux;
+      archiveString = aux;
       return archiveString;
     }
-
   }
-  
+
   Future<void> sendImage() async {
     print("neymar");
-    var f = file;
-    var url = Uri.parse('https://0941-34-124-167-162.ngrok-free.app/predict');
+    var url = Uri.parse('https://118d-104-196-150-109.ngrok-free.app/predict');
     var request = http.MultipartRequest('POST', url);
-    request.files.add(await http.MultipartFile.fromPath('image', treatArchive(file)));
+    request.files
+        .add(await http.MultipartFile.fromPath('image', treatArchive(file)));
     var token;
     request.headers.addAll({
       'Content-Type': 'multipart/form-data',
@@ -41,5 +38,4 @@ class SendImage {
     var responseString = await response.stream.bytesToString();
     print(responseString);
   }
-
 }

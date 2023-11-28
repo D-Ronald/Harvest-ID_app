@@ -19,7 +19,7 @@ class DialogResendPassword {
                 children: [
                   Text("Digite seu e-mail para recuperar sua senha"),
                   spacing(context, 2),
-                  genericTextFormPassword(
+                  genericTextForm(
                     context: context,
                     controller: _emailController,
                     labeltext: "E-mail",

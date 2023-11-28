@@ -10,6 +10,7 @@ class RegisterPage extends StatelessWidget {
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _passwordConfirmController = TextEditingController();
+  @override
 
   @override
   Widget build(BuildContext context) {

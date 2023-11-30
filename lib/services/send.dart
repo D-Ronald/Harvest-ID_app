@@ -25,7 +25,7 @@ class SendImage {
 
   Future<void> sendImage() async {
     print("neymar");
-    var url = Uri.parse('https://118d-104-196-150-109.ngrok-free.app/predict');
+    var url = Uri.parse('https://ebd0-34-82-92-225.ngrok-free.app/predict');
     var request = http.MultipartRequest('POST', url);
     request.files
         .add(await http.MultipartFile.fromPath('image', treatArchive(file)));
@@ -37,5 +37,6 @@ class SendImage {
     var response = await request.send();
     var responseString = await response.stream.bytesToString();
     print(responseString);
+    print("neymar");
   }
 }

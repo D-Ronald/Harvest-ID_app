@@ -1,4 +1,5 @@
 import 'package:debug_no_cell/Repositories/Cultura_repository.dart';
+import 'package:debug_no_cell/pages/capture_page.dart';
 import 'package:debug_no_cell/pages/dashboard_page.dart';
 import 'package:debug_no_cell/utils/base.dart';
 import 'package:flutter/material.dart';
@@ -10,12 +11,12 @@ class HomePage extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const DashboardPage()),
-    );
+    ); //.then((Context) => null);
   }
 
   @override
   Widget build(BuildContext context) {
-    final tabela = CulturaRepository.tabela;
+    //final tabela = CulturaRepository.tabela;
 
     return Scaffold(
       body: Padding(
@@ -52,7 +53,6 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ),
-              
 
               Padding(
                 padding: const EdgeInsets.only(left: 18),
@@ -167,8 +167,7 @@ class HomePage extends StatelessWidget {
                 child: const Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [  
-                    //SizedBox(height: 30),
+                  children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -186,7 +185,7 @@ class HomePage extends StatelessWidget {
                                 fontFamily: 'Cardo',
                                 fontWeight: FontWeight.w400,
                                 height: 0,
-                               ),
+                              ),
                             ),
                           ),
                         ),
@@ -195,14 +194,207 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(
+                height: 20,
+              ),
+              Center(
+                child: Transform.rotate(
+                  angle: -3.14,
+                  child: Container(
+                    width: 354,
+                    decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 1,
+                          strokeAlign: BorderSide.strokeAlignCenter,
+                          color: Colors.black.withOpacity(0.25),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              //Scroll para captura de imagem
+              //altura
+              const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 30),
+                ],
+              ),
+              const SizedBox(height: 10),
+              const Padding(
+                padding: EdgeInsets.only(right: 180.0),
+                child: Text(
+                  'Inspecione sua cultura',
+                  style: TextStyle(
+                    color: Color(0xFF13383A),
+                    fontSize: 14,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w500,
+                    height: 0,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 350,
+                        height: 150,
+                        decoration: ShapeDecoration(
+                          color: const Color(0xFFF5F5F5),
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          shadows: const [
+                            BoxShadow(
+                              color: Color(0x3F000000),
+                              blurRadius: 4,
+                              offset: Offset(0, 4),
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.only(top: 25.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              SizedBox(width: 10),
+                              Column(
+                                children: [
+                                  Icon(
+                                    Icons.filter_center_focus,
+                                    color: Color.fromRGBO(19, 56, 58, 1),
+                                    size: 30.0,
+                                  ),
+                                  Text(
+                                    'Tire uma \n    foto',
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(19, 56, 58, 1),
+                                      fontSize: 10,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w300,
+                                      height: 0,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(width: 25),
+                              Icon(
+                                Icons.arrow_forward,
+                                color: Color.fromRGBO(19, 56, 58, 1),
+                                size: 20.0,
+                              ),
+                              SizedBox(width: 25),
+                              Column(
+                                children: [
+                                  Icon(
+                                    Icons.trending_up,
+                                    color: Color.fromRGBO(19, 56, 58, 1),
+                                    size: 33.0,
+                                  ),
+                                  Text(
+                                    'Diagnóstico',
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(19, 56, 58, 1),
+                                      fontSize: 10,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w300,
+                                      height: 0,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(width: 25),
+                              Icon(
+                                Icons.arrow_forward,
+                                color: Color.fromRGBO(19, 56, 58, 1),
+                                size: 20.0,
+                              ),
+                              SizedBox(width: 25),
+                              Column(
+                                children: [
+                                  Icon(
+                                    Icons.troubleshoot,
+                                    color: Color.fromRGBO(19, 56, 58, 1),
+                                    size: 36.0,
+                                  ),
+                                  Text(
+                                    'Tratamento',
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(19, 56, 58, 1),
+                                      fontSize: 10,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w300,
+                                      height: 0,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        
+                      ),
+                      InkWell(
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => CapturePage()),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Column(
+                            children: [
+                              Container(
+                                width: 187,
+                                  height: 30,
+                                  decoration: ShapeDecoration(
+                                    color: const Color(0xFF13383A),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  child: const Center(
+                                    child: Text(
+                                      'Tirar uma foto',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontFamily: 'Inter',
+                                        fontWeight: FontWeight.w500,
+                                        height: 0,
+                                      ),
+                                    ),
+                                  ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      
+                    ],
+                  ),
+                  
+                ),
+                
+              ),
+               
             ],
           ),
-          
         ),
-        
       ),
-      
-
       appBar: AppBar(
         title: const Text(
           'CULTURAS',

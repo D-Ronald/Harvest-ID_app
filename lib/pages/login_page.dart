@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_fields
+
 import 'package:debug_no_cell/pages/dialog_resend_password.dart';
 import 'package:debug_no_cell/utils/routes.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +35,7 @@ class LoginPage extends StatelessWidget {
           widthPercentage: 60,
         ),
         spacing(context, 3),
-        Row(
+        const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(

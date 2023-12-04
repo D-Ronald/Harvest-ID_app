@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_fields
+
 import 'package:debug_no_cell/utils/base.dart';
 import 'package:debug_no_cell/utils/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -37,7 +39,7 @@ class RegisterPage extends StatelessWidget {
           widthPercentage: 60,
         ),
         spacing(context, 4),
-        Row(
+        const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(

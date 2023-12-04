@@ -11,7 +11,7 @@ class InitialPage extends StatelessWidget {
           alignment: Alignment.center,
           height: height(context, 100),
           width: height(context, 100),
-          decoration: BoxDecoration(color: darkGreenBase),
+          decoration: const BoxDecoration(color: darkGreenBase),
           child: Column(
             children: [
               spacing(context, 20),
@@ -28,7 +28,7 @@ class InitialPage extends StatelessWidget {
                   backgroundColor: mediumGrayBase,
                   textColor: blackBase,
                   text: "Acessar sua conta",
-                  icon: Icon(Icons.login, color: blackBase),
+                  icon: const Icon(Icons.login, color: blackBase),
                   percentageHeight: 7,
                   percentageWidth: 70,
                   function: () {
@@ -40,7 +40,7 @@ class InitialPage extends StatelessWidget {
                   backgroundColor: mediumGrayBase,
                   textColor: blackBase,
                   text: "Criar uma conta",
-                  icon: Icon(Icons.people, color: blackBase),
+                  icon: const Icon(Icons.people, color: blackBase),
                   percentageHeight: 7,
                   percentageWidth: 70,
                   function: () {

@@ -23,9 +23,9 @@ class HomePage extends StatelessWidget {
           flexibleSpace: Column(
             children: [
               Image.asset(
-                'assets/images/logo_harvest.png',
-                width: width(context, 115),
-                height: height(context, 44),
+                'assets/images/logo_harvest_2.png',
+                width: width(context, 113),
+                height: height(context, 45),
               )
             ],
           ),

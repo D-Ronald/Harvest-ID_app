@@ -53,110 +53,112 @@ class CadasterProperty_page extends StatelessWidget {
           ),
         ),
         ),
-          body: Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: SizedBox(
-              width: double.infinity,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset('assets/images/NameGray.png',
-                  width: 199,
-                  height: 27,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: SizedBox(
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/images/NameGray.png',
+                    width: 199,
+                    height: 27,
+                    ),
+                  const SizedBox(
+                    height: 20,
                   ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Center(
-                child: Transform.rotate(
-                  angle: -3.14,
-                  child: Container(
-                    width: 354,
-                    decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          width: 1,
-                          strokeAlign: BorderSide.strokeAlignCenter,
-                          color: Colors.black.withOpacity(0.25),
+                  Center(
+                  child: Transform.rotate(
+                    angle: -3.14,
+                    child: Container(
+                      width: 354,
+                      decoration: ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            width: 1,
+                            strokeAlign: BorderSide.strokeAlignCenter,
+                            color: Colors.black.withOpacity(0.25),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-
-                  spacing(context, 3),
-                  genericTextForm(
-                    context: context,
-                    controller: _CountryController,
-                    labeltext: "País",
-                    labelColor: DarkGrayBase,
-                    heightPercentage: 8,
-                    padding: 20,
-                    color: DarkGrayBase,
-                    backgroundColor: mediumGrayBase,
-                    borderRadius: 20),
-                  spacing(context, 3),
-                  genericTextForm(
-                    context: context,
-                    controller: _StateController,
-                    labeltext: "Estado",
-                    labelColor: DarkGrayBase,
-                    heightPercentage: 8,
-                    padding: 20,
-                    color: blackBase,
-                    backgroundColor: mediumGrayBase,
-                    borderRadius: 20),
-                  spacing(context, 3),        
-                  genericTextForm(
-                    context: context,
-                    controller: _CityController,
-                    labeltext: "Cidade",
-                    labelColor: DarkGrayBase,
-                    heightPercentage: 8,
-                    padding: 20,
-                    color: blackBase,
-                    backgroundColor: mediumGrayBase,
-                    borderRadius: 20),
-                  spacing(context, 3),
-                  genericTextForm(
-                    context: context,
-                    controller: _PropertyNameController,
-                    labeltext: "Nome da propriedade",
-                    labelColor: DarkGrayBase,
-                    heightPercentage: 8,
-                    padding: 20,
-                    color: blackBase,
-                    backgroundColor: mediumGrayBase,
-                    borderRadius: 20),
-                  spacing(context, 3),
-                  genericTextForm(
-                    context: context,
-                    controller: _PropertySizeController,
-                    labeltext: "Tamanho da propriedade em hectares",
-                    labelColor: DarkGrayBase,
-                    heightPercentage: 8,
-                    padding: 20,
-                    color: blackBase,
-                    backgroundColor: mediumGrayBase,
-                    borderRadius: 20),
-                  spacing(context, 5),
-                  ElevatedButton(onPressed: (){
-                    CollectionReference collRef = FirebaseFirestore.instance.collection('propertys');
-                    collRef.add({
-                      'name': _PropertyNameController.text,
-                      'size' : int.parse(_PropertySizeController.text),
-                      'country' :_CountryController.text,
-                      'state': _StateController.text,
-                      'city': _CityController.text,
             
-                    });
-                  },
-                   child: const Text('SALVAR'))
-                ],
-                ),
-                ),
+                    spacing(context, 3),
+                    genericTextForm(
+                      context: context,
+                      controller: _CountryController,
+                      labeltext: "País",
+                      labelColor: DarkGrayBase,
+                      heightPercentage: 8,
+                      padding: 20,
+                      color: DarkGrayBase,
+                      backgroundColor: mediumGrayBase,
+                      borderRadius: 20),
+                    spacing(context, 3),
+                    genericTextForm(
+                      context: context,
+                      controller: _StateController,
+                      labeltext: "Estado",
+                      labelColor: DarkGrayBase,
+                      heightPercentage: 8,
+                      padding: 20,
+                      color: blackBase,
+                      backgroundColor: mediumGrayBase,
+                      borderRadius: 20),
+                    spacing(context, 3),        
+                    genericTextForm(
+                      context: context,
+                      controller: _CityController,
+                      labeltext: "Cidade",
+                      labelColor: DarkGrayBase,
+                      heightPercentage: 8,
+                      padding: 20,
+                      color: blackBase,
+                      backgroundColor: mediumGrayBase,
+                      borderRadius: 20),
+                    spacing(context, 3),
+                    genericTextForm(
+                      context: context,
+                      controller: _PropertyNameController,
+                      labeltext: "Nome da propriedade",
+                      labelColor: DarkGrayBase,
+                      heightPercentage: 8,
+                      padding: 20,
+                      color: blackBase,
+                      backgroundColor: mediumGrayBase,
+                      borderRadius: 20),
+                    spacing(context, 3),
+                    genericTextForm(
+                      context: context,
+                      controller: _PropertySizeController,
+                      labeltext: "Tamanho da propriedade em hectares",
+                      labelColor: DarkGrayBase,
+                      heightPercentage: 8,
+                      padding: 20,
+                      color: blackBase,
+                      backgroundColor: mediumGrayBase,
+                      borderRadius: 20),
+                    spacing(context, 5),
+                    ElevatedButton(onPressed: (){
+                      CollectionReference collRef = FirebaseFirestore.instance.collection('propertys');
+                      collRef.add({
+                        'name': _PropertyNameController.text,
+                        'size' : int.parse(_PropertySizeController.text),
+                        'country' :_CountryController.text,
+                        'state': _StateController.text,
+                        'city': _CityController.text,
+              
+                      });
+                    },
+                     child: const Text('SALVAR'))
+                  ],
+                  ),
+                  ),
+            ),
           ),
     );
   }

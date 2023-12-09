@@ -16,8 +16,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final tabela = CulturaRepository.tabela;
-
+    
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 16.0),
@@ -32,8 +31,8 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(height: 50),
               Center(
                 child: Container(
-                  width: 243,
-                  height: 167,
+                  width: 260,
+                  height: 185,
                   decoration: ShapeDecoration(
                     color: const Color(0xFFD9D9D9),
                     shape: RoundedRectangleBorder(
@@ -49,10 +48,13 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Image.asset('assets/images/tomate.jpg',
-                      width: double.infinity,
-                      height: double.infinity,
-                      fit: BoxFit.cover),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset('assets/images/Tomateiro.jpg',
+                        width: width(context, 50),
+                        height: height(context, 30),
+                        fit: BoxFit.cover),
+                  ),
                 ),
               ),
               const SizedBox(width: 60),
@@ -116,7 +118,7 @@ class ProfilePage extends StatelessWidget {
                               'Ver mais',
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 12,
+                                fontSize: 16,
                                 fontFamily: 'Cardo',
                                 fontWeight: FontWeight.w400,
                                 height: 0,

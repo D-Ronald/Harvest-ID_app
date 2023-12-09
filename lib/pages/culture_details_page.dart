@@ -1,10 +1,9 @@
-import 'package:debug_no_cell/Models/Cultura.dart';
+import 'package:debug_no_cell/Models/culture.dart';
 import 'package:flutter/material.dart';
 
 class CultureDetailsPage extends StatefulWidget {
-  
-  const CultureDetailsPage({super.key, required Cultura cultura});
-  
+  const CultureDetailsPage({super.key, required culture cultura});
+
   get cultura => null;
 
   @override
@@ -31,8 +30,9 @@ class _CultureDetailsPageState extends State<CultureDetailsPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.cultura.nome,)
-      ),
+          title: Text(
+        widget.cultura.nome,
+      )),
     );
   }
 }

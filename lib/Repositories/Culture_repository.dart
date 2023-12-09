@@ -1,10 +1,12 @@
-import 'package:debug_no_cell/Models/Cultura.dart';
+import 'package:debug_no_cell/Models/culture.dart';
 
 class CultureRepository {
-  static List<Cultura> tabela = [Cultura(
-    info: "informações e caracteristicas gerais da cultura",
-     nome: "Tomateiro",
-     icone: "images/tomate.jpg"
+  static List<culture> tabela = [
+    culture(
+      hectares: "informações e caracteristicas gerais da cultura",
+      especie: "Tomateiro",
+      icone: "images/tomate.jpg",
+      propriedade: 'propriedade',
     ),
   ];
 }

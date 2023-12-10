@@ -1,10 +1,16 @@
+import 'dart:convert';
+
 import 'package:csc_picker/csc_picker.dart';
+import 'package:csc_picker/model/select_status_model.dart';
 import 'package:debug_no_cell/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:debug_no_cell/utils/base.dart';
 
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();  
+    
+
 }
 
 class CadasterProperty_page extends StatefulWidget {
@@ -22,7 +28,7 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text('Cadastre a Propriedade')),
-        body: Center(
+        body: SingleChildScrollView(
             child: Column(children: [
       genericBigImage(
           context: context,
@@ -36,7 +42,7 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
           labeltext: "Nome da propriedade",
           labelColor: dark_gray_base,
           heightPercentage: 8,
-          padding: 20,
+          padding: 10,
           color: black_base,
           backgroundColor: ligth_gray_base,
           borderRadius: 20),
@@ -47,7 +53,7 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
           labeltext: "Tamanho da propriedade em hectares",
           labelColor: dark_gray_base,
           heightPercentage: 8,
-          padding: 20,
+          padding: 10,
           color: black_base,
           backgroundColor: ligth_gray_base,
           borderRadius: 20),
@@ -60,7 +66,7 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Colors.black,
-                  fontSize: 16,
+                  fontSize: 13,
                   fontFamily: 'Raleway',
                   fontWeight: FontWeight.w400,
                   height: 0,
@@ -68,14 +74,22 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
     ),
 ),
       spacing(context, 3),
-      CSCPicker(
+      Container(
+        padding: const EdgeInsets.all(10), 
+        child: CSCPicker(
             onCountryChanged: (country){},
             onCityChanged: (city){},
             onStateChanged: (state){},
             dropdownDialogRadius: 20,
             searchBarRadius: 20,
-      ),
-
+            countrySearchPlaceholder: "Country",
+            stateSearchPlaceholder: "State",
+            citySearchPlaceholder: "City",
+            countryDropdownLabel: "País",
+            cityDropdownLabel: "Cidade",
+            stateDropdownLabel: "Estado",
+  ),
+),
       spacing(context, 3),
       genericTextFormPassword(
           context: context,
@@ -83,10 +97,10 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
           labeltext: "Endereço",
           labelColor: dark_gray_base,
           heightPercentage: 8,
-          padding: 20,
+          padding: 10,
           color: black_base,
           backgroundColor: ligth_gray_base,
-          borderRadius: 20),
+          borderRadius: 10),
 
       spacing(context, 5),
       const SizedBox(
@@ -126,7 +140,7 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
           white_base,
           "Cadastrar propriedade",
           7,
-          50,
+          40,
           ()
         )
            

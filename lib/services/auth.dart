@@ -1,8 +1,11 @@
+import 'package:debug_no_cell/pages/profile_page.dart';
 import 'package:debug_no_cell/utils/base.dart';
 import 'package:debug_no_cell/utils/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
+import '../DatabaseManager/PropertyDatabaseManager.dart';
 
 class AuthException implements Exception {
   String message;
@@ -142,6 +145,7 @@ class AutenthicationService extends ChangeNotifier {
     }
   }
 
+
   logout() async {
     await _firebasseAuth.signOut();
     _getUser();
@@ -155,4 +159,93 @@ class AutenthicationService extends ChangeNotifier {
       print(e);
 }
 }
+Future<void> cadasterProperty({
+  required BuildContext context,
+  required String propertyName,
+  required String propertySize,
+  required String address,
+  required String? selectedCountry,
+  required String? selectedState,
+  required String? selectedCity,
+  required bool isChecked,
+}) async { 
+  
+  if (propertyName.isEmpty ||
+      propertySize.isEmpty ||
+      address.isEmpty ||
+      selectedCountry == null ||
+      selectedState == null ||
+      selectedCity == null ||
+      !isChecked) {
+    _exibirDialogoErro('Por favor, preencha todos os campos.', context);
+  } else {
+    UserCredential property = await _firebasseAuth.createCadasterProperty(
+      context: context,
+      propertyName: propertyName,
+      propertySize: propertySize,
+      address: address,
+      selectedCountry: selectedCountry,
+      selectedState: selectedState,
+      selectedCity: selectedCity,
+      isChecked: isChecked,
+    );
+    await PropertyDatabaseManager().createPropertyData(propertyName, propertySize, address, selectedCountry, selectedState, selectedCity, isChecked);
+
+    _exibirDialogoCadastroSucesso(context);
+  }
+}
+void navigateToAnotherPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ProfilePage()),
+);
+}
+void _exibirDialogoErro(String mensagem, BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Erro de validação'),
+        content: Text(mensagem),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void _exibirDialogoCadastroSucesso(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Cadastro Efetuado'),
+        content: const Text('Sua propriedade foi cadastrada com sucesso!'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop();
+                InkWell(
+                onTap: () {
+                  navigateToAnotherPage(context);
+  });
+
+
+              
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
 }

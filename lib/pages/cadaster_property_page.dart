@@ -1,5 +1,5 @@
-import 'dart:convert';
-
+import 'package:debug_no_cell/services/auth.dart';
+import 'package:flutter/material.dart';
 import 'package:csc_picker/csc_picker.dart';
 import 'package:csc_picker/model/select_status_model.dart';
 import 'package:debug_no_cell/utils/routes.dart';
@@ -13,17 +13,45 @@ void main() async{
 
 }
 
+
 class CadasterProperty_page extends StatefulWidget {
   @override
   _CadasterPropertyPageState createState() => _CadasterPropertyPageState();
 }
 
 class _CadasterPropertyPageState extends State<CadasterProperty_page> {
+  AutenthicationService _autenthicationService = AutenthicationService();
   TextEditingController _addressController = TextEditingController();
   TextEditingController _propertyNameController = TextEditingController();
   TextEditingController _propertySizeController = TextEditingController();
   bool isChecked = false;
+  String? _propertyName;
+  String? _propertySize;
+  String? _address;
+  String? _selectedCountry;
+  String? _selectedState;
+  String? _selectedCity;
 
+
+  void _exibirDialogoCadastroSucesso(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Cadastro Efetuado'),
+          content: const Text('Sua propriedade foi cadastrada com sucesso!'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(); // 
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,14 +105,21 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
       Container(
         padding: const EdgeInsets.all(10), 
         child: CSCPicker(
-            onCountryChanged: (country){},
-            onCityChanged: (city){},
-            onStateChanged: (state){},
+            onCountryChanged: (country){
+              _selectedCountry = country;
+
+            },
+            onCityChanged: (city){
+              _selectedCity = city;
+            },
+            onStateChanged: (state){
+              _selectedState = state;
+            },
             dropdownDialogRadius: 20,
             searchBarRadius: 20,
-            countrySearchPlaceholder: "Country",
-            stateSearchPlaceholder: "State",
-            citySearchPlaceholder: "City",
+            countrySearchPlaceholder: "País",
+            stateSearchPlaceholder: "Estado",
+            citySearchPlaceholder: "Cidade",
             countryDropdownLabel: "País",
             cityDropdownLabel: "Cidade",
             stateDropdownLabel: "Estado",
@@ -139,14 +174,23 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
           darkGreenBase,
           white_base,
           "Cadastrar propriedade",
-          7,
-          40,
-          ()
-        )
-           
-        
-        
-  ])));
-    
+          5,
+          30,
+          (){
+            _autenthicationService.cadasterProperty(context: context, 
+            propertyName: _propertyNameController.text, 
+            propertySize: _propertySizeController.text, 
+            address: _addressController.text, 
+            selectedCountry: _selectedCountry, 
+            selectedState: _selectedState, 
+            selectedCity: _selectedCity, 
+            isChecked: isChecked);
+              
+      },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

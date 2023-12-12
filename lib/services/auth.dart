@@ -1,3 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debug_no_cell/pages/profile_page.dart';
 import 'package:debug_no_cell/utils/base.dart';
 import 'package:debug_no_cell/utils/routes.dart';
@@ -179,27 +182,28 @@ Future<void> cadasterProperty({
       !isChecked) {
     _exibirDialogoErro('Por favor, preencha todos os campos.', context);
   } else {
-    UserCredential property = await _firebasseAuth.createCadasterProperty(
-      context: context,
-      propertyName: propertyName,
-      propertySize: propertySize,
-      address: address,
-      selectedCountry: selectedCountry,
-      selectedState: selectedState,
-      selectedCity: selectedCity,
-      isChecked: isChecked,
-    );
-    await PropertyDatabaseManager().createPropertyData(propertyName, propertySize, address, selectedCountry, selectedState, selectedCity, isChecked);
+    User? user = _firebasseAuth.currentUser;
+    String uid = user!.uid;
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    Map<String, dynamic> propertyData = {
+      'name': propertyName,
+      'size': double.parse(propertySize),
+      'address': address,
+      'country': selectedCountry,
+      'state': selectedState,
+      'city': selectedCity,
+      'ownerId': uid,
+    };
 
-    _exibirDialogoCadastroSucesso(context);
+    try {
+      await firestore.collection("properties").doc(uid).set(propertyData);
+      _exibirDialogoCadastroSucesso(context, user);
+    } catch (error) {
+      _exibirDialogoErro(error.toString(), context);
+    }
   }
 }
-void navigateToAnotherPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ProfilePage()),
-);
-}
+
 void _exibirDialogoErro(String mensagem, BuildContext context) {
   showDialog(
     context: context,
@@ -212,7 +216,6 @@ void _exibirDialogoErro(String mensagem, BuildContext context) {
             child: const Text('OK'),
             onPressed: () {
               Navigator.of(context).pop();
-              
             },
           ),
         ],
@@ -221,7 +224,7 @@ void _exibirDialogoErro(String mensagem, BuildContext context) {
   );
 }
 
-void _exibirDialogoCadastroSucesso(BuildContext context) {
+void _exibirDialogoCadastroSucesso(BuildContext context, User? user) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -233,13 +236,7 @@ void _exibirDialogoCadastroSucesso(BuildContext context) {
             child: const Text('OK'),
             onPressed: () {
               Navigator.of(context).pop();
-                InkWell(
-                onTap: () {
-                  navigateToAnotherPage(context);
-  });
-
-
-              
+              navigateToAnotherPage(context);
             },
           ),
         ],
@@ -248,4 +245,10 @@ void _exibirDialogoCadastroSucesso(BuildContext context) {
   );
 }
 
+void navigateToAnotherPage(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const ProfilePage()),
+  );
+}
 }

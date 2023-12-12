@@ -27,6 +27,8 @@ class _CapturePageState extends State<CapturePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      
       body: Center(
           child: Column(children: [
         spacing(context, 50),

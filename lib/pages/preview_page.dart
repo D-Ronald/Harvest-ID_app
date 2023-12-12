@@ -44,7 +44,7 @@ class PreviewPage extends StatelessWidget {
                             backgroundColor: blackBase.withOpacity(0.6),
                             child: Center(
                               child: IconButton(
-                                icon: Icon(Icons.check,
+                                icon: const Icon(Icons.check,
                                     color: whiteBase, size: 30),
                                 onPressed: () => captureSucessfully(context),
                                 iconSize: 60,
@@ -60,7 +60,7 @@ class PreviewPage extends StatelessWidget {
                             backgroundColor: blackBase.withOpacity(0.6),
                             child: Center(
                               child: IconButton(
-                                icon: Icon(Icons.close,
+                                icon: const Icon(Icons.close,
                                     color: whiteBase, size: 30),
                                 onPressed: () => Navigator.of(context).pop(),
                                 iconSize: 60,

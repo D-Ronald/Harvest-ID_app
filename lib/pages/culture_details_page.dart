@@ -1,17 +1,16 @@
-import 'package:debug_no_cell/Models/Cultura.dart';
+import 'package:debug_no_cell/Models/culture.dart';
 import 'package:flutter/material.dart';
 
-class CulturasDetalhesPage extends StatefulWidget {
-  
-  const CulturasDetalhesPage({super.key, required Cultura cultura});
-  
+class CultureDetailsPage extends StatefulWidget {
+  const CultureDetailsPage({super.key, required culture cultura});
+
   get cultura => null;
 
   @override
-  State<CulturasDetalhesPage> createState() => _CulturasDetalhesPageState();
+  State<CultureDetailsPage> createState() => _CultureDetailsPageState();
 }
 
-class _CulturasDetalhesPageState extends State<CulturasDetalhesPage>
+class _CultureDetailsPageState extends State<CultureDetailsPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
@@ -31,8 +30,9 @@ class _CulturasDetalhesPageState extends State<CulturasDetalhesPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.cultura.nome,)
-      ),
+          title: Text(
+        widget.cultura.nome,
+      )),
     );
   }
 }

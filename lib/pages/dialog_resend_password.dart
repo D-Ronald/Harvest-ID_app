@@ -13,11 +13,11 @@ class DialogResendPassword {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Recuperar senha"),
+            title: const Text("Recuperar senha"),
             content: SingleChildScrollView(
               child: ListBody(
                 children: [
-                  Text("Digite seu e-mail para recuperar sua senha"),
+                  const Text("Digite seu e-mail para recuperar sua senha"),
                   spacing(context, 2),
                   genericTextForm(
                     context: context,

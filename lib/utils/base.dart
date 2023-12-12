@@ -205,7 +205,7 @@ BottomNavigationBar navigationBar(
       ),
       //Icone de lupa
       BottomNavigationBarItem(
-        icon: Icon(Icons.search, color: iconColor),
+        icon: Icon(Icons.photo_camera, color: iconColor),
         label: "",
       ),
       //Icone de adicionar
@@ -219,7 +219,7 @@ BottomNavigationBar navigationBar(
       ),
       //Icone de perfil
       BottomNavigationBarItem(
-        icon: Icon(Icons.person, color: iconColor),
+        icon: Icon(Icons.eco, color: iconColor),
         label: "",
       ),
     ],

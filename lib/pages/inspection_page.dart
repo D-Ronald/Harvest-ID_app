@@ -128,29 +128,57 @@ class _InspectionPageState extends State<InspectionPage> {
                           ),
                         ),
                         Container(
-                          width: 300,
-                          height: 300,
-                          color: Colors.transparent,
-                          child: PieChart(
-                            PieChartData(
-                                centerSpaceRadius: 80,
-                                borderData: FlBorderData(show: false),
-                                sectionsSpace: 2,
-                                sections: [
-                                  PieChartSectionData(
-                                    value: 50,
-                                    color: const Color.fromARGB(19, 56, 58, 1),
-                                    radius: 40,
-                                  ),
-                                  PieChartSectionData(
-                                    value: 50,
-                                    color: const Color.fromARGB(
-                                        255, 110, 170, 121),
-                                    radius: 40,
-                                  )
-                                ]),
-                          ),
-                        ),
+  width: 300,
+  height: 300,
+  color: Colors.transparent,
+  child: Stack(
+    children: [
+      PieChart(
+        PieChartData(
+          centerSpaceRadius: 80,
+          borderData: FlBorderData(show: false),
+          sectionsSpace: 2,
+          sections: [
+            PieChartSectionData(
+              value: 100,
+              color:  const Color.fromARGB(251, 93, 166, 150),
+              radius: 40,
+            ),
+            // PieChartSectionData(
+            //   value: 50,
+            //   color: const Color.fromARGB(255, 110, 170, 121),
+            //   radius: 40,
+            // ),
+          ],
+        ),
+      ),
+      const Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'SAÚDE',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 24,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            Text(
+              '100%',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  ),
+),
+
                       ],
                     ),
                   ),

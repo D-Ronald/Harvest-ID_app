@@ -31,14 +31,14 @@ class SendImage {
 
   string(String predict){
     String aux = "";
-    for (int i = 1; i < predict.length-2; i++) {
+    for (int i = 12; i < predict.length-3; i++) {
       aux = aux + predict[i];
     }
     return aux;
   }
 
   Future<void> sendImage(context) async {
-    var url = Uri.parse('https://3568-35-204-42-241.ngrok-free.app/predict');
+    var url = Uri.parse('https://d2c5-35-204-42-241.ngrok-free.app/predict');
     var request = http.MultipartRequest('POST', url);
     request.files
         .add(await http.MultipartFile.fromPath('image', treatArchive(file)));
@@ -52,7 +52,7 @@ class SendImage {
       var responseString = await response.stream.bytesToString();
       responseString = string(responseString);
       print(responseString);
-      if (responseString.contains("no plants")) {
+      if (responseString == "no plants") {
         Dialog.dialog(
           context: context,
           color: redBase,
@@ -60,7 +60,7 @@ class SendImage {
           message: "Não foi possível identificar nenhuma colheita na imagem",
         );
 
-      } else if (responseString.contains("plants")) {
+      } else if (responseString == "plants" ) {
         Dialog.dialog(
           context: context,
           color: darkGreenBase,

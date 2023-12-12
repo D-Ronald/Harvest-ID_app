@@ -130,7 +130,7 @@ class _InspectionPageState extends State<InspectionPage> {
                         Container(
                           width: 300,
                           height: 300,
-                          color: Colors.white,
+                          color: Colors.transparent,
                           child: PieChart(
                             PieChartData(
                                 centerSpaceRadius: 80,

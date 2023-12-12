@@ -24,6 +24,9 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
   TextEditingController _addressController = TextEditingController();
   TextEditingController _propertyNameController = TextEditingController();
   TextEditingController _propertySizeController = TextEditingController();
+  String? selectedCountry;
+  String? selectedState;
+  String? selectedCity;
   bool isChecked = false;
 
 
@@ -101,11 +104,20 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
         padding: const EdgeInsets.all(10), 
         child: CSCPicker(
             onCountryChanged: (country){
+              setState(() {
+                selectedCountry = country;
+                });
 
             },
             onCityChanged: (city){
+              setState(() {
+                selectedCity = city;
+                });
             },
             onStateChanged: (state){
+              setState(() {
+                selectedState = state;
+                });
             },
             dropdownDialogRadius: 20,
             searchBarRadius: 20,
@@ -168,7 +180,16 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
           "Cadastrar propriedade",
           3,
           20,
-          (),
+          (){
+            _autenthicationService.cadasterProperty(context: context,
+             propertyName: _propertyNameController.text, 
+             propertySize: _propertySizeController.text, 
+             address: _addressController.text, 
+             selectedCountry: selectedCountry, 
+             selectedState: selectedState, 
+             selectedCity: selectedCity, 
+             isChecked: isChecked);
+          },
             ),
           ],
         ),

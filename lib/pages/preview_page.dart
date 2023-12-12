@@ -11,9 +11,7 @@ class PreviewPage extends StatelessWidget {
   File? archive;
 
   captureSucessfully(context) {
-    if (archive != null) SendImage(file: archive).sendImage();
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
+    if (archive != null) SendImage(file: archive).sendImage(context);
   }
 
   PreviewPage({

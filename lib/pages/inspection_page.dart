@@ -134,23 +134,25 @@ class _InspectionPageState extends State<InspectionPage> {
                             ),
                           ),
                           Container(
-                            width: 300,
-                            height: 300,
+                            width: 250,
+                            height: 250,
                             color: Colors.transparent,
                             child: Stack(
                               children: [
                                 PieChart(
                                   PieChartData(
-                                    centerSpaceRadius: 80,
+                                    centerSpaceRadius: 70,
                                     borderData: FlBorderData(show: false),
                                     sectionsSpace: 2,
                                     sections: [
                                       PieChartSectionData(
-                                        value: 100,
+                                        //value: 100,
                                         color: isHealthy
-                                            ? const Color.fromARGB(255, 110, 170, 121)
-                                            : const Color.fromARGB(255, 203, 92, 84),
-                                        radius: 40,
+                                            ? const Color.fromARGB(
+                                                255, 110, 170, 121)
+                                            : const Color.fromARGB(
+                                                255, 203, 92, 84),
+                                        radius: 30,
                                       ),
                                     ],
                                   ),
@@ -160,7 +162,9 @@ class _InspectionPageState extends State<InspectionPage> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        isHealthy ? 'SAUDÁVEL' : 'DOENTE', // Texto atualizado
+                                        isHealthy
+                                            ? 'SAUDÁVEL'
+                                            : 'DOENTE', // Texto atualizado
                                         style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 24,
@@ -181,6 +185,45 @@ class _InspectionPageState extends State<InspectionPage> {
                                 ),
                               ],
                             ),
+                          ),
+                          Column(
+                            children: [
+                              const SizedBox(height: 10),
+                              Center(
+                                child: Column(
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.only(
+                                        right: 185.0,
+                                        bottom: 20,
+                                      ),
+                                      child: Text(
+                                        'Análise de risco',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.w400,
+                                          height: 0,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 299,
+                                      height: 120,
+                                      decoration: const ShapeDecoration(
+                                        color: Colors.transparent,
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                              width: 1,
+                                              color: Color(0xFFC7592A)),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

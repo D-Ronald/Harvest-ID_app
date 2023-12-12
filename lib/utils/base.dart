@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 const darkGreenBase = Color.fromRGBO(19, 56, 58, 1);
-const DarkGrayBase = Color.fromRGBO(62, 68, 69, 1);
+const darkGrayBase = Color.fromRGBO(62, 68, 69, 1);
 const mediumGrayBase = Color.fromRGBO(217, 217, 217, 1);
 const lightGrayBase = Color.fromRGBO(250, 250, 250, 1);
 const whiteBase = Color.fromRGBO(255, 255, 255, 1);
@@ -119,7 +119,7 @@ Container genericTextForm(
     required double padding,
     TextInputType keyboardType = TextInputType.text,
     bool obscureText = false,
-    bool filled =  true,
+    bool filled = true,
     required color,
     required backgroundColor,
     required double borderRadius}) {

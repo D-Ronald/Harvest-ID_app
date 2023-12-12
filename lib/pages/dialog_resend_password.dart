@@ -23,7 +23,7 @@ class DialogResendPassword {
                     context: context,
                     controller: _emailController,
                     labeltext: "E-mail",
-                    labelColor: DarkGrayBase,
+                    labelColor: darkGrayBase,
                     heightPercentage: 8,
                     padding: 5,
                     color: blackBase,

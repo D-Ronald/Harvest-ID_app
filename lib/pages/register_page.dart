@@ -11,7 +11,6 @@ class RegisterPage extends StatelessWidget {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _passwordConfirmController = TextEditingController();
   @override
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +42,7 @@ class RegisterPage extends StatelessWidget {
             Text(
               "CADASTRO",
               style: TextStyle(
-                color: DarkGrayBase,
+                color: darkGrayBase,
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
@@ -56,7 +55,7 @@ class RegisterPage extends StatelessWidget {
           controller: _nameController,
           keyboardType: TextInputType.name,
           labeltext: "Nome completo",
-          labelColor: DarkGrayBase,
+          labelColor: darkGrayBase,
           heightPercentage: 8,
           padding: 20,
           color: blackBase,
@@ -69,7 +68,7 @@ class RegisterPage extends StatelessWidget {
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
           labeltext: "E-mail",
-          labelColor: DarkGrayBase,
+          labelColor: darkGrayBase,
           heightPercentage: 8,
           padding: 20,
           color: blackBase,
@@ -83,7 +82,7 @@ class RegisterPage extends StatelessWidget {
           keyboardType: TextInputType.visiblePassword,
           obscureText: true,
           labeltext: "Senha",
-          labelColor: DarkGrayBase,
+          labelColor: darkGrayBase,
           heightPercentage: 8,
           padding: 20,
           color: blackBase,
@@ -97,7 +96,7 @@ class RegisterPage extends StatelessWidget {
           keyboardType: TextInputType.visiblePassword,
           obscureText: true,
           labeltext: "Confirmar senha",
-          labelColor: DarkGrayBase,
+          labelColor: darkGrayBase,
           heightPercentage: 8,
           padding: 20,
           color: blackBase,

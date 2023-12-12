@@ -28,6 +28,6 @@ class ViewPage extends StatelessWidget {
         bottomNavigationBar: navigationBar(
             pageController: page_controller,
             backgroundColor: mediumGrayBase,
-            iconColor: DarkGrayBase));
+            iconColor: darkGrayBase));
   }
 }

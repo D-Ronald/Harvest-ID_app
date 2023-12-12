@@ -104,26 +104,26 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
               ),
             ),
             spacing(context, 4),
-            genericTextFormPassword(
+            genericTextForm(
                 context: context,
                 controller: _propertyNameController,
                 labeltext: "Nome da propriedade",
-                labelColor: dark_gray_base,
+                labelColor: darkGrayBase,
                 heightPercentage: 8,
                 padding: 25,
-                color: black_base,
-                backgroundColor: ligth_gray_base,
+                color: blackBase,
+                backgroundColor: mediumGrayBase,
                 borderRadius: 10),
             spacing(context, 1),
-            genericTextFormPassword(
+            genericTextForm(
                 context: context,
                 controller: _propertySizeController,
                 labeltext: "Tamanho da propriedade em hectares",
-                labelColor: dark_gray_base,
+                labelColor: darkGrayBase,
                 heightPercentage: 8,
                 padding: 25,
-                color: black_base,
-                backgroundColor: ligth_gray_base,
+                color: blackBase,
+                backgroundColor: mediumGrayBase,
                 borderRadius: 10),
             spacing(context, 3),
             const SizedBox(
@@ -174,15 +174,15 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
               ),
             ),
             spacing(context, 2),
-            genericTextFormPassword(
+            genericTextForm(
                 context: context,
                 controller: _addressController,
                 labeltext: "Endereço",
-                labelColor: dark_gray_base,
+                labelColor: darkGrayBase,
                 heightPercentage: 8,
                 padding: 25,
-                color: black_base,
-                backgroundColor: ligth_gray_base,
+                color: blackBase,
+                backgroundColor: mediumGrayBase,
                 borderRadius: 10),
             spacing(context, 2),
             const SizedBox(
@@ -222,7 +222,7 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
             genericButton(
               context,
               darkGreenBase,
-              white_base,
+              whiteBase,
               "Cadastrar propriedade",
               6,
               25,

@@ -69,39 +69,36 @@ class _DashboardPageState extends State<DashboardPage> {
           Expanded(
             child: ListView.separated(
               itemBuilder: (BuildContext context, int culture) {
-                return Container(
-                  width: 350,
-                  height: 60,
-                  decoration: ShapeDecoration(
-                    color: Colors.transparent,
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(width: 1, color: Color(0xFF13383A)),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                return ListTile(
+                  tileColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(width: 1, color: Color(0xFF13383A)),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          tabela[culture].identificador,
-                          style: const TextStyle(
-                            color: Color(0xFF13383A),
-                            fontSize: 18,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
-                          ),
+                  contentPadding: const EdgeInsets.only(left: 20.0),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        tabela[culture].identificador,
+                        style: const TextStyle(
+                          color: Color(0xFF13383A),
+                          fontSize: 18,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
                         ),
-                        const SizedBox(
-                            width: 220), 
-                        tabela[culture].icone, // Adiciona o ícone ao Row
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 220),
+                      tabela[culture].icone, // Adiciona o ícone ao Row
+                    ],
                   ),
+                  onTap: () {
+                    // lógica para executar ao tocar no ListTile
+                    navigateToAnotherPage(context);
+                  },
                 );
               },
-              padding: const EdgeInsets.all(15), 
+              padding: const EdgeInsets.all(15),
               separatorBuilder: (_, __) => const Divider(
                 color: Colors.transparent,
               ),

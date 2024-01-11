@@ -17,21 +17,18 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          //backgroundColor: const Color(0x0013383a),
-          toolbarHeight: 410, //altura do container
-          flexibleSpace: Column(
-            children: [
-              Image.asset(
-                'assets/images/logo_harvest_2.png',
-                width: width(context, 113),
-                height: height(context, 45),
-              )
-            ],
-          ),
-        ),
         body: Column(
           children: [
+            Column(
+              children: [
+                Image.asset(
+                'assets/images/logo_harvest_2.png',
+                width: width(context, 100),
+                height: height(context, 50),
+              )
+              ]
+            ),
+            spacing(context, 0),
             Center(
               child: SizedBox(
                 width: 300,

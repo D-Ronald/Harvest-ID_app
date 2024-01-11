@@ -10,14 +10,14 @@ class InitialPage extends StatelessWidget {
       body: Container(
           alignment: Alignment.center,
           height: height(context, 100),
-          width: height(context, 100),
+          width: width(context, 100),
           decoration: const BoxDecoration(color: darkGreenBase),
           child: Column(
             children: [
               spacing(context, 20),
               Container(
                 height: height(context, 30),
-                width: height(context, 40),
+                width: width(context, 40),
                 child: new Image.asset(
                   "assets/images/harvest.png",
                 ),

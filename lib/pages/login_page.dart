@@ -13,7 +13,9 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
+        body: 
+        SingleChildScrollView(
+        child :Center(
             child: Column(
       children: [
         spacing(context, 4),
@@ -97,6 +99,6 @@ class LoginPage extends StatelessWidget {
               password: _passwordController.text);
         }),
       ],
-    )));
+    ))));
   }
 }

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:debug_no_cell/services/auth.dart';
 
 class RegisterPage extends StatelessWidget {
-   AutenthicationService _autenthicationService = AutenthicationService();
+  AutenthicationService _autenthicationService = AutenthicationService();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
@@ -115,7 +115,7 @@ class RegisterPage extends StatelessWidget {
                 7,
                 50,
                 () {
-                   _autenthicationService.registerUser(
+                  _autenthicationService.registerUser(
                     context: context,
                     email: _emailController.text,
                     password: _passwordController.text,

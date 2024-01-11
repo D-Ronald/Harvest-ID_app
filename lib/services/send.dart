@@ -38,7 +38,7 @@ class SendImage {
   }
 
   Future<void> sendImage(context) async {
-    var url = Uri.parse('https://d2c5-35-204-42-241.ngrok-free.app/predict');
+    var url = Uri.parse('https://c8f8-34-90-146-60.ngrok-free.app/predict');
     var request = http.MultipartRequest('POST', url);
     request.files
         .add(await http.MultipartFile.fromPath('image', treatArchive(file)));
@@ -57,7 +57,7 @@ class SendImage {
           context: context,
           color: redBase,
           title: "Isso não se parece com uma colheita",
-          message: "Não foi possível identificar nenhuma colheita na imagem",
+          message: "Não foi possível identificar nenhuma colheita na imagem.\n${responseString}",
         );
 
       } else if (responseString == "plants" ) {
@@ -65,14 +65,14 @@ class SendImage {
           context: context,
           color: darkGreenBase,
           title: "Análise bem sucedida",
-          message: "Você pode verificar o resultado na aba de inspeções.",
+          message: "Você pode verificar o resultado na aba de inspeções.\n${responseString}",
         );
       } else {
         Dialog.dialog(
           context: context,
           color: redBase,
           title: "Tente Novamente",
-          message: "Ocorreu um erro inesperado. Tente novamente!",
+          message: "Ocorreu um erro inesperado. Tente novamente!${responseString}",
         );
       }
     } on ClientException catch (e) {

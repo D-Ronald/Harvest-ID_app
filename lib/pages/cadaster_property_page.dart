@@ -24,7 +24,6 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
   String? selectedState;
   String? selectedCity;
   bool isChecked = false;
-
   void _exibirDialogoCadastroSucesso(BuildContext context) {
     showDialog(
       context: context,

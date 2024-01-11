@@ -163,7 +163,6 @@ class AutenthicationService extends ChangeNotifier {
 }
 }
 Future<void> cadasterProperty({
-  required BuildContext context,
   required String propertyName,
   required String propertySize,
   required String address,
@@ -171,37 +170,49 @@ Future<void> cadasterProperty({
   required String? selectedState,
   required String? selectedCity,
   required bool isChecked,
-}) async { 
-  
+  required BuildContext context, 
+}) async {
   if (propertyName.isEmpty ||
       propertySize.isEmpty ||
       address.isEmpty ||
       selectedCountry == null ||
       selectedState == null ||
       selectedCity == null ||
-      !isChecked) {
-    _exibirDialogoErro('Por favor, preencha todos os campos.', context);
-  } else {
-    User? user = _firebasseAuth.currentUser;
-    String uid = user!.uid;
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    Map<String, dynamic> propertyData = {
-      'name': propertyName,
-      'size': double.parse(propertySize),
-      'address': address,
-      'country': selectedCountry,
-      'state': selectedState,
-      'city': selectedCity,
-      'ownerId': uid,
-    };
+      isChecked == false ) {
+        _exibirDialogoErro("Por favor, preencha todos os campos.", context);
+      }
+      if (int.tryParse(propertySize) == null) {
+      _exibirDialogoErro("O tamanho da propriedade deve ser um número inteiro", context);
+      }
+  
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-    try {
-      await firestore.collection("properties").doc(uid).set(propertyData);
-      _exibirDialogoCadastroSucesso(context, user);
-    } catch (error) {
-      _exibirDialogoErro(error.toString(), context);
-    }
+  User? user = _firebaseAuth.currentUser;
+  String uid = user!.uid;
+   
+  Map<String, dynamic> propertyData = {
+    'name': propertyName,
+    'size': double.parse(propertySize),
+    'address': address,
+    'country': selectedCountry,
+    'state': selectedState,
+    'city': selectedCity,
+    'isRent': isChecked,
+    'ownerId': uid,
+  };
+  
+  try {
+    await _firestore
+        .collection("User")
+        .doc(uid)
+        .collection("Propertys")
+        .add(propertyData);
+    _exibirDialogoCadastroSucesso(context);
+  } catch (error) {
+    _exibirDialogoErro(error.toString(), context);
   }
+  
 }
 
 void _exibirDialogoErro(String mensagem, BuildContext context) {
@@ -224,7 +235,7 @@ void _exibirDialogoErro(String mensagem, BuildContext context) {
   );
 }
 
-void _exibirDialogoCadastroSucesso(BuildContext context, User? user) {
+void _exibirDialogoCadastroSucesso(BuildContext context) {
   showDialog(
     context: context,
     builder: (BuildContext context) {

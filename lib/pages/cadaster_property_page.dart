@@ -25,26 +25,6 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
   String? selectedCity;
   bool isChecked = false;
 
-  void _exibirDialogoCadastroSucesso(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Cadastro Efetuado'),
-          content: const Text('Sua propriedade foi cadastrada com sucesso!'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop(); //
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -227,6 +207,7 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
               6,
               25,
               () {
+                  
                 _autenthicationService.cadasterProperty(
                     context: context,
                     propertyName: _propertyNameController.text,

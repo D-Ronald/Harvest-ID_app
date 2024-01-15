@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:debug_no_cell/DatabaseManager/DatabaseManager.dart';
 import 'package:debug_no_cell/pages/profile_page.dart';
 import 'package:debug_no_cell/utils/base.dart';
 import 'package:debug_no_cell/utils/routes.dart';
@@ -59,9 +60,10 @@ class AutenthicationService extends ChangeNotifier {
       try {
         UserCredential userCredential =
             await _firebasseAuth.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
+            email: email,
+            password: password,
+            );
+          await DatabaseManager().createUserData(name, email, password, user!.uid);
 
         if (userCredential != null) {
           userCredential.user!.updateDisplayName(name);

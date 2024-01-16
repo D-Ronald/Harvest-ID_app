@@ -19,25 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _passwordConfirmController = TextEditingController();
 
-  List userProfileList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    fetchDatabaseList();
-  }
-
-  fetchDatabaseList() async {
-    dynamic resultant = await DatabaseManager().getUserList();
-    if (resultant != null) {
-      setState(() {
-        userProfileList = resultant;
-      });
-    } else {
-      print("Erro ao conectar no banco de dados");
-    }
-  }
-
+  
 
  @override
   Widget build(BuildContext context) {

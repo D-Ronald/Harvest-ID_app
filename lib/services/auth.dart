@@ -63,11 +63,27 @@ class AutenthicationService extends ChangeNotifier {
             email: email,
             password: password,
             );
-          await DatabaseManager().createUserData(name, email, password, user!.uid);
 
         if (userCredential != null) {
-          userCredential.user!.updateDisplayName(name);
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          User? user = userCredential.user;
+          await user!.updateDisplayName(name);
+          Future<void> addUserDetailsToFirestore
+          (String userId, 
+          String name, 
+          String email, 
+          String password) async {
+          FirebaseFirestore firestore = FirebaseFirestore.instance;
+          Map<String, dynamic> userData = {
+          'name': name,
+          'email': email,
+    };
+
+          try {
+             await firestore.collection("User").doc(userId).set(userData);
+           } catch (error) {
+         print("Erro ao adicionar detalhes do usuário ao Firestore: $error");
+    }
+  }         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Usuário cadastrado com sucesso!"),
             backgroundColor: Color.fromARGB(255, 29, 222, 129),
           ));
@@ -101,8 +117,10 @@ class AutenthicationService extends ChangeNotifier {
             backgroundColor: Colors.redAccent,
           ));
         }
+        
       }
     }
+        
   }
 
   /// Função para fazer login usando email e senha
@@ -184,27 +202,43 @@ Future<void> cadasterProperty({
       !isChecked) {
     _exibirDialogoErro('Por favor, preencha todos os campos.', context);
   } else {
-    User? user = _firebasseAuth.currentUser;
-    String uid = user!.uid;
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    Map<String, dynamic> propertyData = {
-      'name': propertyName,
-      'size': double.parse(propertySize),
-      'address': address,
-      'country': selectedCountry,
-      'state': selectedState,
-      'city': selectedCity,
-      'ownerId': uid,
-    };
+      User? user = _firebasseAuth.currentUser;
+      String uid = user!.uid;
 
-    try {
-      await firestore.collection("properties").doc(uid).set(propertyData);
-      _exibirDialogoCadastroSucesso(context, user);
-    } catch (error) {
-      _exibirDialogoErro(error.toString(), context);
+      try {
+        if (user.displayName != null) {
+          await user.updateDisplayName(user.displayName!);
+        }
+
+        FirebaseFirestore firestore = FirebaseFirestore.instance;
+        CollectionReference propertiesCollection = firestore.collection("User").doc(uid).collection("properties");
+
+        Map<String, dynamic> propertyData = {
+          'name': propertyName,
+          'size': double.parse(propertySize),
+          'address': address,
+          'country': selectedCountry,
+          'state': selectedState,
+          'city': selectedCity,
+          'ownerId': uid,
+        };
+
+        // Adiciona os detalhes do usuário diretamente ao Firestore
+        Map<String, dynamic> userData = {
+          'name': user.displayName ?? "",
+          'email': user.email ?? "",
+        };
+
+        await firestore.collection("User").doc(uid).set(userData);
+
+        await propertiesCollection.add(propertyData);
+
+        _exibirDialogoCadastroSucesso(context, user);
+      } catch (error) {
+        _exibirDialogoErro(error.toString(), context);
+      }
     }
   }
-}
 
 void _exibirDialogoErro(String mensagem, BuildContext context) {
   showDialog(

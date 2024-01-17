@@ -1,13 +1,11 @@
+import 'package:flutter/material.dart';
+
 class culture {
-  String especie;
-  String hectares;
-  String icone;
-  String propriedade;
+  String identificador;
+  final Icon icone;
 
   culture({
-    required this.hectares,
-    required this.especie,
+    required this.identificador,
     required this.icone,
-    required this.propriedade,
   });
 }

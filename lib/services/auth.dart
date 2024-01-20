@@ -197,60 +197,61 @@ class AutenthicationService extends ChangeNotifier {
         selectedCity == null ||
         !isChecked) {
       _exibirDialogoErro('Por favor, preencha todos os campos.', context);
-    } else {
+    } if (int.tryParse(propertySize) == null) {
+  _exibirDialogoErro("O tamanho da propriedade deve ser um número inteiro", context);
+    }else {
       User? user = _firebasseAuth.currentUser;
       String uid = user!.uid;
-
       try {
         if (user.displayName != null) {
           await user.updateDisplayName(user.displayName!);
-        }
+  }
 
         FirebaseFirestore firestore = FirebaseFirestore.instance;
-        CollectionReference propertiesCollection =
-            firestore.collection("User").doc(uid).collection("properties");
+        CollectionReference userCollection = firestore.collection("User");
+        DocumentReference userDoc = userCollection.doc(uid);
 
-        Map<String, dynamic> propertyData = {
-          'name': propertyName,
-          'size': double.parse(propertySize),
-          'address': address,
-          'country': selectedCountry,
-          'state': selectedState,
-          'city': selectedCity,
-          'ownerId': uid,
-        };
-
-        // Adiciona os detalhes do usuário diretamente ao Firestore
         Map<String, dynamic> userData = {
           'name': user.displayName ?? "",
           'email': user.email ?? "",
-        };
+  };
 
-        await firestore.collection("User").doc(uid).set(userData);
-        //await propertiesCollection.add(propertyData);
+            await userDoc.set(userData);
 
-        //CRIAÇÃO DA SUBCOLEÇÃO CULTURE
-        DocumentReference propertyDoc =
-            await propertiesCollection.add(propertyData);
-        CollectionReference subCollection = propertyDoc.collection("Culture");
+          CollectionReference propertiesCollection = userDoc.collection("properties");
 
-        Map<String, dynamic> cultureData = {
-          'Identifier': 'Dados Inspecionados',
-        };
+            Map<String, dynamic> propertyData = {
+            'name': propertyName,
+            'size': double.parse(propertySize),
+            'address': address,
+            'country': selectedCountry,
+            'state': selectedState,
+            'city': selectedCity,
+            'ownerId': uid,
+  };        
+          _exibirDialogoCadastroSucesso(context, user);
+  
+            //CRIAÇÃO DA SUBCOLEÇÃO CULTURE
+            DocumentReference propertyDoc = await propertiesCollection.add(propertyData);
+            CollectionReference subCollection = propertyDoc.collection("Culture");
 
-        DocumentReference cultureDoc = await subCollection.add(cultureData);
+            Map<String, dynamic> cultureData = {
+            'Identifier': 'Dados Inspecionados',
+  };
 
-        CollectionReference inpectionsCollection =
-            cultureDoc.collection("Inspections");
+          DocumentReference cultureDoc = await subCollection.add(cultureData);
 
-        Map<String, dynamic> inspectionData = {
+          CollectionReference inspectionsCollection =
+          cultureDoc.collection("Inspections");
+
+           Map<String, dynamic> inspectionData = {
           'Identifier': 'Inspeção 1',
-        };
+  };
 
-        await inpectionsCollection.doc('Inspection 1').set(inspectionData);
-      } catch (error) {
-        _exibirDialogoErro(error.toString(), context);
-      }
+          await inspectionsCollection.doc('Inspection 1').set(inspectionData);
+          } catch (error) {
+            _exibirDialogoErro(error.toString(), context);
+}
     }
   }
 

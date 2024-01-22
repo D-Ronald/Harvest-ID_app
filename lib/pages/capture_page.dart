@@ -17,7 +17,7 @@ class _CapturePageState extends State<CapturePage> {
 
   showPreview(context, File? file) async {
     file = Navigator.push(context,
-        MaterialPageRoute(builder: (_) => PreviewPage(archive: file))) as File?;
+        MaterialPageRoute(builder: (_) => PreviewPage(archive: file, cultureId: '', propertyId: '',))) as File?;
 
     if (file != null) {
       setState(() => archive = file);

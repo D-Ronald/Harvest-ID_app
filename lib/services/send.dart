@@ -29,16 +29,16 @@ class SendImage {
     }
   }
 
-  string(String predict){
+  string(String predict) {
     String aux = "";
-    for (int i = 12; i < predict.length-3; i++) {
+    for (int i = 12; i < predict.length - 3; i++) {
       aux = aux + predict[i];
     }
     return aux;
   }
 
   Future<void> sendImage(context) async {
-    var url = Uri.parse('https://c8f8-34-90-146-60.ngrok-free.app/predict');
+    var url = Uri.parse('https://296a-34-75-156-149.ngrok-free.app/predict');
     var request = http.MultipartRequest('POST', url);
     request.files
         .add(await http.MultipartFile.fromPath('image', treatArchive(file)));
@@ -57,22 +57,24 @@ class SendImage {
           context: context,
           color: redBase,
           title: "Isso não se parece com uma colheita",
-          message: "Não foi possível identificar nenhuma colheita na imagem.\n${responseString}",
+          message:
+              "Não foi possível identificar nenhuma colheita na imagem.\n${responseString}",
         );
-
-      } else if (responseString == "plants" ) {
+      } else if (responseString == "plants") {
         Dialog.dialog(
           context: context,
           color: darkGreenBase,
           title: "Análise bem sucedida",
-          message: "Você pode verificar o resultado na aba de inspeções.\n${responseString}",
+          message:
+              "Você pode verificar o resultado na aba de inspeções.\n${responseString}",
         );
       } else {
         Dialog.dialog(
           context: context,
           color: redBase,
           title: "Tente Novamente",
-          message: "Ocorreu um erro inesperado. Tente novamente!${responseString}",
+          message:
+              "Ocorreu um erro inesperado. Tente novamente!${responseString}",
         );
       }
     } on ClientException catch (e) {
@@ -81,10 +83,10 @@ class SendImage {
           color: redBase,
           context: context,
           title: "Falha na comunicação",
-          message: "Estamos trabalhando para corrigir o problema.\n\nTente novamente mais tarde!",
+          message:
+              "Estamos trabalhando para corrigir o problema.\n\nTente novamente mais tarde!",
         );
       }
     }
   }
 }
-

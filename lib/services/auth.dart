@@ -174,10 +174,9 @@ class AutenthicationService extends ChangeNotifier {
     _getUser();
   }
 
-  resetPassword({required String email, context}) {
+  resetPassword({required String email}) {
     try {
-      _firebasseAuth.sendPasswordResetEmail(email: "email");
-      Navigator.of(context).pop();
+      _firebasseAuth.sendPasswordResetEmail(email:email);
     } on FirebaseAuthException catch (e) {
       print(e);
 }

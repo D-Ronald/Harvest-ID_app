@@ -14,15 +14,15 @@ class InitialPage extends StatelessWidget {
           decoration: const BoxDecoration(color: darkGreenBase),
           child: Column(
             children: [
-              spacing(context, 20),
+              spacing(context, 10),
               Container(
-                height: height(context, 30),
-                width: width(context, 40),
+                height: height(context, 50),
+                width: width(context, 70),
                 child: new Image.asset(
                   "assets/images/harvest.png",
                 ),
               ),
-              spacing(context, 10),
+              spacing(context, 5),
               genericIconButton(
                   context: context,
                   backgroundColor: mediumGrayBase,
@@ -34,7 +34,7 @@ class InitialPage extends StatelessWidget {
                   function: () {
                     switch_login_page(context);
                   }),
-              spacing(context, 5),
+              spacing(context, 3),
               genericIconButton(
                   context: context,
                   backgroundColor: mediumGrayBase,

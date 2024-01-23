@@ -55,9 +55,9 @@ class DialogResendPassword {
                 8,
                 () {
                   _autenthicationService.resetPassword(
-                    context: context,
                     email: _emailController.text,
                   );
+                  Navigator.of(context).pop();
                 },
               ),
             ],

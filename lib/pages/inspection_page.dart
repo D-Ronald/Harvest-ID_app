@@ -1,22 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-class InspectionPage extends StatefulWidget {
+class InspectionPage extends StatelessWidget {
   const InspectionPage({Key? key}) : super(key: key);
 
   @override
-  _InspectionPageState createState() => _InspectionPageState();
+  Widget build(BuildContext context) {
+    return _InspectionPageContent();
+  }
 }
 
-class _InspectionPageState extends State<InspectionPage> {
+class _InspectionPageContent extends StatefulWidget {
+  @override
+  _InspectionPageContentState createState() => _InspectionPageContentState();
+}
+
+class _InspectionPageContentState extends State<_InspectionPageContent> {
   bool isHealthy = true;
+   
+
+  //Document IDs
+  List<String> docIDs = [];
+
+  //get docIDs
+  Future getDocId() async {
+    await FirebaseFirestore.instance.collection('properties').get().then(
+          (snapshot) => snapshot.docs.forEach((element) {
+            print(element.reference);
+            docIDs.add(element.reference.id);
+          }),
+        );
+  }
+
+  @override
+  void initState(){
+    getDocId();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'INSPERÇÃO 1',
+          'INSPEÇÃO 1',
           style: TextStyle(
             color: Colors.white,
             fontSize: 16,
@@ -51,28 +81,62 @@ class _InspectionPageState extends State<InspectionPage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Propriedade: ',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                      ),
+                    FutureBuilder<QuerySnapshot>(
+                      future: FirebaseFirestore.instance
+                          .collection('properties')
+                          .get(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          return const Text("Erro ao carregar dados");
+                        }
+
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Text("Carregando...");
+                        }
+
+                        if (snapshot.data == null) {
+                          return const Text("Nenhuma propriedade encontrada");
+                        }
+
+                        return ListView.builder(
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            Map<String, dynamic> data =
+                                snapshot.data!.docs[index].data()
+                                    as Map<String, dynamic>;
+                            return Column(
+                              children: [
+                                Text(
+                                  'Propriedade: ${data['name']}',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Hectares: ${data['size']}',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                              ],
+                            );
+                          },
+                        );
+                      },
                     ),
                     const SizedBox(height: 10),
                     const Text(
-                      'Cultura:  ',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Hectares: ',
+                      'Cultura: Tomateiro',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 18,
@@ -114,8 +178,6 @@ class _InspectionPageState extends State<InspectionPage> {
                         ),
                       ),
                     ),
-
-                    // Adicionando o gráfico de pizza com duas seções
                     Padding(
                       padding: const EdgeInsets.only(left: 40.0),
                       child: Column(
@@ -146,7 +208,6 @@ class _InspectionPageState extends State<InspectionPage> {
                                     sectionsSpace: 2,
                                     sections: [
                                       PieChartSectionData(
-                                        //value: 100,
                                         color: isHealthy
                                             ? const Color.fromARGB(
                                                 255, 110, 170, 121)
@@ -162,9 +223,7 @@ class _InspectionPageState extends State<InspectionPage> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        isHealthy
-                                            ? 'SAUDÁVEL'
-                                            : 'DOENTE', // Texto atualizado
+                                        isHealthy ? 'SAUDÁVEL' : 'DOENTE',
                                         style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 24,

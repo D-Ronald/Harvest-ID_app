@@ -19,19 +19,6 @@ class PreviewPage extends StatelessWidget {
     if (archive != null){
       SendImage(file: archive).sendImage(context);
 
-      // Criação de uma referência à subcoleção 'Inspections'
-      DocumentReference propertyDoc = firestore.collection('properties').doc(propertyId);
-      DocumentReference cultureDoc = propertyDoc.collection("Culture").doc(cultureId);
-      CollectionReference inspectionsCollection = cultureDoc.collection("Inspections");
-
-      // Dados para o novo documento
-      Map<String, dynamic> inspectionData = {
-        'filePath': archive!.path, // Caminho do arquivo da imagem capturada
-        // Adicione aqui outros dados que você quer armazenar
-      };
-
-      // Adicionando o novo documento à subcoleção 'Inspections'
-      await inspectionsCollection.add(inspectionData);
     } 
   }
 

@@ -1,3 +1,4 @@
+import 'package:debug_no_cell/pages/ReadData/get_docs_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,20 +27,16 @@ class _InspectionPageContentState extends State<_InspectionPageContent> {
   List<String> docIDs = [];
 
   //get docIDs
-  Future getDocId() async {
-    await FirebaseFirestore.instance.collection('properties').get().then(
-          (snapshot) => snapshot.docs.forEach((element) {
-            print(element.reference);
-            docIDs.add(element.reference.id);
-          }),
-        );
-  }
-
-  @override
-  void initState(){
-    getDocId();
-    super.initState();
-  }
+Future<List<String>> getDocId() async {
+  List<String> docIDs = [];
+  await FirebaseFirestore.instance.collection('properties').get().then(
+    (snapshot) => snapshot.docs.forEach((document) {
+      print(document.reference);
+      docIDs.add(document.reference.id);
+    }),
+  );
+  return docIDs;
+}
 
   @override
   Widget build(BuildContext context) {
@@ -81,83 +78,28 @@ class _InspectionPageContentState extends State<_InspectionPageContent> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    FutureBuilder<QuerySnapshot>(
-                      future: FirebaseFirestore.instance
-                          .collection('properties')
-                          .get(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (snapshot.hasError) {
-                          return const Text("Erro ao carregar dados");
-                        }
-
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Text("Carregando...");
-                        }
-
-                        if (snapshot.data == null) {
-                          return const Text("Nenhuma propriedade encontrada");
-                        }
-
-                        return ListView.builder(
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            Map<String, dynamic> data =
-                                snapshot.data!.docs[index].data()
-                                    as Map<String, dynamic>;
-                            return Column(
-                              children: [
-                                Text(
-                                  'Propriedade: ${data['name']}',
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  'Hectares: ${data['size']}',
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                              ],
+                  Expanded(
+                      child: FutureBuilder<List<String>>(
+                        future: getDocId(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            return ListView.builder(
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  title: GetDocsFirebase(documentId: docIDs[index]),
+                                );
+                              },
                             );
-                          },
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Cultura: Tomateiro',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
+                          }
+                        },
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const Column(
-                      children: [
-                        Text(
-                          'Data da inspeção: ',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                       child: Center(

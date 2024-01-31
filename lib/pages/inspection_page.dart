@@ -26,10 +26,13 @@ class _InspectionPageContentState extends State<_InspectionPageContent> {
   //Document IDs
   List<String> docIDs = [];
 
+  //User ID
+  String UserId = FirebaseAuth.instance.currentUser!.uid;
+
   //get docIDs
 Future<List<String>> getDocId() async {
   List<String> docIDs = [];
-  await FirebaseFirestore.instance.collection('properties').get().then(
+  await FirebaseFirestore.instance.collection('User').doc(UserId).collection('properties').get().then(
     (snapshot) => snapshot.docs.forEach((document) {
       print(document.reference);
       docIDs.add(document.reference.id);

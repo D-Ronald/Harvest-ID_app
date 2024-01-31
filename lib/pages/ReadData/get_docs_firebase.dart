@@ -10,7 +10,7 @@ class GetDocsFirebase extends StatelessWidget {
   Widget build(BuildContext context) {
     // Get the collection
     CollectionReference properties =
-        FirebaseFirestore.instance.collection('properties');
+        FirebaseFirestore.instance.collection('User');
 
     return FutureBuilder<DocumentSnapshot>(
       future: properties.doc(documentId).get(),

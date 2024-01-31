@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:debug_no_cell/Repositories/Culture_repository.dart';
 import 'package:debug_no_cell/pages/capture_page.dart';
 import 'package:debug_no_cell/pages/inspection_page.dart';
 import 'package:flutter/material.dart';
 
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({Key? key}) : super(key: key);
+  final File? archive;
+
+  const DashboardPage({Key? key, this.archive}) : super(key: key);
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -20,9 +24,56 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    final tabela = CultureRepository.tabela;
-
-    return Scaffold(
+    if (widget.archive == null) {
+      return Scaffold(
+        appBar: AppBar(
+        title: const Column(
+          children: [
+            Text(
+              'DADOS',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w700,
+                height: 0,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Text(
+                'Inspecionados',
+                style: TextStyle(
+                  color: Color(0xFFD9D9D9),
+                  fontSize: 14,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w700,
+                  height: 0,
+                ),
+              ),
+            ),
+          ],
+        ),
+        centerTitle: true,
+        backgroundColor: const Color.fromRGBO(19, 56, 58, 1),
+        shadowColor: const Color.fromRGBO(19, 56, 60, 38),
+        elevation: 10,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(1),
+            topRight: Radius.circular(1),
+            bottomLeft: Radius.circular(8),
+            bottomRight: Radius.circular(8),
+          ),
+        ),
+      ),
+        body: const Center(
+          child: Text('Nenhum dado encontrado'),
+        ),
+      );
+    }else{
+      final tabela = CultureRepository.tabela;
+      return Scaffold(
       appBar: AppBar(
         title: const Column(
           children: [
@@ -105,7 +156,6 @@ class _DashboardPageState extends State<DashboardPage> {
               itemCount: tabela.length,
             ),
           ),
-          
           Padding(
             padding: const EdgeInsets.all(10),
             child: SizedBox(
@@ -137,5 +187,9 @@ class _DashboardPageState extends State<DashboardPage> {
         ],
       ),
     );
+    }
+    
+
+    
   }
 }

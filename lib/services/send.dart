@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:debug_no_cell/utils/routes.dart';
 import 'dart:convert';
 import 'package:debug_no_cell/pages/generics_dialogs.dart';
+import 'package:debug_no_cell/services/auth.dart';
 
 class SendImage {
   final File? file;
@@ -38,10 +39,12 @@ class SendImage {
   }
 
   Future<void> sendImage(context) async {
-    var url = Uri.parse('https://c141-35-245-155-70.ngrok-free.app/predict');
+    var url = Uri.parse('hhttps://c8c4-34-125-133-108.ngrok-free.app/predict');
     var request = http.MultipartRequest('POST', url);
     request.files
         .add(await http.MultipartFile.fromPath('image', treatArchive(file)));
+    request.files.add(await http.MultipartFile.fromPath(
+        'id', AutenthicationService().user!.uid));
     var token;
     request.headers.addAll({
       'Content-Type': 'multipart/form-data',

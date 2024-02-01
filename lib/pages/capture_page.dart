@@ -28,9 +28,6 @@ class _CapturePageState extends State<CapturePage> {
     MaterialPageRoute(builder: (_) => DashboardPage(archive: archive));
     if (file != null) {
       setState(() => archive = file);
-      print('imagem recebida');
-    } else {
-      print('Nenhuma imagem recebida');
     }
   }
 

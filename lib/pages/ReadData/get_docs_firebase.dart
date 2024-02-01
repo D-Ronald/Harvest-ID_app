@@ -1,33 +1,157 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class GetDocsFirebase extends StatelessWidget {
-  final String documentId;
+class GetDocsFirebase extends StatefulWidget {
+  const GetDocsFirebase({Key? key}) : super(key: key);
 
-  GetDocsFirebase({required this.documentId});
+  @override
+  _GetDocsFirebaseState createState() => _GetDocsFirebaseState();
+}
+
+class _GetDocsFirebaseState extends State<GetDocsFirebase> {
+  late String userId;
+
+  @override
+  void initState() {
+    super.initState();
+    userId = FirebaseAuth.instance.currentUser!.uid;
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Get the collection
-    CollectionReference properties =
-        FirebaseFirestore.instance.collection('User');
-
-    return FutureBuilder<DocumentSnapshot>(
-      future: properties.doc(documentId).get(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text("Loading...");
-        }
-        if (snapshot.hasError) {
-          return Text("Error: ${snapshot.error}");
-        }
-        if (snapshot.hasData) {
-          Map<String, dynamic> data =
-              snapshot.data!.data() as Map<String, dynamic>;
-          return Text("Propriedade: ${data['name']}");
-        }
-        return Text("No data available");
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'DOCUMENTS',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color.fromRGBO(19, 56, 58, 1),
+        shadowColor: const Color.fromRGBO(19, 56, 60, 38),
+        elevation: 10,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(1),
+            topRight: Radius.circular(1),
+            bottomLeft: Radius.circular(8),
+            bottomRight: Radius.circular(8),
+          ),
+        ),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('User')
+            .doc(userId)
+            .collection('properties')
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: SingleChildScrollView(
+              child: ListView(
+                shrinkWrap: true, 
+                children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  return Center(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      height: MediaQuery.of(context).size.height / 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: 30,
+                            child: Text(
+                              "Propriedade: ${document['name']}",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                            child: Text(
+                              "Tamanho: ${document['size']}",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                            child: Text(
+                              "País: ${document['country']}",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                            child: Text(
+                              "Estado: ${document['state']}",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                            child: Text(
+                              "Cidade: ${document['city']}",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                            child: Text(
+                              "Endereço: ${document['address']}",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

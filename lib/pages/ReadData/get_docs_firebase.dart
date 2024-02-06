@@ -143,6 +143,7 @@ class _GetDocsFirebaseState extends State<GetDocsFirebase> {
                               ),
                             ),
                           ),
+                          
                           Padding(
                             padding: const EdgeInsets.only(top: 10.0),
                             child: SizedBox(

@@ -36,6 +36,24 @@ class _InspectionPageContentState extends State<_InspectionPageContent> {
             fontWeight: FontWeight.w700,
           ),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.info_outline,
+              color: Colors.white,
+               // Change the color here
+            ),
+            onPressed: () {
+            // Navegar para a página GetDocsFirebase
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const GetDocsFirebase(),
+                ),
+              );
+            }
+          )
+        ],
         centerTitle: true,
         backgroundColor: const Color.fromRGBO(19, 56, 58, 1),
         shadowColor: const Color.fromRGBO(19, 56, 60, 38),
@@ -61,44 +79,8 @@ class _InspectionPageContentState extends State<_InspectionPageContent> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Navegar para a página GetDocsFirebase
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => GetDocsFirebase(),
-                        ),
-                      );
-                    },
-                    child: Text('Data Property'),
-                  ),
-                ),
                 const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  child: Center(
-                    child: Transform.rotate(
-                      angle: -3.14,
-                      child: Container(
-                        width: 354,
-                        decoration: ShapeDecoration(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 1,
-                              strokeAlign: BorderSide.strokeAlignCenter,
-                              color: Colors.black.withOpacity(0.25),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 40.0),
+                Center(
                   child: Column(
                     children: [
                       const Padding(

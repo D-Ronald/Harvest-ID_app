@@ -16,6 +16,7 @@ class _GetDocsFirebaseState extends State<GetDocsFirebase> {
   void initState() {
     super.initState();
     userId = FirebaseAuth.instance.currentUser!.uid;
+    
   }
 
   @override
@@ -57,7 +58,7 @@ class _GetDocsFirebaseState extends State<GetDocsFirebase> {
             );
           }
           return Padding(
-            padding: const EdgeInsets.only(top: 20.0),
+            padding: const EdgeInsets.only(top: 50.0),
             child: SingleChildScrollView(
               child: ListView(
                 shrinkWrap: true, 
@@ -142,6 +143,32 @@ class _GetDocsFirebaseState extends State<GetDocsFirebase> {
                               ),
                             ),
                           ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10.0),
+                            child: SizedBox(
+                              height: 1, // Line separator height
+                              child: Container(
+                                color: Colors.grey, // Line separator color
+                              ),
+                            ),
+                          ),
+                           const Padding(
+                             padding: EdgeInsets.only(top: 6.0),
+                             child: Center(
+                               child: SizedBox(
+                                height: 30,
+                                child: Text(
+                                  "Dados coletados(data inicio:  )",//${document['inspection_date']}",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                               ),
+                             ),
+                           ),
                         ],
                       ),
                     ),

@@ -13,6 +13,7 @@ main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         "/Register": (context) => RegisterPage(),
         "/View": (context) => ViewPage(),
         "/Capture": (context) => CapturePage(),
-        "/Preview": (context) => PreviewPage(),
+        "/Preview": (context) => PreviewPage(archive: null, propertyId: '', cultureId: '',),
       },
       title: "Harvest-ID",
     );

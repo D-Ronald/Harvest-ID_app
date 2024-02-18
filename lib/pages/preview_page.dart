@@ -1,22 +1,32 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debug_no_cell/services/send.dart';
 import 'package:debug_no_cell/utils/base.dart';
 import 'package:debug_no_cell/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
-
+import 'package:debug_no_cell/services/auth.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 
 class PreviewPage extends StatelessWidget {
-  File? archive;
+  final File? archive;
+  final String propertyId;
+  final String cultureId;
+  final firestore = FirebaseFirestore.instance;
+    
 
-  captureSucessfully(context) {
-    if (archive != null) SendImage(file: archive).sendImage(context);
+  captureSucessfully(context) async {
+    if (archive != null){
+      SendImage(file: archive).sendImage(context);
+
+    } 
   }
 
   PreviewPage({
     Key? key,
-    this.archive,
+    required this.archive,
+    required this.propertyId,
+    required this.cultureId,
   }) : super(key: key);
 
   @override

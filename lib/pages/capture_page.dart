@@ -1,3 +1,4 @@
+import 'package:debug_no_cell/pages/dashboard_page.dart';
 import 'package:debug_no_cell/pages/preview_page.dart';
 import 'package:debug_no_cell/utils/routes.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +17,15 @@ class _CapturePageState extends State<CapturePage> {
   File? archive;
 
   showPreview(context, File? file) async {
-    file = Navigator.push(context,
-        MaterialPageRoute(builder: (_) => PreviewPage(archive: file))) as File?;
-
+    file = Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => PreviewPage(
+                  archive: file,
+                  cultureId: '',
+                  propertyId: '',
+                ))) as File?;
+    MaterialPageRoute(builder: (_) => DashboardPage(archive: archive));
     if (file != null) {
       setState(() => archive = file);
     }
@@ -27,8 +34,6 @@ class _CapturePageState extends State<CapturePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      
       body: Center(
           child: Column(children: [
         spacing(context, 50),

@@ -48,6 +48,7 @@ dependencies:
   csc_picker: ^0.2.7
   hive: ^2.2.3
   shared_preferences: ^2.2.2
+  hidden_drawer_menu: ^3.0.1
 
 dev_dependencies:
   flutter_test:

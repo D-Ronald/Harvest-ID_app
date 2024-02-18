@@ -132,7 +132,7 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 10,
               ),
               Center(
                 child: Transform.rotate(
@@ -159,30 +159,7 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
       ),
-      appBar: AppBar(
-        title: const Text(
-          'CULTURAS',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w700,
-            height: 0,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: const Color.fromRGBO(19, 56, 58, 1),
-        shadowColor: const Color.fromRGBO(19, 56, 60, 38),
-        elevation: 10,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(1),
-            topRight: Radius.circular(1),
-            bottomLeft: Radius.circular(8),
-            bottomRight: Radius.circular(8),
-          ),
-        ),
-      ),
+      
     );
   }
 }

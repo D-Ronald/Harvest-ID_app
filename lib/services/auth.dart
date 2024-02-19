@@ -257,7 +257,6 @@ class AutenthicationService extends ChangeNotifier {
         };
 
         await inspectionsCollection.doc('Inspection 1').set(inspectionData);
-        
       } catch (error) {
         _exibirDialogoErro(error.toString(), context);
       }

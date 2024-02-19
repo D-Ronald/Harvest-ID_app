@@ -17,13 +17,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return ZoomDrawer(
       menuScreen: DrawerScreen(
         setIndex: (index) {
           setState(() {
             currentIndex = index;
-            
           });
         },
       ),
@@ -38,7 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget currentScreen() {
     switch (currentIndex) {
       case 0:
-        return HomeScreen();
+        return HomeScreen(propertytitle: '',);
       case 1:
         return Container(
           color: Colors.red,
@@ -48,22 +46,21 @@ class _ProfilePageState extends State<ProfilePage> {
           color: Colors.green,
         );
       default:
-        return HomeScreen();
+        return HomeScreen(propertytitle: '',);
     }
   }
 }
 
-
 //TELA INICIAL DA SELECÃO DA PROPRIEDADE
 class HomeScreen extends StatefulWidget {
-  final String title;
-  const HomeScreen({super.key, this.title = 'PROPRIEDADE 1'});
+  final String propertytitle;
+  const HomeScreen({super.key, required this.propertytitle});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-class _HomeScreenState extends State<HomeScreen> {
 
+class _HomeScreenState extends State<HomeScreen> {
   void navigateToAnotherPage(BuildContext context) {
     Navigator.push(
       context,
@@ -76,11 +73,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
-        title: const Text(
-          'PROPRIEDADE 1',
-          style: TextStyle(
+        title: Text(
+          widget.propertytitle.last,
+          style: const TextStyle(
             color: Colors.white,
-            fontSize: 16,
+            fontSize: 18,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w700,
             height: 0,
@@ -108,7 +105,6 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-
               //imagem da cultura
               const SizedBox(height: 50),
               Center(
@@ -241,8 +237,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-
-
 //TELA DA GAVETA
 class DrawerScreen extends StatefulWidget {
   final ValueSetter setIndex;
@@ -251,6 +245,7 @@ class DrawerScreen extends StatefulWidget {
   @override
   State<DrawerScreen> createState() => _DrawerScreenState();
 }
+
 class _DrawerScreenState extends State<DrawerScreen> {
   late String userId;
   late Widget PropertyList;
@@ -263,7 +258,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
       userId = user.uid;
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -291,49 +286,58 @@ class _DrawerScreenState extends State<DrawerScreen> {
             );
           }
           PropertyList = Padding(
-            padding: const EdgeInsets.only(top: 50.0),
-            child: ListView.separated(
+            padding: const EdgeInsets.only(top: 250.0),
+            child: ListView.builder(
               itemCount: snapshot.data!.docs.length,
-              separatorBuilder: (BuildContext context, int index) => const Divider(),
               itemBuilder: (BuildContext context, int index) {
                 DocumentSnapshot document = snapshot.data!.docs[index];
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width / 1.2,
-                  height: MediaQuery.of(context).size.height / 4,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 30,
-                        child: Text(
-                          "Propriedade: ${document['name']}",
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.normal,
+                return Column(
+                  children: [
+                    SizedBox(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ListTile(
+                            title: Text(
+                              "Propriedade: ${document['name']}",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            subtitle: Text(
+                              "Endereço: ${document['address']}",
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 227, 220, 220),
+                                fontSize: 12,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            // Na sua função onTap para o ListTile
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => HomeScreen(propertytitle: document['name'])),
+                              );
+                            },
                           ),
-                        ),
+                        ],
                       ),
-                      SizedBox(
-                        height: 30,
-                        child: Text(
-                          "Endereço: ${document['address']}",
-                          style: const TextStyle(
-                            color: Color.fromARGB(255, 151, 151, 151),
-                            fontSize: 10,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                    if (index != snapshot.data!.docs.length - 1)
+                      const Divider(
+                          height:
+                              1.0), // Adiciona um separador após cada item, exceto o último
+                  ],
                 );
               },
             ),
           );
+          // ...
           return PropertyList;
         },
       ),
@@ -341,7 +345,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
   }
 
 //LISTA DE OPÇÕES DA GAVETA
-
 }
 
 class DrawerWidget extends StatelessWidget {

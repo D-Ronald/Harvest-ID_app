@@ -6,6 +6,8 @@ import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
+  
+
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -59,6 +61,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  void navigateToAnotherPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const DashboardPage()),
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,6 +97,147 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         leading: DrawerWidget(),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 16.0),
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+
+              //imagem da cultura
+              const SizedBox(height: 50),
+              Center(
+                child: Container(
+                  width: 260,
+                  height: 185,
+                  decoration: ShapeDecoration(
+                    color: const Color(0xFFD9D9D9),
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(width: 1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    shadows: const [
+                      BoxShadow(
+                        color: Color(0x3F000000),
+                        blurRadius: 4,
+                        offset: Offset(0, 4),
+                        spreadRadius: 0,
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset('assets/images/Tomateiro.jpg',
+                        width: width(context, 50),
+                        height: height(context, 30),
+                        fit: BoxFit.cover),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 60),
+              const SizedBox(height: 20),
+              const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 80),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: 145,
+                        height: 26,
+                        child: Text(
+                          'TOMATE',
+                          style: TextStyle(
+                            color: Color(0xFF13383A),
+                            fontSize: 18,
+                            fontFamily: 'inter',
+                            fontWeight: FontWeight.w600,
+                            height: 0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 80),
+                    child: Text(
+                      'Solanum Lycopersicum',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontFamily: 'inter',
+                        fontWeight: FontWeight.w100,
+                        height: 0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              InkWell(
+                onTap: () {
+                  navigateToAnotherPage(context);
+                },
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: SizedBox(
+                            width: 69,
+                            height: 24,
+                            child: Text(
+                              'Ver mais',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'Cardo',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Center(
+                child: Transform.rotate(
+                  angle: -3.14,
+                  child: Container(
+                    width: 354,
+                    decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 1,
+                          strokeAlign: BorderSide.strokeAlignCenter,
+                          color: Colors.black.withOpacity(0.25),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              //Acesso para captura de imagem
+              //altura
+              
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -1,12 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debug_no_cell/pages/dashboard_page.dart';
 import 'package:debug_no_cell/utils/base.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
-
-  
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -17,6 +17,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return ZoomDrawer(
       menuScreen: DrawerScreen(
         setIndex: (index) {
@@ -30,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
       borderRadius: 30,
       showShadow: true,
       angle: 0.0,
-      menuBackgroundColor: Color.fromARGB(255, 49, 101, 103),
+      menuBackgroundColor: const Color.fromARGB(255, 49, 101, 103),
     );
   }
 
@@ -52,6 +53,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
+
+//TELA INICIAL DA SELECÃO DA PROPRIEDADE
 class HomeScreen extends StatefulWidget {
   final String title;
   const HomeScreen({super.key, this.title = 'PROPRIEDADE 1'});
@@ -59,7 +62,6 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
 class _HomeScreenState extends State<HomeScreen> {
 
   void navigateToAnotherPage(BuildContext context) {
@@ -68,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute(builder: (context) => const DashboardPage()),
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -231,10 +233,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-
-              //Acesso para captura de imagem
-              //altura
-              
             ],
           ),
         ),
@@ -243,62 +241,107 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+
+
+//TELA DA GAVETA
 class DrawerScreen extends StatefulWidget {
   final ValueSetter setIndex;
-  const DrawerScreen({super.key, required this.setIndex});
+  DrawerScreen({super.key, required this.setIndex});
 
   @override
   State<DrawerScreen> createState() => _DrawerScreenState();
 }
-
 class _DrawerScreenState extends State<DrawerScreen> {
+  late String userId;
+  late Widget PropertyList;
+
+  @override
+  void initState() {
+    super.initState();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      userId = user.uid;
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 49, 101, 103),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          drawerList(Icons.home, 'HOME', 0),
-          drawerList(Icons.camera_alt, 'CAPTURAR', 1),
-          drawerList(Icons.add, 'CADASTRAR', 2),
-        ],
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('User')
+            .doc(userId)
+            .collection('properties')
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text('Ocorreu um erro ao carregar os dados.'),
+            );
+          }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(
+              child: Text('Nenhuma propriedade encontrada.'),
+            );
+          }
+          PropertyList = Padding(
+            padding: const EdgeInsets.only(top: 50.0),
+            child: ListView.separated(
+              itemCount: snapshot.data!.docs.length,
+              separatorBuilder: (BuildContext context, int index) => const Divider(),
+              itemBuilder: (BuildContext context, int index) {
+                DocumentSnapshot document = snapshot.data!.docs[index];
+                return SizedBox(
+                  width: MediaQuery.of(context).size.width / 1.2,
+                  height: MediaQuery.of(context).size.height / 4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 30,
+                        child: Text(
+                          "Propriedade: ${document['name']}",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                        child: Text(
+                          "Endereço: ${document['address']}",
+                          style: const TextStyle(
+                            color: Color.fromARGB(255, 151, 151, 151),
+                            fontSize: 10,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+          return PropertyList;
+        },
       ),
     );
   }
 
-  Widget drawerList(IconData icon, String text, int index) {
-    return GestureDetector(
-      onTap: () {
-        widget.setIndex(index);
-      },
-      child: Container(
-        margin: const EdgeInsets.only(left: 10, bottom: 20),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: Colors.white,
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Text(
-              text,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w700,
-                height: 0,
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
+//LISTA DE OPÇÕES DA GAVETA
+
 }
 
 class DrawerWidget extends StatelessWidget {

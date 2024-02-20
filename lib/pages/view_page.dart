@@ -1,4 +1,3 @@
-import 'package:debug_no_cell/pages/ReadData/hidden_drawer.dart';
 import 'package:debug_no_cell/pages/cadaster_property_page.dart';
 import 'package:debug_no_cell/pages/capture_page.dart';
 import 'package:debug_no_cell/pages/dashboard_page.dart';
@@ -23,7 +22,7 @@ class ViewPage extends StatelessWidget {
             CapturePage(),
             CadasterProperty_page(),
             DashboardPage(),
-            HiddenDrawer()
+            ProfilePage()
           ],
         ),
         bottomNavigationBar: navigationBar(

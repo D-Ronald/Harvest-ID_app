@@ -36,6 +36,53 @@ class AutenthicationService extends ChangeNotifier {
     user = _firebasseAuth.currentUser;
     notifyListeners();
   }
+  void _exibirDialogoErro(String mensagem, BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Erro de validação'),
+          content: Text(mensagem),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _exibirDialogoCadastroSucesso(BuildContext context, User? user) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Cadastro Efetuado'),
+          content: const Text('Sua propriedade foi cadastrada com sucesso!'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                navigateToAnotherPage(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void navigateToAnotherPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ProfilePage()),
+    );
+  }
 
   /// Função para registrar um usuário com email e senha
   registerUser({
@@ -182,24 +229,20 @@ class AutenthicationService extends ChangeNotifier {
     required BuildContext context,
     required String propertyName,
     required String propertySize,
-    required String address,
-    required String? selectedCountry,
-    required String? selectedState,
-    required String? selectedCity,
+    required String cep,
     required bool isChecked,
   }) async {
     if (propertyName.isEmpty ||
         propertySize.isEmpty ||
-        address.isEmpty ||
-        selectedCountry == null ||
-        selectedState == null ||
-        selectedCity == null ||
+        cep.isEmpty ||
         !isChecked) {
       _exibirDialogoErro('Por favor, preencha todos os campos.', context);
     }
     if (int.tryParse(propertySize) == null) {
       _exibirDialogoErro(
           "O tamanho da propriedade deve ser um número inteiro", context);
+    if(cep.length != 8){
+      _exibirDialogoErro("CEP inválido.", context);
     } else {
       User? user = _firebasseAuth.currentUser;
       String uid = user!.uid;
@@ -225,10 +268,7 @@ class AutenthicationService extends ChangeNotifier {
         Map<String, dynamic> propertyData = {
           'name': propertyName,
           'size': double.parse(propertySize),
-          'address': address,
-          'country': selectedCountry,
-          'state': selectedState,
-          'city': selectedCity,
+          'cep': double.parse(cep),
           'ownerId': uid,
         };
         _exibirDialogoCadastroSucesso(context, user);
@@ -262,51 +302,5 @@ class AutenthicationService extends ChangeNotifier {
     }
   }
 
-  void _exibirDialogoErro(String mensagem, BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Erro de validação'),
-          content: Text(mensagem),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _exibirDialogoCadastroSucesso(BuildContext context, User? user) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Cadastro Efetuado'),
-          content: const Text('Sua propriedade foi cadastrada com sucesso!'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                navigateToAnotherPage(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void navigateToAnotherPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ProfilePage()),
-    );
-  }
+}
 }

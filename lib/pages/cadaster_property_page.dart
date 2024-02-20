@@ -17,12 +17,9 @@ class CadasterProperty_page extends StatefulWidget {
 
 class _CadasterPropertyPageState extends State<CadasterProperty_page> {
   AutenthicationService _autenthicationService = AutenthicationService();
-  TextEditingController _addressController = TextEditingController();
+  TextEditingController _cepController = TextEditingController();
   TextEditingController _propertyNameController = TextEditingController();
   TextEditingController _propertySizeController = TextEditingController();
-  String? selectedCountry;
-  String? selectedState;
-  String? selectedCity;
   bool isChecked = false;
   void _exibirDialogoCadastroSucesso(BuildContext context) {
     showDialog(
@@ -140,64 +137,17 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
                 ),
               ),
             ),
-            spacing(context, 2),
-            Container(
-              padding: const EdgeInsets.all(5),
-              child: SizedBox(
-                width: 360,
-                child: CSCPicker(
-                  onCountryChanged: (country) {
-                    setState(() {
-                      selectedCountry = country;
-                    });
-                  },
-                  onCityChanged: (city) {
-                    setState(() {
-                      selectedCity = city;
-                    });
-                  },
-                  onStateChanged: (state) {
-                    setState(() {
-                      selectedState = state;
-                    });
-                  },
-                  dropdownDialogRadius: 20,
-                  searchBarRadius: 20,
-                  countrySearchPlaceholder: "País",
-                  stateSearchPlaceholder: "Estado",
-                  citySearchPlaceholder: "Cidade",
-                  countryDropdownLabel: "País",
-                  cityDropdownLabel: "Cidade",
-                  stateDropdownLabel: "Estado",
-                ),
-              ),
-            ),
-            spacing(context, 2),
+             spacing(context, 1),
             genericTextForm(
                 context: context,
-                controller: _addressController,
-                labeltext: "Endereço",
+                controller: _cepController,
+                labeltext: "Digite o CEP da sua propriedade:",
                 labelColor: darkGrayBase,
                 heightPercentage: 8,
                 padding: 25,
                 color: blackBase,
                 backgroundColor: mediumGrayBase,
                 borderRadius: 10),
-            spacing(context, 2),
-            const SizedBox(
-              width: 350,
-              height: 50,
-              child: Text(
-                'Quais destas culturas estão presentes em sua plantação?',
-                style: TextStyle(
-                  color: Color.fromRGBO(62, 68, 69, 1),
-                  fontSize: 16,
-                  fontFamily: 'Raleway',
-                  fontWeight: FontWeight.w400,
-                  height: 0,
-                ),
-              ),
-            ),
             Row(
               children: [
                 Padding(
@@ -230,10 +180,7 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
                     context: context,
                     propertyName: _propertyNameController.text,
                     propertySize: _propertySizeController.text,
-                    address: _addressController.text,
-                    selectedCountry: selectedCountry,
-                    selectedState: selectedState,
-                    selectedCity: selectedCity,
+                    cep: _cepController.text,
                     isChecked: isChecked);
               },
             ),

@@ -114,15 +114,12 @@ class AutenthicationService extends ChangeNotifier {
         if (userCredential != null) {
           User? user = userCredential.user;
           await user!.updateDisplayName(name);
-          Future<void> addUserDetailsToFirestore(String userId, String name,
-              String email, String password, String propertyId) async {
+          Future<void> addUserDetailsToFirestore(
+              String userId, String name, String email, String password) async {
             FirebaseFirestore firestore = FirebaseFirestore.instance;
-
             Map<String, dynamic> userData = {
               'name': name,
               'email': email,
-              'password': password,
-              'propertyId': propertyId, // Novo campo propertyId adicionado
             };
 
             try {
@@ -285,13 +282,13 @@ class AutenthicationService extends ChangeNotifier {
         'name': propertyName,
         'size': double.parse(propertySize),
         'cep': cep,
+        'ownerId': uid,
       };
 
       // Adicionando a propriedade
       DocumentReference propertyDoc =
           await propertiesCollection.add(propertyData);
       String propertyId = propertyDoc.id; // ID da propriedade criada
-      await userDoc.update({'propertyId': propertyId});
 
       // Criando subcoleção "Culture"
       CollectionReference subCollection = propertyDoc.collection("Culture");

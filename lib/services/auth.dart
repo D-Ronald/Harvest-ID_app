@@ -1,12 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:debug_no_cell/DatabaseManager/DatabaseManager.dart';
 import 'package:debug_no_cell/pages/profile_page.dart';
-import 'package:debug_no_cell/utils/base.dart';
 import 'package:debug_no_cell/utils/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:debug_no_cell/Repositories/Culture_repository.dart';
 

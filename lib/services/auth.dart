@@ -1,5 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debug_no_cell/pages/profile_page.dart';
 import 'package:debug_no_cell/utils/routes.dart';
@@ -9,6 +8,7 @@ import 'package:debug_no_cell/Repositories/Culture_repository.dart';
 
 class AuthException implements Exception {
   String message;
+  String? propertyId;
   AuthException(this.message);
 }
 
@@ -111,13 +111,16 @@ class AutenthicationService extends ChangeNotifier {
         if (userCredential != null) {
           User? user = userCredential.user;
           await user!.updateDisplayName(name);
-          Future<void> addUserDetailsToFirestore(String userId, String name,
-              String email, String password, String propertyId) async {
+          Future<void> addUserDetailsToFirestore(
+            String userId, String name,
+            String email, String password, 
+            String propertyId
+            ) async {
             FirebaseFirestore firestore = FirebaseFirestore.instance;
             Map<String, dynamic> userData = {
               'name': name,
               'email': email,
-              'property_id': propertyId,
+              //'property_id': propertyId,
             };
 
             try {
@@ -283,12 +286,13 @@ class AutenthicationService extends ChangeNotifier {
       };
 
       // Adicionando a propriedade
-      DocumentReference propertyDoc =
-          await propertiesCollection.add(propertyData);
-          String propertyId = propertyDoc.id; // ID da propriedade criada
-          await userDoc.update({
-        'propertyId': propertyId 
+      DocumentReference propertyDoc = await propertiesCollection.add(propertyData);
+      String propertyId = propertyDoc.id;
+      await userDoc.update({
+        'propertyId': propertyId,
       });
+
+      print(propertyId);
 
       // Criando subcoleção "Culture"
       CollectionReference subCollection = propertyDoc.collection("Culture");

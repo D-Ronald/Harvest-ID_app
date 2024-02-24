@@ -44,7 +44,9 @@ class SendImage {
     request.files
         .add(await http.MultipartFile.fromPath('image', treatArchive(file)));
     request.files.add(await http.MultipartFile.fromPath(
-        'id', AutenthicationService().user!.uid));
+        'user_id', AutenthicationService().user!.uid));
+    request.files.add(await http.MultipartFile.fromPath(
+        'property_id', AutenthicationService().user!.uid));
     var token;
     request.headers.addAll({
       'Content-Type': 'multipart/form-data',

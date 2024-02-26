@@ -18,13 +18,16 @@ class _CadasterPropertyPageState extends State<CadasterPropertyPage> {
   bool isTomateiroSelected = false;
 
   Future<void> _enterZipCode() async {
-    void navigateToAnotherPage(BuildContext context) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SelectLocationPage()),
-      );
-    }
-  }
+  navigateToAnotherPage(context);
+}
+
+void navigateToAnotherPage(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => SelectLocationPage()),
+  );
+}
+
 
   Future<void> _getCurrentLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();

@@ -76,29 +76,8 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
         ),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(
-            child: GoogleMap(
-              initialCameraPosition: const CameraPosition(
-                target: LatLng(-15.7942, -47.8825), // Brasília como posição inicial padrão
-                zoom: 15,
-              ),
-              onMapCreated: _onMapCreated,
-              onTap: (position) {
-                setState(() {
-                  _selectedPosition = position;
-                });
-              },
-              markers: _selectedPosition != null
-                  ? {
-                      Marker(
-                        markerId: const MarkerId('selected_position'),
-                        position: _selectedPosition!,
-                      ),
-                    }
-                  : {},
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
@@ -110,6 +89,36 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
                   onPressed: _searchLocationByCEP,
                 ),
               ),
+            ),
+          ),
+          Expanded(
+            child: Stack(
+              children: [
+                GoogleMap(
+                  initialCameraPosition: const CameraPosition(
+                    target: LatLng(-15.7942, -47.8825), // Brasília como posição inicial padrão
+                    zoom: 15,
+                  ),
+                  onMapCreated: _onMapCreated,
+                  onTap: (position) {
+                    setState(() {
+                      _selectedPosition = position;
+                    });
+                  },
+                  markers: _selectedPosition != null
+                      ? {
+                          Marker(
+                            markerId: const MarkerId('selected_position'),
+                            position: _selectedPosition!,
+                          ),
+                        }
+                      : {},
+                ),
+                if (_selectedPosition != null)
+                  const Center(
+                    child: Icon(Icons.place, size: 40, color: Colors.red),
+                  ),
+              ],
             ),
           ),
         ],

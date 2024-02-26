@@ -77,8 +77,7 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
       ),
       body: Column(
         children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.top,
+          Expanded(
             child: GoogleMap(
               initialCameraPosition: const CameraPosition(
                 target: LatLng(-15.7942, -47.8825), // Brasília como posição inicial padrão

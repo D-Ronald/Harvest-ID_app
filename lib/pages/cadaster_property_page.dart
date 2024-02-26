@@ -34,7 +34,6 @@ void navigateToAnotherPage(BuildContext context) {
   if (!serviceEnabled) {
     throw 'O serviço de localização está desativado';
   }
-
   LocationPermission permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
     permission = await Geolocator.requestPermission();

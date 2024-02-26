@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:debug_no_cell/utils/base.dart';
 
 class SelectLocationPage extends StatefulWidget {
   @override
@@ -31,11 +30,13 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
             _selectedPosition = LatLng(location.latitude, location.longitude);
           });
         } else {
+          // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('CEP não encontrado')),
+            const SnackBar(content: Text('CEP não encontrado')),
           );
         }
       } catch (e) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Erro ao buscar localização: $e')),
         );
@@ -74,71 +75,45 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            spacing(context, 2),
-            genericBigImage(
-              context: context,
-              src: "assets/images/NameGray.png",
-              heightPercentage: 4,
-              widthPercentage: 30,
-            ),
-            spacing(context, 2),
-            Center(
-              child: Transform.rotate(
-                angle: -3.14,
-                child: Container(
-                  width: 354,
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1,
-                        color: Colors.black.withOpacity(0.25),
+      body: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.top,
+            child: GoogleMap(
+              initialCameraPosition: const CameraPosition(
+                target: LatLng(-15.7942, -47.8825), // Brasília como posição inicial padrão
+                zoom: 15,
+              ),
+              onMapCreated: _onMapCreated,
+              onTap: (position) {
+                setState(() {
+                  _selectedPosition = position;
+                });
+              },
+              markers: _selectedPosition != null
+                  ? {
+                      Marker(
+                        markerId: const MarkerId('selected_position'),
+                        position: _selectedPosition!,
                       ),
-                    ),
-                  ),
+                    }
+                  : {},
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: _cepController,
+              decoration: InputDecoration(
+                labelText: 'CEP',
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: _searchLocationByCEP,
                 ),
               ),
             ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: _cepController,
-                decoration: InputDecoration(
-                  labelText: 'CEP',
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.search),
-                    onPressed: _searchLocationByCEP,
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              child: GoogleMap(
-                initialCameraPosition: const CameraPosition(
-                  target: LatLng(-15.7942, -47.8825), // Brasília como posição inicial padrão
-                  zoom: 15,
-                ),
-                onMapCreated: _onMapCreated,
-                onTap: (position) {
-                  setState(() {
-                    _selectedPosition = position;
-                  });
-                },
-                markers: _selectedPosition != null
-                    ? {
-                        Marker(
-                          markerId: const MarkerId('selected_position'),
-                          position: _selectedPosition!,
-                        ),
-                      }
-                    : {},
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

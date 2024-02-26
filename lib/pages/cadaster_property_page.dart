@@ -30,42 +30,58 @@ void navigateToAnotherPage(BuildContext context) {
 
 
   Future<void> _getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw 'O serviço de localização está desativado';
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.deniedForever) {
-      throw 'Você negou o acesso à sua localização, por favor ative em configurações do dispositivo';
-    }
-
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-
-    setState(() {
-      locationMessage =
-          'latitude: ${position.latitude}, longitude: ${position.longitude}';
-    });
-    // Abrir o mapa com a localização atual
-    _openMap(position.latitude, position.longitude);
+  bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    throw 'O serviço de localização está desativado';
   }
 
-  Future<void> _openMap(double latitude, double longitude) async {
-    String googleUrl = 'https://www.google.com/maps/search/?api=1';
+  LocationPermission permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      throw 'Permissão de localização negada';
+    }
+  }
+
+  if (permission == LocationPermission.deniedForever) {
+    throw 'Você negou o acesso à sua localização, por favor ative em configurações do dispositivo';
+  }
+
+  Position position = await Geolocator.getCurrentPosition(
+    desiredAccuracy: LocationAccuracy.high,
+  );
+
+  setState(() {
+    locationMessage =
+        'latitude: ${position.latitude}, longitude: ${position.longitude}';
+  });
+
+  // Abrir o mapa com a localização atual
+  _openMap(position.latitude, position.longitude);
+}
+_openMap(double lat, double long) async{
+  String url = "https://www.google.com/maps/dir/?api=1&destination=$lat,$long";
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Não foi possível abrir o mapa';
+  }
+}
+
+  //Future<void> _openMap(double latitude, double longitude) async {
+    //String googleUrl = 'https://www.google.com/maps/search/?api=1';
     // ignore: unnecessary_null_comparison
-    if (latitude != null && longitude != null) {
-      googleUrl =
-          'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
-    }
+    //if (latitude != null && longitude != null) {
+      //googleUrl =
+         // 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+    //}
 
-    if (await canLaunch(googleUrl)) {
-      await launch(googleUrl);
-    } else {
-      throw 'Erro ao abrir o mapa';
-    }
-  }
+    //if (await canLaunch(googleUrl)) {
+     // await launch(googleUrl);
+    //} else {
+      //throw 'Erro ao abrir o mapa';
+   // }
+  //}
 
   @override
   Widget build(BuildContext context) {

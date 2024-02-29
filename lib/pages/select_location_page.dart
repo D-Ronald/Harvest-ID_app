@@ -1,53 +1,53 @@
+// ignore_for_file: avoid_unnecessary_containers, deprecated_member_use
+
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SelectLocationPage extends StatefulWidget {
   @override
-  _SelectLocationPageState createState() => _SelectLocationPageState();
+  SelectLocationPageState createState() => SelectLocationPageState();
 }
 
-class _SelectLocationPageState extends State<SelectLocationPage> {
-  TextEditingController _cepController = TextEditingController();
-  GoogleMapController? _mapController;
-  LatLng? _selectedPosition;
-
-  void _onMapCreated(GoogleMapController controller) {
-    _mapController = controller;
-  }
-
-  Future<void> _searchLocationByCEP() async {
-    String cep = _cepController.text.trim();
-    if (cep.isNotEmpty) {
-      try {
-        List<Location> locations = await locationFromAddress(cep);
-        if (locations.isNotEmpty) {
-          Location location = locations.first;
-          _mapController?.animateCamera(CameraUpdate.newLatLng(
-            LatLng(location.latitude, location.longitude),
-          ));
-          setState(() {
-            _selectedPosition = LatLng(location.latitude, location.longitude);
-          });
-        } else {
-          // ignore: use_build_context_synchronously
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('CEP não encontrado')),
-          );
-        }
-      } catch (e) {
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao buscar localização: $e')),
-        );
-      }
+class SelectLocationPageState extends State<SelectLocationPage> {
+  TextEditingController _searchController = TextEditingController();
+  MapController _mapController = MapController();
+  Offset? _selectedOffset;
+void _searchAddress() async {
+    String address = _searchController.text;
+    List<Location> locations = await locationFromAddress(address);
+    if (locations.isNotEmpty) {
+      LatLng coordinates =
+          LatLng(locations[0].latitude, locations[0].longitude);
+      _mapController.move(coordinates, 15.0);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, insira um CEP')),
-      );
+      print('Nenhum local encontrado para o endereço fornecido');
     }
   }
 
+  void _confirmLocation() {
+    if (_selectedOffset != null) {
+      // Obtém as coordenadas de latitude e longitude dos cantos superior esquerdo e inferior direito do mapa
+      LatLngBounds? bounds = _mapController.bounds;
+      if (bounds != null) {
+        LatLng topLeft = bounds.northWest;
+        LatLng bottomRight = bounds.southEast;
+
+        // Calcula a extensão do mapa (diferença entre as coordenadas dos cantos)
+        double mapLatDiff = topLeft.latitude - bottomRight.latitude;
+        double mapLngDiff = bottomRight.longitude - topLeft.longitude;
+
+        // Calcula as coordenadas de latitude e longitude correspondentes ao ponto tocado na tela
+        double latitude = topLeft.latitude - (mapLatDiff * _selectedOffset!.dy / MediaQuery.of(context).size.height);
+        double longitude = topLeft.longitude + (mapLngDiff * _selectedOffset!.dx / MediaQuery.of(context).size.width);
+
+        // Usa as coordenadas de latitude e longitude calculadas para qualquer finalidade que desejar
+        LatLng selectedLatLng = LatLng(latitude, longitude);
+        print('Latitude e Longitude do ponto tocado: $selectedLatLng');
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,8 +63,8 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: const Color.fromRGBO(19, 56, 58, 1),
-        shadowColor: const Color.fromRGBO(19, 56, 60, 38),
+        backgroundColor:  const Color.fromRGBO(19, 56, 58, 1),
+        shadowColor:  const Color.fromRGBO(19, 56, 60, 38),
         elevation: 10,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -75,66 +75,62 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
           ),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+
+          body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _cepController,
-              decoration: InputDecoration(
-                labelText: 'CEP',
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: _searchLocationByCEP,
-                ),
+          TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Digite o endereço...',
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: _searchAddress,
               ),
             ),
           ),
+           Expanded(
+            child: GestureDetector(
+              onTapDown: (details) {
+                setState(() {
+                  _selectedOffset = details.localPosition;
+                });
+              })),
+
           Expanded(
-            child: Stack(
-              children: [
-                GoogleMap(
-                  initialCameraPosition: const CameraPosition(
-                    target: LatLng(-15.7942, -47.8825), // Brasília como posição inicial padrão
-                    zoom: 15,
-                  ),
-                  onMapCreated: _onMapCreated,
-                  onTap: (position) {
-                    setState(() {
-                      _selectedPosition = position;
-                    });
-                  },
-                  markers: _selectedPosition != null
-                      ? {
-                          Marker(
-                            markerId: const MarkerId('selected_position'),
-                            position: _selectedPosition!,
-                          ),
-                        }
-                      : {},
-                ),
-                if (_selectedPosition != null)
-                  const Center(
-                    child: Icon(Icons.place, size: 40, color: Colors.red),
-                  ),
-              ],
-            ),
+            child: FlutterMap(
+              mapController: _mapController,
+              options: const MapOptions(
+                center: LatLng(-23.493895, -46.533156),
+                minZoom: 5.0,
+                maxZoom: 25,
+                zoom: 10.0,
+              ),
+        children: [
+        TileLayer(
+            urlTemplate:
+                'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYXJpc291IiwiYSI6ImNsdDZmOTFhNTA0N24ydXA2N200aWo2cTYifQ.gn_rfxgxk0SMD2hJ7ZFIwQ',
+            additionalOptions: const {'accessToken': 'MAPBOX_ACCESS_TOKEN',
+                                      'id': 'mapbox/satellite-v9' },
           ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (_selectedPosition != null) {
-            Navigator.of(context).pop(_selectedPosition);
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Por favor, selecione uma localização')),
-            );
-          }
-        },
-        child: const Icon(Icons.check),
-      ),
-    );
+          MarkerLayer(
+            markers: [
+              Marker(
+                point: const LatLng(-23.493895, -46.533156),
+                child: Container(
+                     child: const Icon(
+                    Icons.person_pin,
+                    color: Colors.blue,
+                    size: 40,
+                  ),
+                )
+          )],
+          ),
+            ElevatedButton(
+            onPressed: _selectedOffset != null ? _confirmLocation : null,
+            child: const Text('Confirmar Localização'),
+            )]
+      )
+      )
+      ]),);
   }
 }

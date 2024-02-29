@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         title: Text(
-          widget.propertytitle.last,
+          widget.propertytitle,
           style: const TextStyle(
             color: Colors.white,
             fontSize: 18,

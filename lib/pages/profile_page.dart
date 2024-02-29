@@ -36,7 +36,9 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget currentScreen() {
     switch (currentIndex) {
       case 0:
-        return HomeScreen(propertytitle: '',);
+        return HomeScreen(
+          propertytitle: '',
+        );
       case 1:
         return Container(
           color: Colors.red,
@@ -46,7 +48,9 @@ class _ProfilePageState extends State<ProfilePage> {
           color: Colors.green,
         );
       default:
-        return HomeScreen(propertytitle: '',);
+        return HomeScreen(
+          propertytitle: '',
+        );
     }
   }
 }
@@ -74,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         title: Text(
-          widget.propertytitle.last,
+          widget.propertytitle,
           style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -321,7 +325,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => HomeScreen(propertytitle: document['name'])),
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen(
+                                        propertytitle: document['name'])),
                               );
                             },
                           ),

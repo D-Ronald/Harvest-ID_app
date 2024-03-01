@@ -251,7 +251,7 @@ class DrawerScreen extends StatefulWidget {
 
 class _DrawerScreenState extends State<DrawerScreen> {
   late String userId;
-  late Widget PropertyList;
+  late Widget propertyList;
 
   @override
   void initState() {
@@ -262,12 +262,13 @@ class _DrawerScreenState extends State<DrawerScreen> {
     }
   }
 
-  //função para atualizar e ler a seleção do ID da propriedade
   void saveIDproperty(String propertyId) {
+    
     setState(() {
       propertyId = propertyId;
     });
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -314,7 +315,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
               ),
             );
           }
-          PropertyList = Padding(
+          propertyList = Padding(
             padding: const EdgeInsets.only(top: 250.0),
             child: ListView.builder(
               itemCount: snapshot.data!.docs.length,
@@ -358,30 +359,36 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
+                                
                               ],
                             ),
-
-                            //botão de seleção da propriedade
                             onTap: () {
                               saveIDproperty(document['propertyId']);
-                              widget.setIndex(0); // Altera o índice para a tela inicial
-                              Navigator.pop(context); // Fecha a gaveta do menu
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomeScreen(
+                                    propertytitle: document['name'],
+                                  ),
+                                ),
+                              );
                             },
                           ),
                         ],
+                        
                       ),
                     ),
                     if (index != snapshot.data!.docs.length - 1)
                       const Divider(
                         height: 1.0,
-                      ), // Adiciona um separador após cada item, exceto o último
+                      ),
                   ],
                 );
               },
             ),
           );
-          // ...
-          return PropertyList;
+          return propertyList;
+          
         },
       ),
     );

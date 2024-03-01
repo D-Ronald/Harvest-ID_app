@@ -42,7 +42,7 @@ class SendImage {
     var url = Uri.parse('hhttps://c8c4-34-125-133-108.ngrok-free.app/predict');
     var request = http.MultipartRequest('POST', url);
     request.files
-        .add(await http.MultipartFile.fromPath('image', treatArchive(file)));
+        .add(await http.MultipartFile.fromPath('image', treatArchive(file),));
     request.files.add(await http.MultipartFile.fromPath(
         'id', AutenthicationService().user!.uid));
     var token;

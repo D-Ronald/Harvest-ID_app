@@ -4,9 +4,10 @@ import 'package:debug_no_cell/utils/base.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({Key? key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -18,6 +19,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return ZoomDrawer(
+      controller: ZoomDrawerController(),
       menuScreen: DrawerScreen(
         setIndex: (index) {
           setState(() {
@@ -55,10 +57,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-//TELA INICIAL DA SELECÃO DA PROPRIEDADE
 class HomeScreen extends StatefulWidget {
   final String propertytitle;
-  const HomeScreen({super.key, required this.propertytitle});
+  const HomeScreen({Key? key, required this.propertytitle});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -109,7 +110,6 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              //imagem da cultura
               const SizedBox(height: 50),
               Center(
                 child: Container(
@@ -241,10 +241,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-//TELA DA GAVETA
 class DrawerScreen extends StatefulWidget {
-  final ValueSetter setIndex;
-  DrawerScreen({super.key, required this.setIndex});
+  final ValueSetter<int> setIndex;
+  DrawerScreen({Key? key, required this.setIndex});
 
   @override
   State<DrawerScreen> createState() => _DrawerScreenState();
@@ -261,6 +260,13 @@ class _DrawerScreenState extends State<DrawerScreen> {
     if (user != null) {
       userId = user.uid;
     }
+  }
+
+  //função para atualizar e ler a seleção do ID da propriedade
+  void saveIDproperty(String propertyId) {
+    setState(() {
+      propertyId = propertyId;
+    });
   }
 
   @override
@@ -281,12 +287,31 @@ class _DrawerScreenState extends State<DrawerScreen> {
           }
           if (snapshot.hasError) {
             return const Center(
-              child: Text('Ocorreu um erro ao carregar os dados.'),
+              child: Text(
+                'OCORREU UM ERRO AO CARREGAR OS DADOS.',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
             );
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return const Center(
-              child: Text('Nenhuma propriedade encontrada.'),
+              child: Padding(
+                padding: EdgeInsets.only(left: 25.0),
+                child: Text(
+                  'AINDA NÃO HÁ PROPRIEDADES.',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ),
             );
           }
           PropertyList = Padding(
@@ -312,23 +337,35 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
-                            subtitle: Text(
-                              "Endereço: ${document['address']}",
-                              style: const TextStyle(
-                                color: Color.fromARGB(255, 227, 220, 220),
-                                fontSize: 12,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.normal,
-                              ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Cep: ${document['cep']}",
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(255, 227, 220, 220),
+                                    fontSize: 12,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                                Text(
+                                  "ID: ${document['propertyId']}",
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(255, 227, 220, 220),
+                                    fontSize: 12,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                              ],
                             ),
-                            // Na sua função onTap para o ListTile
+
+                            //botão de seleção da propriedade
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomeScreen(
-                                        propertytitle: document['name'])),
-                              );
+                              saveIDproperty(document['propertyId']);
+                              widget.setIndex(0); // Altera o índice para a tela inicial
+                              Navigator.pop(context); // Fecha a gaveta do menu
                             },
                           ),
                         ],
@@ -336,8 +373,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     ),
                     if (index != snapshot.data!.docs.length - 1)
                       const Divider(
-                          height:
-                              1.0), // Adiciona um separador após cada item, exceto o último
+                        height: 1.0,
+                      ), // Adiciona um separador após cada item, exceto o último
                   ],
                 );
               },
@@ -349,12 +386,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
       ),
     );
   }
-
-//LISTA DE OPÇÕES DA GAVETA
 }
 
 class DrawerWidget extends StatelessWidget {
-  const DrawerWidget({super.key});
+  const DrawerWidget({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -362,7 +397,7 @@ class DrawerWidget extends StatelessWidget {
       onPressed: () {
         ZoomDrawer.of(context)!.toggle();
       },
-      icon: const Icon(Icons.cached, color: Colors.white),
+      icon: const Icon(Icons.menu, color: Colors.white),
     );
   }
 }

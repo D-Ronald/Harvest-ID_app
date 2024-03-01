@@ -1,5 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debug_no_cell/DatabaseManager/DatabaseManager.dart';
 import 'package:debug_no_cell/pages/profile_page.dart';
@@ -12,6 +11,7 @@ import 'package:debug_no_cell/Repositories/Culture_repository.dart';
 
 class AuthException implements Exception {
   String message;
+  String? propertyId;
   AuthException(this.message);
 }
 
@@ -35,6 +35,54 @@ class AutenthicationService extends ChangeNotifier {
   _getUser() {
     user = _firebasseAuth.currentUser;
     notifyListeners();
+  }
+
+  void _exibirDialogoErro(String mensagem, BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Erro de validação'),
+          content: Text(mensagem),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _exibirDialogoCadastroSucesso(BuildContext context, User? user) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Cadastro Efetuado'),
+          content: const Text('Sua propriedade foi cadastrada com sucesso!'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                navigateToAnotherPage(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void navigateToAnotherPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ProfilePage()),
+    );
   }
 
   /// Função para registrar um usuário com email e senha
@@ -67,11 +115,15 @@ class AutenthicationService extends ChangeNotifier {
           User? user = userCredential.user;
           await user!.updateDisplayName(name);
           Future<void> addUserDetailsToFirestore(
-              String userId, String name, String email, String password) async {
+            String userId, String name,
+            String email, String password, 
+            String propertyId
+            ) async {
             FirebaseFirestore firestore = FirebaseFirestore.instance;
             Map<String, dynamic> userData = {
               'name': name,
               'email': email,
+              //'property_id': propertyId,
             };
 
             try {
@@ -170,10 +222,9 @@ class AutenthicationService extends ChangeNotifier {
     _getUser();
   }
 
-  resetPassword({required String email, context}) {
+  resetPassword({required String email, required BuildContext context}) {
     try {
-      _firebasseAuth.sendPasswordResetEmail(email: "email");
-      Navigator.of(context).pop();
+      _firebasseAuth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
       print(e);
     }
@@ -183,131 +234,98 @@ class AutenthicationService extends ChangeNotifier {
     required BuildContext context,
     required String propertyName,
     required String propertySize,
-    required String address,
-    required String? selectedCountry,
-    required String? selectedState,
-    required String? selectedCity,
+    required String cep,
     required bool isChecked,
   }) async {
     if (propertyName.isEmpty ||
         propertySize.isEmpty ||
-        address.isEmpty ||
-        selectedCountry == null ||
-        selectedState == null ||
-        selectedCity == null ||
+        cep.isEmpty ||
         !isChecked) {
       _exibirDialogoErro('Por favor, preencha todos os campos.', context);
+      return;
     }
+
     if (int.tryParse(propertySize) == null) {
       _exibirDialogoErro(
           "O tamanho da propriedade deve ser um número inteiro", context);
-    } else {
-      User? user = _firebasseAuth.currentUser;
-      String uid = user!.uid;
-      try {
-        if (user.displayName != null) {
-          await user.updateDisplayName(user.displayName!);
-        }
-
-        FirebaseFirestore firestore = FirebaseFirestore.instance;
-        CollectionReference userCollection = firestore.collection("User");
-        DocumentReference userDoc = userCollection.doc(uid);
-
-        Map<String, dynamic> userData = {
-          'name': user.displayName ?? "",
-          'email': user.email ?? "",
-        };
-
-        await userDoc.set(userData);
-
-        CollectionReference propertiesCollection =
-            userDoc.collection("properties");
-
-        Map<String, dynamic> propertyData = {
-          'name': propertyName,
-          'size': double.parse(propertySize),
-          'address': address,
-          'country': selectedCountry,
-          'state': selectedState,
-          'city': selectedCity,
-          'ownerId': uid,
-        };
-        _exibirDialogoCadastroSucesso(context, user);
-
-        //CRIAÇÃO DA SUBCOLEÇÃO CULTURE
-        DocumentReference propertyDoc =
-            await propertiesCollection.add(propertyData);
-        String propertyId = propertyDoc.id; // ID da propriedade criada
-
-        CollectionReference subCollection = propertyDoc.collection("Culture");
-
-        Map<String, dynamic> cultureData = {
-          'Identifier': 'Dados Inspecionados',
-        };
-
-        DocumentReference cultureDoc = subCollection.doc('Tomateiro');
-        await cultureDoc.set(cultureData);
-        String cultureId = cultureDoc.id; // ID da cultura criada
-
-        CollectionReference inspectionsCollection =
-            cultureDoc.collection("Inspections");
-
-        Map<String, dynamic> inspectionData = {
-          'Identifier': 'Inspeção 1',
-        };
-
-        await inspectionsCollection.doc('Inspection 1').set(inspectionData);
-      } catch (error) {
-        _exibirDialogoErro(error.toString(), context);
-      }
+      return;
     }
-  }
 
-  void _exibirDialogoErro(String mensagem, BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Erro de validação'),
-          content: Text(mensagem),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+    if (cep.length != 8) {
+      _exibirDialogoErro("CEP inválido.", context);
+      return;
+    }
 
-  void _exibirDialogoCadastroSucesso(BuildContext context, User? user) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Cadastro Efetuado'),
-          content: const Text('Sua propriedade foi cadastrada com sucesso!'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                navigateToAnotherPage(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+    User? user = _firebasseAuth.currentUser;
+    if (user == null) {
+      _exibirDialogoErro("Usuário não autenticado.", context);
+      return;
+    }
 
-  void navigateToAnotherPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ProfilePage()),
-    );
+    String uid = user.uid;
+    try {
+      if (user.displayName != null) {
+        await user.updateDisplayName(user.displayName!);
+      }
+
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      CollectionReference userCollection = firestore.collection("User");
+      DocumentReference userDoc = userCollection.doc(uid);
+
+      Map<String, dynamic> userData = {
+        'name': user.displayName ?? "",
+        'email': user.email ?? "",
+      };
+
+      await userDoc.set(userData);
+
+     CollectionReference propertiesCollection =
+      userDoc.collection("properties");
+
+      String propertyId = userDoc.id; // Obtendo o ID do documento do usuário
+
+      Map<String, dynamic> propertyData = {
+        'name': propertyName,
+        'size': double.parse(propertySize),
+        'cep': cep,
+        'propertyId': propertyId, // Adicionando o ID da propriedade aqui
+      };
+
+      // Adicionando a propriedade
+      DocumentReference propertyDoc = await propertiesCollection.add(propertyData);
+      String propertyDocId = propertyDoc.id; // Obtendo o ID do documento da propriedade
+
+      await propertyDoc.update({'propertyId': propertyDocId}); // Atualizando o ID da propriedade no documento da propriedade
+
+      await userDoc.update({'propertyId': propertyDocId}); // Atualizando o ID da propriedade no documento do usuário
+
+      
+
+
+      // Criando subcoleção "Culture"
+      CollectionReference subCollection = propertyDoc.collection("Culture");
+
+      Map<String, dynamic> cultureData = {
+        'Identifier': 'Dados Inspecionados',
+      };
+
+      DocumentReference cultureDoc = subCollection.doc('Tomateiro');
+      await cultureDoc.set(cultureData);
+
+      // Criando subcoleção "Inspections"
+      CollectionReference inspectionsCollection =
+          cultureDoc.collection("Inspections");
+
+      Map<String, dynamic> inspectionData = {
+        'Identifier': 'Inspeção 1',
+      };
+
+      await inspectionsCollection.doc('Inspection 1').set(inspectionData);
+
+      _exibirDialogoCadastroSucesso(context, user);
+    } catch (error) {
+      print("Erro ao cadastrar propriedade: $error");
+      _exibirDialogoErro("Erro ao cadastrar propriedade.", context);
+    }
   }
 }

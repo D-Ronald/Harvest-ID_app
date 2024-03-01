@@ -2,8 +2,10 @@ import 'package:debug_no_cell/pages/select_location_page.dart';
 import 'package:debug_no_cell/utils/base.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:csc_picker/csc_picker.dart';
+import 'package:csc_picker/model/select_status_model.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:mapbox_search/mapbox_search.dart' as mapbox;
 
 class CadasterPropertyPage extends StatefulWidget {
@@ -14,60 +16,29 @@ class CadasterPropertyPage extends StatefulWidget {
 class _CadasterPropertyPageState extends State<CadasterPropertyPage> {
   TextEditingController _propertyNameController = TextEditingController();
   TextEditingController _propertySizeController = TextEditingController();
-  TextEditingController _propertyZipCodeController = TextEditingController();
+  TextEditingController _addressController = TextEditingController();
 
   String locationMessage = "";
   bool isTomateiroSelected = false;
-
-  Future<void> _enterZipCode() async {
-    // Converte o CEP em coordenadas geográficas
-    String zipCode = _propertyZipCodeController.text;
-    Position? position = await _getPositionFromZipCode(zipCode);
-
-    if (position != null) {
-      // Abre a página de seleção de localização passando as coordenadas
-      navigateToAnotherPage(context, position.latitude, position.longitude);
-    } else {
-      // Caso o CEP seja inválido ou não seja encontrado, exibe uma mensagem de erro
-      setState(() {
-        locationMessage = "CEP inválido ou não encontrado";
-      });
+  String? selectedCountry;
+  String? selectedState;
+  String? selectedCity;
+  Future<LatLng?> getLocationFromAddress(
+      String country, String state, String city, String district) async {
+    try {
+      String address = '$district, $city, $state, $country';
+      List<Location> locations = await locationFromAddress(address);
+      if (locations.isNotEmpty) {
+        Location firstLocation = locations.first;
+        return LatLng(firstLocation.latitude, firstLocation.longitude);
+      } else {
+        return null; // Se não for possível encontrar a localização, retorne null
+      }
+    } catch (e) {
+      print('Erro ao obter localização a partir do endereço: $e');
+      return null;
     }
   }
-Future<Position?> _getPositionFromZipCode(String zipCode) async {
-  try {
-    List<Location> locations = await locationFromAddress(zipCode);
-    if (locations.isNotEmpty) {
-      Location location = locations.first;
-      return Position(
-        latitude: location.latitude ?? 0.0,
-        longitude: location.longitude ?? 0.0,
-        timestamp: DateTime.now(),
-        accuracy: 0.0,
-        altitude: 0.0,
-        heading: 0.0,
-        speed: 0.0,
-        speedAccuracy: 0.0,
-        altitudeAccuracy: 0.0,
-        headingAccuracy: 0.0,
-      );
-    } else {
-      return null; // Retorna null se nenhum local for encontrado para o CEP
-    }
-  } catch (_) {
-    // Se ocorrer algum erro na conversão do CEP, retorna nulo
-    return null;
-  }
-}
-
-
-  void navigateToAnotherPage(BuildContext context, double latitude, double longitude) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => SelectLocationPage(latitude: latitude, longitude: longitude)),
-  );
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -161,17 +132,46 @@ Future<Position?> _getPositionFromZipCode(String zipCode) async {
             ),
           ),
           spacing(context, 3),
+          Container(
+            padding: const EdgeInsets.all(10),
+            child: CSCPicker(
+              onCountryChanged: (country) {
+                setState(() {
+                  selectedCountry = country;
+                });
+              },
+              onCityChanged: (city) {
+                setState(() {
+                  selectedCity = city;
+                });
+              },
+              onStateChanged: (state) {
+                setState(() {
+                  selectedState = state;
+                });
+              },
+              dropdownDialogRadius: 20,
+              searchBarRadius: 20,
+              countrySearchPlaceholder: "País",
+              stateSearchPlaceholder: "Estado",
+              citySearchPlaceholder: "Cidade",
+              countryDropdownLabel: "País",
+              cityDropdownLabel: "Cidade",
+              stateDropdownLabel: "Estado",
+            ),
+          ),
+          spacing(context, 3),
           genericTextForm(
               context: context,
-              controller: _propertyZipCodeController,
-              labeltext: "Digite o CEP da sua propriedade ",
+              controller: _addressController,
+              labeltext:
+                  "Digite o nome do distrito em que está sua propriedade ",
               labelColor: darkGrayBase,
               heightPercentage: 8,
               padding: 25,
               color: blackBase,
               backgroundColor: mediumGrayBase,
               borderRadius: 10),
-
           spacing(context, 1),
           Text(
             locationMessage,
@@ -180,8 +180,9 @@ Future<Position?> _getPositionFromZipCode(String zipCode) async {
               color: Colors.red, // Cor vermelha para indicar erro
             ),
           ),
+          spacing(context, 2),
           const Text(
-            'Após digitar seu CEP, clique no botão abaixo para selecionar sua propriedade no mapa',
+            'Clique no botão abaixo para selecionar sua propriedade no mapa',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.black,
@@ -191,10 +192,46 @@ Future<Position?> _getPositionFromZipCode(String zipCode) async {
               height: 0,
             ),
           ),
+          spacing(context, 1),
           ElevatedButton(
-            onPressed: _enterZipCode,
-            child: const Text('SELECIONE SUA PROPRIEDADE'),
+            onPressed: () async {
+              // Chamar a função para obter as coordenadas da localização
+              LatLng? location = await getLocationFromAddress(selectedCountry!,
+                  selectedState!, selectedCity!, _addressController.text);
+
+              // Verificar se a localização foi obtida com sucesso
+              if (location != null) {
+                // Navegar para a página SelectLocationPage passando as coordenadas da localização
+                // ignore: use_build_context_synchronously
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SelectLocationPage(
+                      country: selectedCountry!,
+                      state: selectedState!,
+                      city: selectedCity!,
+                      district: _addressController.text,
+                      latitude: location.latitude,
+                      longitude: location.longitude,
+                    ),
+                  ),
+                );
+              } else {
+                // Se não for possível obter a localização, exiba uma mensagem de erro
+                // ignore: use_build_context_synchronously
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Não foi possível encontrar a localização.'),
+                  ),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            ),
+            child: const Text('SELECIONAR LOCALIZAÇÃO NO MAPA'),
           ),
+          spacing(context, 2),
           const Text(
             'Assinale abaixo as plantações que você tem em sua propriedade',
             textAlign: TextAlign.center,

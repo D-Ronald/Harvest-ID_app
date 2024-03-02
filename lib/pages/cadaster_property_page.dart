@@ -1,12 +1,8 @@
+import 'package:csc_picker/csc_picker.dart';
 import 'package:debug_no_cell/pages/select_location_page.dart';
 import 'package:debug_no_cell/utils/base.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:csc_picker/csc_picker.dart';
-import 'package:csc_picker/model/select_status_model.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:mapbox_search/mapbox_search.dart' as mapbox;
 
 class CadasterPropertyPage extends StatefulWidget {
   @override
@@ -20,11 +16,55 @@ class _CadasterPropertyPageState extends State<CadasterPropertyPage> {
 
   String locationMessage = "";
   bool isTomateiroSelected = false;
+  double _latitude = 0.0;
+  double _longitude = 0.0;
   String? selectedCountry;
-  String? selectedState;
   String? selectedCity;
-  late double latitude;
-  late double longitude;
+  String? selectedState;
+
+  Future<void> _getCoordinatesFromAddress() async {
+    try {
+      String address = '';
+      if (selectedCountry != null) {
+        address += '${selectedCountry!}, ';
+      }
+      if (selectedState != null) {
+        address += '${selectedState!}, ';
+      }
+      if (selectedCity != null) {
+        address += '${selectedCity!}, ';
+      }
+      if (_addressController.text.isNotEmpty) {
+        address += _addressController.text;
+      }
+
+      if (address.isNotEmpty) {
+        List<Location> locations = await locationFromAddress(address);
+        if (locations.isNotEmpty) {
+          Location location = locations.first;
+          setState(() {
+            _latitude = location.latitude;
+            _longitude = location.longitude;
+            locationMessage =
+                "Latitude: ${location.latitude}, Longitude: ${location.longitude}";
+          });
+        } else {
+          setState(() {
+            locationMessage =
+                "Não foi possível encontrar as coordenadas para este endereço.";
+          });
+        }
+      } else {
+        setState(() {
+          locationMessage = "Por favor, insira um endereço válido.";
+        });
+      }
+    } catch (e) {
+      setState(() {
+        locationMessage = "Erro ao obter coordenadas: $e";
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,8 +190,7 @@ class _CadasterPropertyPageState extends State<CadasterPropertyPage> {
           genericTextForm(
               context: context,
               controller: _addressController,
-              labeltext:
-                  "Digite o nome do distrito em que está sua propriedade ",
+              labeltext: "Digite o distrito ou endereço da sua propriedade ",
               labelColor: darkGrayBase,
               heightPercentage: 8,
               padding: 25,
@@ -163,7 +202,7 @@ class _CadasterPropertyPageState extends State<CadasterPropertyPage> {
             locationMessage,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              color: Colors.red, // Cor vermelha para indicar erro
+              color: Colors.red,
             ),
           ),
           spacing(context, 2),
@@ -178,19 +217,28 @@ class _CadasterPropertyPageState extends State<CadasterPropertyPage> {
               height: 0,
             ),
           ),
-          spacing(context, 1),
           ElevatedButton(
             onPressed: () async {
+              if (selectedCountry == null ||
+                  selectedState == null ||
+                  selectedCity == null ||
+                  _addressController.text.isEmpty) {
+                setState(() {
+                  locationMessage =
+                      "Por favor, preencha todos os campos de localização.";
+                });
+                return;
+              }
+
+              await _getCoordinatesFromAddress(); // Obtém as coordenadas do endereço
+
+              // ignore: use_build_context_synchronously
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => SelectLocationPage(
-                    country: selectedCountry!,
-                    state: selectedState!,
-                    city: selectedCity!,
-                    district: _addressController.text,
-                    latitude: latitude,
-                    longitude: longitude,
+                    latitude: _latitude,
+                    longitude: _longitude,
                   ),
                 ),
               );

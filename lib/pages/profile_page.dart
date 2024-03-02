@@ -404,7 +404,7 @@ class DrawerWidget extends StatelessWidget {
       onPressed: () {
         ZoomDrawer.of(context)!.toggle();
       },
-      icon: const Icon(Icons.menu, color: Colors.white),
+      icon: const Icon(Icons.cached, color: Colors.white),
     );
   }
 }

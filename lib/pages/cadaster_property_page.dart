@@ -23,48 +23,38 @@ class _CadasterPropertyPageState extends State<CadasterPropertyPage> {
   String? selectedState;
 
   Future<void> _getCoordinatesFromAddress() async {
-    try {
-      String address = '';
-      if (selectedCountry != null) {
-        address += '${selectedCountry!}, ';
-      }
-      if (selectedState != null) {
-        address += '${selectedState!}, ';
-      }
-      if (selectedCity != null) {
-        address += '${selectedCity!}, ';
-      }
-      if (_addressController.text.isNotEmpty) {
-        address += _addressController.text;
-      }
-
-      if (address.isNotEmpty) {
-        List<Location> locations = await locationFromAddress(address);
-        if (locations.isNotEmpty) {
-          Location location = locations.first;
-          setState(() {
-            _latitude = location.latitude;
-            _longitude = location.longitude;
-            locationMessage =
-                "Latitude: ${location.latitude}, Longitude: ${location.longitude}";
-          });
-        } else {
-          setState(() {
-            locationMessage =
-                "Não foi possível encontrar as coordenadas para este endereço.";
-          });
-        }
-      } else {
-        setState(() {
-          locationMessage = "Por favor, insira um endereço válido.";
-        });
-      }
-    } catch (e) {
+  try {
+    if (selectedCountry == null ||
+        selectedState == null ||
+        selectedCity == null ||
+        _addressController.text.isEmpty) {
       setState(() {
-        locationMessage = "Erro ao obter coordenadas: $e";
+        locationMessage = "Por favor, preencha todos os campos de localização.";
+      });
+      return;
+    }
+
+    String address = '${selectedCountry!}, ${selectedState!}, ${selectedCity!}, ${_addressController.text}';
+    List<Location> locations = await locationFromAddress(address);
+    
+    if (locations.isNotEmpty) {
+      Location location = locations.first;
+      setState(() {
+        _latitude = location.latitude;
+        _longitude = location.longitude;
+        locationMessage = "Latitude: ${location.latitude}, Longitude: ${location.longitude}";
+      });
+    } else {
+      setState(() {
+        locationMessage = "Não foi possível encontrar as coordenadas para este endereço.";
       });
     }
+  } catch (e) {
+    setState(() {
+      locationMessage = "Erro ao obter coordenadas: $e";
+    });
   }
+}
 
   @override
   Widget build(BuildContext context) {

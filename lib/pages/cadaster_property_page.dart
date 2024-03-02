@@ -23,22 +23,8 @@ class _CadasterPropertyPageState extends State<CadasterPropertyPage> {
   String? selectedCountry;
   String? selectedState;
   String? selectedCity;
-  Future<LatLng?> getLocationFromAddress(
-      String country, String state, String city, String district) async {
-    try {
-      String address = '$district, $city, $state, $country';
-      List<Location> locations = await locationFromAddress(address);
-      if (locations.isNotEmpty) {
-        Location firstLocation = locations.first;
-        return LatLng(firstLocation.latitude, firstLocation.longitude);
-      } else {
-        return null; // Se não for possível encontrar a localização, retorne null
-      }
-    } catch (e) {
-      print('Erro ao obter localização a partir do endereço: $e');
-      return null;
-    }
-  }
+  late double latitude;
+  late double longitude;
 
   @override
   Widget build(BuildContext context) {
@@ -195,36 +181,19 @@ class _CadasterPropertyPageState extends State<CadasterPropertyPage> {
           spacing(context, 1),
           ElevatedButton(
             onPressed: () async {
-              // Chamar a função para obter as coordenadas da localização
-              LatLng? location = await getLocationFromAddress(selectedCountry!,
-                  selectedState!, selectedCity!, _addressController.text);
-
-              // Verificar se a localização foi obtida com sucesso
-              if (location != null) {
-                // Navegar para a página SelectLocationPage passando as coordenadas da localização
-                // ignore: use_build_context_synchronously
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SelectLocationPage(
-                      country: selectedCountry!,
-                      state: selectedState!,
-                      city: selectedCity!,
-                      district: _addressController.text,
-                      latitude: location.latitude,
-                      longitude: location.longitude,
-                    ),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SelectLocationPage(
+                    country: selectedCountry!,
+                    state: selectedState!,
+                    city: selectedCity!,
+                    district: _addressController.text,
+                    latitude: latitude,
+                    longitude: longitude,
                   ),
-                );
-              } else {
-                // Se não for possível obter a localização, exiba uma mensagem de erro
-                // ignore: use_build_context_synchronously
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Não foi possível encontrar a localização.'),
-                  ),
-                );
-              }
+                ),
+              );
             },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -240,7 +209,7 @@ class _CadasterPropertyPageState extends State<CadasterPropertyPage> {
               fontSize: 16,
               fontFamily: 'Raleway',
               fontWeight: FontWeight.w400,
-              height: 0,
+              height: 1.5,
             ),
           ),
           Row(

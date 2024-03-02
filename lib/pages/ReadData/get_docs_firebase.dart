@@ -98,7 +98,7 @@ class _GetDocsFirebaseState extends State<GetDocsFirebase> {
                           SizedBox(
                             height: 30,
                             child: Text(
-                              "País: ${document['country']}",
+                              "Cep: ${document['cep']}",
                               style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 16,
@@ -107,42 +107,42 @@ class _GetDocsFirebaseState extends State<GetDocsFirebase> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 30,
-                            child: Text(
-                              "Estado: ${document['state']}",
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 30,
-                            child: Text(
-                              "Cidade: ${document['city']}",
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 30,
-                            child: Text(
-                              "Endereço: ${document['address']}",
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ),
+                          // SizedBox(
+                          //   height: 30,
+                          //   child: Text(
+                          //     "Estado: ${document['state']}",
+                          //     style: const TextStyle(
+                          //       color: Colors.black,
+                          //       fontSize: 16,
+                          //       fontFamily: 'Inter',
+                          //       fontWeight: FontWeight.normal,
+                          //     ),
+                          //   ),
+                          // ),
+                          // SizedBox(
+                          //   height: 30,
+                          //   child: Text(
+                          //     "Cidade: ${document['city']}",
+                          //     style: const TextStyle(
+                          //       color: Colors.black,
+                          //       fontSize: 16,
+                          //       fontFamily: 'Inter',
+                          //       fontWeight: FontWeight.normal,
+                          //     ),
+                          //   ),
+                          // ),
+                          // SizedBox(
+                          //   height: 30,
+                          //   child: Text(
+                          //     "Endereço: ${document['address']}",
+                          //     style: const TextStyle(
+                          //       color: Colors.black,
+                          //       fontSize: 16,
+                          //       fontFamily: 'Inter',
+                          //       fontWeight: FontWeight.normal,
+                          //     ),
+                          //   ),
+                          // ),
                           
                           Padding(
                             padding: const EdgeInsets.only(top: 10.0),

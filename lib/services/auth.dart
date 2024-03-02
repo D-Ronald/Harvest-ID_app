@@ -174,10 +174,10 @@ class AutenthicationService extends ChangeNotifier {
     _getUser();
   }
 
-  resetPassword({required String email}) {
+   resetPassword({required String email, required BuildContext context}) {
     try {
-      _firebasseAuth.sendPasswordResetEmail(email:email);
-          } on FirebaseAuthException catch (e) {
+      _firebasseAuth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
       print(e);
     }
   }
@@ -225,7 +225,7 @@ class AutenthicationService extends ChangeNotifier {
         Map<String, dynamic> propertyData = {
           'name': propertyName,
           'size': double.parse(propertySize),
-          'cep': double.parse(cep),
+          'cep': cep,
           'ownerId': uid,
         };
         _exibirDialogoCadastroSucesso(context, user);

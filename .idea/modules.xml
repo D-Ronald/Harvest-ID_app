@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Harvest-ID_app.iml" filepath="$PROJECT_DIR$/.idea/Harvest-ID_app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/debug_no_cell.iml" filepath="$PROJECT_DIR$/debug_no_cell.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/debug_no_cell_android.iml" filepath="$PROJECT_DIR$/android/debug_no_cell_android.iml" />
     </modules>
   </component>
 </project>

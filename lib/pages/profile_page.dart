@@ -4,7 +4,6 @@ import 'package:debug_no_cell/utils/base.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key});
@@ -13,63 +12,52 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
+// Classe para gerenciar o estado da tela de perfil
 class _ProfilePageState extends State<ProfilePage> {
-  int currentIndex = 0;
+  int currentIndex = 0; // Índice da tela atual no drawer (menu lateral)
+  String currentPropertyName = ''; // Nome da propriedade atual
+
+  void updateCurrentIndex(int index, String propertyName) {
+    setState(() {
+      currentIndex = index; // Atualiza o índice com base no item selecionado
+      currentPropertyName = propertyName; // Atualiza o nome da propriedade
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return ZoomDrawer(
-      controller: ZoomDrawerController(),
+      controller: ZoomDrawerController(), // Controlador para o drawer
       menuScreen: DrawerScreen(
-        setIndex: (index) {
-          setState(() {
-            currentIndex = index;
-          });
+        setIndex: (index, propertyName) { // Passa a função para atualizar o índice e nome
+          updateCurrentIndex(index, propertyName);
         },
       ),
-      mainScreen: currentScreen(),
-      borderRadius: 30,
-      showShadow: true,
-      angle: 0.0,
-      menuBackgroundColor: const Color.fromARGB(255, 49, 101, 103),
+      mainScreen: HomeScreen(propertytitle: currentPropertyName), // Exibe a tela correspondente ao índice atual
+      borderRadius: 30, // Arredonda os cantos do drawer
+      showShadow: true, // Mostra sombra ao redor do drawer
+      angle: 0.0, // Define o ângulo de abertura do drawer
+      menuBackgroundColor: const Color.fromARGB(255, 49, 101, 103), // Cor de fundo do menu
     );
-  }
-
-  Widget currentScreen() {
-    switch (currentIndex) {
-      case 0:
-        return HomeScreen(
-          propertytitle: '',
-        );
-      case 1:
-        return Container(
-          color: Colors.red,
-        );
-      case 2:
-        return Container(
-          color: Colors.green,
-        );
-      default:
-        return HomeScreen(
-          propertytitle: '',
-        );
-    }
   }
 }
 
+// Tela principal que será exibida no corpo da aplicação
 class HomeScreen extends StatefulWidget {
-  final String propertytitle;
+  final String propertytitle; // Título da propriedade (se houver)
   const HomeScreen({Key? key, required this.propertytitle});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+// Classe para gerenciar o estado da tela principal
 class _HomeScreenState extends State<HomeScreen> {
+  // Função para navegar até outra página (DashboardPage)
   void navigateToAnotherPage(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const DashboardPage()),
+      MaterialPageRoute(builder: (context) => const DashboardPage()), // Rota para a página de dashboard
     );
   }
 
@@ -79,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         title: Text(
-          widget.propertytitle,
+          widget.propertytitle.isEmpty ? 'Home' : widget.propertytitle, // Define o título da AppBar
           style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -98,9 +86,9 @@ class _HomeScreenState extends State<HomeScreen> {
             topRight: Radius.circular(1),
             bottomLeft: Radius.circular(8),
             bottomRight: Radius.circular(8),
-          ),
+          ), 
         ),
-        leading: DrawerWidget(),
+        leading: DrawerWidget(), // Botão para abrir o drawer
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 16.0),
@@ -132,14 +120,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.asset('assets/images/Tomateiro.jpg',
-                        width: width(context, 50),
-                        height: height(context, 30),
-                        fit: BoxFit.cover),
+                    child: Image.asset(
+                      'assets/images/Tomateiro.jpg',
+                      width: width(context, 50),
+                      height: height(context, 30),
+                      fit: BoxFit.cover, // Ajuste da imagem dentro do container
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(width: 60),
+              const SizedBox(width: 60), 
               const SizedBox(height: 20),
               const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,29 +171,29 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               InkWell(
                 onTap: () {
-                  navigateToAnotherPage(context);
+                  navigateToAnotherPage(context); // Ação ao clicar (navegar para outra página)
                 },
                 child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start, // Alinha o conteúdo ao início
+                  crossAxisAlignment: CrossAxisAlignment.start, // Alinha o conteúdo ao início no eixo transversal
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end, // Alinha o conteúdo ao final
+                      crossAxisAlignment: CrossAxisAlignment.center, // Centraliza o conteúdo no eixo transversal
                       children: [
                         Padding(
-                          padding: EdgeInsets.all(16.0),
+                          padding: EdgeInsets.all(16.0), // Espaçamento interno
                           child: SizedBox(
                             width: 69,
                             height: 24,
                             child: Text(
-                              'Ver mais',
+                              'Ver mais', // Texto do botão
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.black, // Cor do texto
                                 fontSize: 16,
-                                fontFamily: 'Cardo',
-                                fontWeight: FontWeight.w400,
-                                height: 0,
+                                fontFamily: 'Cardo', // Fonte do texto
+                                fontWeight: FontWeight.w400, // Peso da fonte (normal)
+                                height: 0, // Altura da linha do texto
                               ),
                             ),
                           ),
@@ -214,19 +204,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 20, // Espaçamento vertical
               ),
               Center(
                 child: Transform.rotate(
-                  angle: -3.14,
+                  angle: -3.14, // Rotaciona o container (180 graus)
                   child: Container(
-                    width: 354,
+                    width: 354, // Largura do container
                     decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
                           width: 1,
-                          strokeAlign: BorderSide.strokeAlignCenter,
-                          color: Colors.black.withOpacity(0.25),
+                          strokeAlign: BorderSide.strokeAlignCenter, // Alinhamento do traçado da borda
+                          color: Colors.black.withOpacity(0.25), // Cor da borda com opacidade
                         ),
                       ),
                     ),
@@ -241,8 +231,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+// Classe para o drawer (menu lateral) que permite navegar entre as telas
 class DrawerScreen extends StatefulWidget {
-  final ValueSetter<int> setIndex;
+  final void Function(int, String) setIndex; // Função para atualizar o índice e o nome da propriedade
   DrawerScreen({Key? key, required this.setIndex});
 
   @override
@@ -250,36 +241,32 @@ class DrawerScreen extends StatefulWidget {
 }
 
 class _DrawerScreenState extends State<DrawerScreen> {
-  late String userId;
-  late Widget propertyList;
+  late String userId; // ID do usuário autenticado
 
   @override
   void initState() {
     super.initState();
-    final user = FirebaseAuth.instance.currentUser;
+    final user = FirebaseAuth.instance.currentUser; // Obtém o usuário autenticado
     if (user != null) {
-      userId = user.uid;
+      userId = user.uid; // Define o ID do usuário
     }
   }
 
-  void saveIDproperty(String propertyId) {
-    
-    setState(() {
-      propertyId = propertyId;
-    });
+  void onItemTapped(int index, String propertyName) {
+    widget.setIndex(index, propertyName); // Notifica a tela principal sobre o item selecionado
+    ZoomDrawer.of(context)!.toggle(); // Fecha o drawer
   }
-  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 49, 101, 103),
+      backgroundColor: const Color.fromARGB(255, 49, 101, 103), // Cor de fundo do drawer
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('User')
             .doc(userId)
             .collection('properties')
-            .snapshots(),
+            .snapshots(), // Escuta alterações na coleção de propriedades do usuário
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -315,12 +302,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
               ),
             );
           }
-          propertyList = Padding(
+          return Padding(
             padding: const EdgeInsets.only(top: 250.0),
             child: ListView.builder(
-              itemCount: snapshot.data!.docs.length,
+              itemCount: snapshot.data!.docs.length, // Número de propriedades
               itemBuilder: (BuildContext context, int index) {
-                DocumentSnapshot document = snapshot.data!.docs[index];
+                DocumentSnapshot document = snapshot.data!.docs[index]; // Documento da propriedade
                 return Column(
                   children: [
                     SizedBox(
@@ -342,7 +329,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Cep: ${document['cep']}",
+                                  "Cep: ${document['cep']}", 
                                   style: const TextStyle(
                                     color: Color.fromARGB(255, 227, 220, 220),
                                     fontSize: 12,
@@ -352,36 +339,39 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                 ),
                               ],
                             ),
+                            onTap: () {
+                              onItemTapped(index, document['name']); // Chama a função quando o item é pressionado
+                            },
                           ),
                         ],
                       ),
                     ),
                     if (index != snapshot.data!.docs.length - 1)
                       const Divider(
-                        height: 1.0,
+                        height: 1.0, // Divisor entre propriedades
                       ),
                   ],
                 );
               },
             ),
           );
-          return propertyList;
         },
       ),
     );
   }
 }
 
+// Widget para o botão de abrir o drawer
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({Key? key});
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      icon: const Icon(Icons.menu, color: Colors.white), // Ícone do menu
       onPressed: () {
-        ZoomDrawer.of(context)!.toggle();
+        ZoomDrawer.of(context)!.toggle(); // Alterna o estado do drawer
       },
-      icon: const Icon(Icons.cached, color: Colors.white),
     );
   }
 }

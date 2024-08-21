@@ -350,32 +350,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
-                                Text(
-                                  "ID: ${document['propertyId']}",
-                                  style: const TextStyle(
-                                    color: Color.fromARGB(255, 227, 220, 220),
-                                    fontSize: 12,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                                
                               ],
                             ),
-                            onTap: () {
-                              saveIDproperty(document['propertyId']);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HomeScreen(
-                                    propertytitle: document['name'],
-                                  ),
-                                ),
-                              );
-                            },
                           ),
                         ],
-                        
                       ),
                     ),
                     if (index != snapshot.data!.docs.length - 1)
@@ -388,7 +366,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
             ),
           );
           return propertyList;
-          
         },
       ),
     );

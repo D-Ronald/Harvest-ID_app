@@ -49,7 +49,7 @@ class _CapturePageState extends State<CapturePage> {
                 context,
                 MaterialPageRoute(
                     builder: (_) => CameraCamera(
-                        onFile: (file) => showPreview(context, file!)))))
+                        onFile: (file) => showPreview(context, file)))))
       ])),
     );
   }

@@ -46,7 +46,7 @@ ElevatedButton genericButton(context, backgroundColor, textColor, String text,
       ),
     ),
     style: ElevatedButton.styleFrom(
-      primary: backgroundColor,
+      backgroundColor: backgroundColor,
       minimumSize: Size(
           width(context, percentageWidth), height(context, percentageHeight)),
     ),
@@ -67,7 +67,7 @@ ElevatedButton genericIconButton(
         function();
       },
       style: ElevatedButton.styleFrom(
-        primary: backgroundColor,
+        backgroundColor: backgroundColor,
         minimumSize: Size(
             width(context, percentageWidth), height(context, percentageHeight)),
       ),

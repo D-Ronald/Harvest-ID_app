@@ -1,14 +1,8 @@
 import 'package:debug_no_cell/services/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:csc_picker/csc_picker.dart';
-import 'package:csc_picker/model/select_status_model.dart';
-import 'package:debug_no_cell/utils/routes.dart';
-import 'package:flutter/material.dart';
 import 'package:debug_no_cell/utils/base.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-}
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CadasterProperty_page extends StatefulWidget {
   @override
@@ -17,10 +11,36 @@ class CadasterProperty_page extends StatefulWidget {
 
 class _CadasterPropertyPageState extends State<CadasterProperty_page> {
   AutenthicationService _autenthicationService = AutenthicationService();
-  TextEditingController _cepController = TextEditingController();
   TextEditingController _propertyNameController = TextEditingController();
   TextEditingController _propertySizeController = TextEditingController();
   bool isChecked = false;
+  var locationMessage = "";
+  double? latitude;
+  double? longitude;
+
+  void getCurrentLocation() async {
+    var position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      latitude = position.latitude;
+      longitude = position.longitude;
+      locationMessage =
+          'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
+    });
+  }
+
+  Future<void> _navigateAndDisplaySelection(BuildContext context) async {
+    final result = await Navigator.pushNamed(context, '/map');
+    if (result != null && result is Map<String, String>) {
+      setState(() {
+        latitude = double.tryParse(result['latitude'] ?? '');
+        longitude = double.tryParse(result['longitude'] ?? '');
+        locationMessage =
+            'Latitude: $latitude, Longitude: $longitude';
+      });
+    }
+  }
+
   void _exibirDialogoCadastroSucesso(BuildContext context) {
     showDialog(
       context: context,
@@ -83,89 +103,61 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
                 widthPercentage: 30),
             spacing(context, 2),
             Center(
-              child: Transform.rotate(
-                angle: -3.14,
-                child: Container(
-                  width: 354,
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1,
-                        strokeAlign: BorderSide.strokeAlignCenter,
-                        color: Colors.black.withOpacity(0.25),
-                      ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.location_on,
+                    size: 46,
+                  ),
+                  const SizedBox(height: 20),
+                  Text("Posição: $locationMessage"),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: darkGreenBase, // Cor de fundo
+                    ),
+                    onPressed: () async {
+                      getCurrentLocation();
+                    },
+                    child: const Text(
+                      'Usar localização atual',
+                      style: TextStyle(color: whiteBase),
                     ),
                   ),
-                ),
-              ),
-            ),
-            spacing(context, 4),
-            genericTextForm(
-                context: context,
-                controller: _propertyNameController,
-                labeltext: "Nome da propriedade",
-                labelColor: darkGrayBase,
-                heightPercentage: 8,
-                padding: 25,
-                color: blackBase,
-                backgroundColor: mediumGrayBase,
-                borderRadius: 10),
-            spacing(context, 1),
-            genericTextForm(
-                context: context,
-                controller: _propertySizeController,
-                labeltext: "Tamanho da propriedade em hectares",
-                labelColor: darkGrayBase,
-                heightPercentage: 8,
-                padding: 25,
-                color: blackBase,
-                backgroundColor: mediumGrayBase,
-                borderRadius: 10),
-            spacing(context, 3),
-            const SizedBox(
-              width: 357,
-              height: 31,
-              child: Text(
-                'LOCALIZAÇÃO',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: 'Raleway',
-                  fontWeight: FontWeight.w400,
-                  height: 0,
-                ),
-              ),
-            ),
-             spacing(context, 1),
-            genericTextForm(
-                context: context,
-                controller: _cepController,
-                labeltext: "Digite o CEP da sua propriedade:",
-                labelColor: darkGrayBase,
-                heightPercentage: 8,
-                padding: 25,
-                color: blackBase,
-                backgroundColor: mediumGrayBase,
-                borderRadius: 10),
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Checkbox(
-                    value: isChecked,
-                    onChanged: (bool? checked) {
-                      if (checked != null) {
-                        setState(() {
-                          isChecked = checked;
-                        });
-                      }
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: darkGreenBase, // Cor de fundo
+                    ),
+                    onPressed: () {
+                      _navigateAndDisplaySelection(context);
                     },
-                    activeColor: const Color(0x3F000000),
+                    child: const Text(
+                      'Informar coordenadas',
+                      style: TextStyle(color: whiteBase),
+                    ),
                   ),
-                ),
-                const Text('Tomateiro'),
-              ],
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16.0),
+                        child: Checkbox(
+                          value: isChecked,
+                          onChanged: (bool? checked) {
+                            if (checked != null) {
+                              setState(() {
+                                isChecked = checked;
+                              });
+                            }
+                          },
+                          activeColor: const Color(0x3F000000),
+                        ),
+                      ),
+                      const Text('Tomateiro'),
+                    ],
+                  ),
+                ],
+              ),
             ),
             spacing(context, 3),
             genericButton(
@@ -176,17 +168,12 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
               6,
               25,
               () {
-                _autenthicationService.cadasterProperty(
-                    context: context,
-                    propertyName: _propertyNameController.text,
-                    propertySize: _propertySizeController.text,
-                    cep: _cepController.text,
-                    isChecked: isChecked);
+                // Lógica de cadastro aqui
               },
             ),
           ],
         ),
-      ),
-    );
-  }
+    ),
+);
+}
 }

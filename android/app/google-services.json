@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "160688752737",
+    "firebase_url": "https://harvest-id-default-rtdb.firebaseio.com",
+    "project_id": "harvest-id",
+    "storage_bucket": "harvest-id.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:160688752737:android:ceda3a40289c5ec734c220",
+        "android_client_info": {
+          "package_name": "com.example.debug_no_cell"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcZ0AM1j7O-PGF_h2n9a662KIgNMG_PmA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

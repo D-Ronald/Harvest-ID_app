@@ -1,7 +1,7 @@
 import 'package:debug_no_cell/pages/cadaster_property_page.dart';
 import 'package:debug_no_cell/pages/capture_page.dart';
-import 'package:debug_no_cell/pages/dashboard_page.dart';
 import 'package:debug_no_cell/pages/profile_page.dart';
+import 'package:debug_no_cell/pages/user_profile.dart';
 import 'package:debug_no_cell/utils/base.dart';
 import 'package:debug_no_cell/pages/home_page.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +21,8 @@ class ViewPage extends StatelessWidget {
             HomePage(),
             CapturePage(),
             CadasterProperty_page(),
-            DashboardPage(),
-            ProfilePage()
+            ProfilePage(),
+            UserProfilePage()
           ],
         ),
         bottomNavigationBar: navigationBar(

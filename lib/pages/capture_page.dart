@@ -25,7 +25,6 @@ class _CapturePageState extends State<CapturePage> {
                   cultureId: '',
                   propertyId: '',
                 ))) as File?;
-    MaterialPageRoute(builder: (_) => DashboardPage(archive: archive));
     if (file != null) {
       setState(() => archive = file);
     }

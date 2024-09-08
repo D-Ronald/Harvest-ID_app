@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:debug_no_cell/pages/dashboard_page.dart';
+import 'package:debug_no_cell/Repositories/Culture_repository.dart';
+import 'package:debug_no_cell/pages/inspection_page.dart';
 import 'package:debug_no_cell/utils/base.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,6 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-// Classe para gerenciar o estado da tela de perfil
 class _ProfilePageState extends State<ProfilePage> {
   int currentIndex = 0; // Índice da tela atual no drawer (menu lateral)
   String currentPropertyName = ''; // Nome da propriedade atual
@@ -29,38 +29,29 @@ class _ProfilePageState extends State<ProfilePage> {
     return ZoomDrawer(
       controller: ZoomDrawerController(), // Controlador para o drawer
       menuScreen: DrawerScreen(
-        setIndex: (index, propertyName) { // Passa a função para atualizar o índice e nome
+        setIndex: (index, propertyName) {
           updateCurrentIndex(index, propertyName);
         },
       ),
       mainScreen: HomeScreen(propertytitle: currentPropertyName), // Exibe a tela correspondente ao índice atual
-      borderRadius: 30, // Arredonda os cantos do drawer
-      showShadow: true, // Mostra sombra ao redor do drawer
-      angle: 0.0, // Define o ângulo de abertura do drawer
+      borderRadius: 30,
+      showShadow: true,
+      angle: 0.0,
       menuBackgroundColor: const Color.fromARGB(255, 49, 101, 103), // Cor de fundo do menu
     );
   }
 }
 
-// Tela principal que será exibida no corpo da aplicação
 class HomeScreen extends StatefulWidget {
   final String propertytitle; // Título da propriedade (se houver)
+
   const HomeScreen({Key? key, required this.propertytitle});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-// Classe para gerenciar o estado da tela principal
 class _HomeScreenState extends State<HomeScreen> {
-  // Função para navegar até outra página (DashboardPage)
-  void navigateToAnotherPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const DashboardPage()), // Rota para a página de dashboard
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,9 +77,9 @@ class _HomeScreenState extends State<HomeScreen> {
             topRight: Radius.circular(1),
             bottomLeft: Radius.circular(8),
             bottomRight: Radius.circular(8),
-          ), 
+          ),
         ),
-        leading: DrawerWidget(), // Botão para abrir o drawer
+        leading: const DrawerWidget(), // Botão para abrir o drawer
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 16.0),
@@ -129,7 +120,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 60), 
               const SizedBox(height: 20),
               const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: TextStyle(
                             color: Color(0xFF13383A),
                             fontSize: 18,
-                            fontFamily: 'inter',
+                            fontFamily: 'Inter',
                             fontWeight: FontWeight.w600,
                             height: 0,
                           ),
@@ -161,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 18,
-                        fontFamily: 'inter',
+                        fontFamily: 'Inter',
                         fontWeight: FontWeight.w100,
                         height: 0,
                       ),
@@ -169,58 +159,67 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              InkWell(
-                onTap: () {
-                  navigateToAnotherPage(context); // Ação ao clicar (navegar para outra página)
-                },
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.start, // Alinha o conteúdo ao início
-                  crossAxisAlignment: CrossAxisAlignment.start, // Alinha o conteúdo ao início no eixo transversal
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end, // Alinha o conteúdo ao final
-                      crossAxisAlignment: CrossAxisAlignment.center, // Centraliza o conteúdo no eixo transversal
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(16.0), // Espaçamento interno
-                          child: SizedBox(
-                            width: 69,
-                            height: 24,
-                            child: Text(
-                              'Ver mais', // Texto do botão
-                              style: TextStyle(
-                                color: Colors.black, // Cor do texto
-                                fontSize: 16,
-                                fontFamily: 'Cardo', // Fonte do texto
-                                fontWeight: FontWeight.w400, // Peso da fonte (normal)
-                                height: 0, // Altura da linha do texto
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 20, // Espaçamento vertical
-              ),
+              
+              const SizedBox(height: 50), //espaçamento entre a imagem e a listaç
               Center(
                 child: Transform.rotate(
                   angle: -3.14, // Rotaciona o container (180 graus)
                   child: Container(
-                    width: 354, // Largura do container
+                    width: 354,
                     decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
                           width: 1,
-                          strokeAlign: BorderSide.strokeAlignCenter, // Alinhamento do traçado da borda
-                          color: Colors.black.withOpacity(0.25), // Cor da borda com opacidade
+                          color: Colors.black.withOpacity(0.25),
                         ),
                       ),
                     ),
                   ),
+                ),
+              ),
+              Container(
+                child: ListView.separated(
+                  shrinkWrap: true, // Ajusta o tamanho da lista
+                  itemBuilder: (BuildContext context, int culture) {
+                    final tabela = CultureRepository.tabela; // Corrigido o uso da variável
+                    return ListTile(
+                      tileColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        side: const BorderSide(width: 1, color: Color(0xFF13383A)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      contentPadding: const EdgeInsets.only(left: 20.0),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            tabela[culture].identificador,
+                            style: const TextStyle(
+                              color: Color(0xFF13383A),
+                              fontSize: 18,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(width: 220),
+                          tabela[culture].icone, // Adiciona o ícone ao Row
+                        ],
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const InspectionPage(), // Redireciona para a página InspectionPage
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  padding: const EdgeInsets.all(15),
+                  separatorBuilder: (_, __) => const Divider(
+                    color: Colors.transparent,
+                  ),
+                  itemCount: CultureRepository.tabela.length, // Corrigido o acesso ao length
                 ),
               ),
             ],
@@ -231,9 +230,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// Classe para o drawer (menu lateral) que permite navegar entre as telas
+// Drawer para navegação
 class DrawerScreen extends StatefulWidget {
-  final void Function(int, String) setIndex; // Função para atualizar o índice e o nome da propriedade
+  final void Function(int, String) setIndex;
+
   DrawerScreen({Key? key, required this.setIndex});
 
   @override
@@ -241,20 +241,20 @@ class DrawerScreen extends StatefulWidget {
 }
 
 class _DrawerScreenState extends State<DrawerScreen> {
-  late String userId; // ID do usuário autenticado
+  late String userId;
 
   @override
   void initState() {
     super.initState();
-    final user = FirebaseAuth.instance.currentUser; // Obtém o usuário autenticado
+    final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      userId = user.uid; // Define o ID do usuário
+      userId = user.uid;
     }
   }
 
-  void onItemTapped(int index, String propertyName) {
-    widget.setIndex(index, propertyName); // Notifica a tela principal sobre o item selecionado
-    ZoomDrawer.of(context)!.toggle(); // Fecha o drawer
+  void onItemTapped(int index, String propertyName){
+    widget.setIndex(index, propertyName); // Atualiza o índice e o nome da propriedade
+    ZoomDrawer.of(context)!.toggle(); //fecha o drawer
   }
 
   @override
@@ -363,15 +363,15 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
 // Widget para o botão de abrir o drawer
 class DrawerWidget extends StatelessWidget {
-  const DrawerWidget({Key? key});
+  const DrawerWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.menu, color: Colors.white), // Ícone do menu
-      onPressed: () {
-        ZoomDrawer.of(context)!.toggle(); // Alterna o estado do drawer
+    return GestureDetector(
+      onTap: () {
+        ZoomDrawer.of(context)!.toggle(); // Alternar a abertura do drawer
       },
+      child: const Icon(Icons.menu),
     );
   }
 }

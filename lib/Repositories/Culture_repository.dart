@@ -10,6 +10,14 @@ class CultureRepository {
         color: Color.fromRGBO(19, 56, 58, 1),
         size: 25,
       ),
-    ),    
+    ),
+    culture(
+      identificador: 'Inspeção 2',
+      icone: const Icon(
+        Icons.edit,
+        color: Color.fromRGBO(19, 56, 58, 1),
+        size: 25,
+      ),
+    ),
   ];
 }

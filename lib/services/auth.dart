@@ -182,33 +182,35 @@ class AutenthicationService extends ChangeNotifier {
     }
   }
 
-  Future<void> cadasterProperty({
+Future<void> cadasterProperty({
     required BuildContext context,
     required String propertyName,
     required String propertySize,
-    required String cep,
     required bool isChecked,
+    required double? latitude,
+    required double? longitude,
   }) async {
-    if (propertyName.isEmpty ||
-        propertySize.isEmpty ||
-        cep.isEmpty ||
-        !isChecked) {
+    if (propertyName.isEmpty || propertySize.isEmpty || !isChecked) {
       _exibirDialogoErro('Por favor, preencha todos os campos.', context);
       return;
     }
 
-    if (int.tryParse(propertySize) == null) {
-      _exibirDialogoErro(
-          "O tamanho da propriedade deve ser um número inteiro", context);
-    } else {
-      User? user = _firebasseAuth.currentUser;
-      String uid = user!.uid;
-      try {
-        if (user.displayName != null) {
-          await user.updateDisplayName(user.displayName!);
-        }
+    if (double.tryParse(propertySize) == null) {
+      _exibirDialogoErro("O tamanho da propriedade deve ser um número válido", context);
+      return;
+    }
 
+    User? user = _firebasseAuth.currentUser;
+    if (user == null) {
+      _exibirDialogoErro("Usuário não autenticado.", context);
+      return;
+    }
+
+    String uid = user.uid;
+    try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
+      
+      // Referência à coleção 'User'
       CollectionReference userCollection = firestore.collection("User");
       DocumentReference userDoc = userCollection.doc(uid);
 
@@ -219,43 +221,38 @@ class AutenthicationService extends ChangeNotifier {
 
       await userDoc.set(userData);
 
-     CollectionReference propertiesCollection =
-      userDoc.collection("properties");
+      // Referência à subcoleção 'properties'
+      CollectionReference propertiesCollection = userDoc.collection("properties");
 
-        Map<String, dynamic> propertyData = {
-          'name': propertyName,
-          'size': double.parse(propertySize),
-          'cep': cep,
-          'ownerId': uid,
-        };
-        _exibirDialogoCadastroSucesso(context, user);
+      // Dados da propriedade
+      Map<String, dynamic> propertyData = {
+        'name': propertyName,
+        'size': double.parse(propertySize),
+        'latitude': latitude,
+        'longitude': longitude,
+        'ownerId': uid,
+      };
 
-        //CRIAÇÃO DA SUBCOLEÇÃO CULTURE
-        DocumentReference propertyDoc =
-            await propertiesCollection.add(propertyData);
-        String propertyId = propertyDoc.id; // ID da propriedade criada
+      DocumentReference propertyDoc = await propertiesCollection.add(propertyData);
+      String propertyId = propertyDoc.id; // ID da propriedade criada
 
-        CollectionReference subCollection = propertyDoc.collection("Culture");
-
+      // Criação da subcoleção 'Culture'
+      CollectionReference cultureCollection = propertyDoc.collection("Culture");
       Map<String, dynamic> cultureData = {
         'Identifier': 'Dados Inspecionados',
       };
+      await cultureCollection.doc('Tomateiro').set(cultureData);
 
-      DocumentReference cultureDoc = subCollection.doc('Tomateiro');
-      await cultureDoc.set(cultureData);
-
-      // Criando subcoleção "Inspections"
-      CollectionReference inspectionsCollection =
-          cultureDoc.collection("Inspections");
-
+      // Criação da subcoleção 'Inspections' dentro da subcoleção 'Culture'
+      CollectionReference inspectionsCollection = cultureCollection.doc('Tomateiro').collection("Inspections");
       Map<String, dynamic> inspectionData = {
         'Identifier': 'Inspeção 1',
       };
+      await inspectionsCollection.doc('Inspection 1').set(inspectionData);
 
-        await inspectionsCollection.doc('Inspection 1').set(inspectionData);
-      } catch (error) {
-        _exibirDialogoErro(error.toString(), context);
-      }
+      _exibirDialogoCadastroSucesso(context);
+    } catch (e) {
+      _exibirDialogoErro("Erro ao cadastrar propriedade: ${e.toString()}", context);
     }
   }
 
@@ -279,7 +276,7 @@ class AutenthicationService extends ChangeNotifier {
     );
   }
 
-  void _exibirDialogoCadastroSucesso(BuildContext context, User? user) {
+  void _exibirDialogoCadastroSucesso(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -301,9 +298,50 @@ class AutenthicationService extends ChangeNotifier {
   }
 
   void navigateToAnotherPage(BuildContext context) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const ProfilePage()),
+      MaterialPageRoute(builder: (context) => const ProfilePage()), // Ajuste a página conforme necessário
     );
+  }
+
+  void _handleAuthException(FirebaseAuthException e, BuildContext context) {
+    switch (e.code) {
+      case "channel-error":
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Preencha todos os campos."),
+          backgroundColor: Colors.redAccent,
+        ));
+        break;
+      case "email-already-in-use":
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("O email já foi cadastrado!"),
+          backgroundColor: Colors.redAccent,
+        ));
+        break;
+      case "invalid-email":
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Email inválido!"),
+          backgroundColor: Colors.redAccent,
+        ));
+        break;
+      case "weak-password":
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("A senha deve ter no mínimo 6 caracteres!"),
+          backgroundColor: Colors.redAccent,
+        ));
+        break;
+      case "network-request-failed":
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Sem conexão com a internet!"),
+          backgroundColor: Colors.redAccent,
+        ));
+        break;
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(e.message ?? "Erro desconhecido."),
+          backgroundColor: Colors.redAccent,
+        ));
+        break;
+    }
   }
 }

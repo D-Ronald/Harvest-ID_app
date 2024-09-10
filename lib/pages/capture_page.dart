@@ -1,4 +1,3 @@
-import 'package:debug_no_cell/pages/dashboard_page.dart';
 import 'package:debug_no_cell/pages/preview_page.dart';
 import 'package:debug_no_cell/utils/routes.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +6,8 @@ import 'package:camera_camera/camera_camera.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:image_cropper/image_cropper.dart';
+
 
 class CapturePage extends StatefulWidget {
   @override
@@ -16,8 +17,39 @@ class CapturePage extends StatefulWidget {
 class _CapturePageState extends State<CapturePage> {
   File? archive;
 
-  showPreview(context, File? file) async {
-    file = Navigator.push(
+Future<void> _cropImage(File imageFile) async {
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: imageFile.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+      ],
+      uiSettings:[  
+        AndroidUiSettings(
+         toolbarTitle: 'Cortar Imagem',
+         toolbarColor: Color.fromRGBO(19,56,58,1),
+         toolbarWidgetColor: Colors.white,
+         initAspectRatio: CropAspectRatioPreset.square,
+         lockAspectRatio: true,
+         cropFrameStrokeWidth: 1, 
+         cropFrameColor: Colors.white, 
+         cropGridColor: Colors.white, 
+         hideBottomControls: true,
+
+        ),
+      ],
+    );
+
+
+    if (croppedFile != null) {
+      setState(() {
+        archive = File(croppedFile.path);
+      });
+      showPreview(context, archive);
+    }
+  }
+
+  void showPreview(context, File? file) async {
+    file = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (_) => PreviewPage(
@@ -48,7 +80,11 @@ class _CapturePageState extends State<CapturePage> {
                 context,
                 MaterialPageRoute(
                     builder: (_) => CameraCamera(
-                        onFile: (file) => showPreview(context, file!)))))
+                        onFile: (file) async {
+                          if (file != null) {
+                            await _cropImage(file);
+                          }
+                        }))))
       ])),
     );
   }

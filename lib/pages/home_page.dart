@@ -9,7 +9,7 @@ class HomePage extends StatelessWidget {
   void navigateToAnotherPage(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CadasterProperty_page()),
+      MaterialPageRoute(builder: (context) => CadasterPropertyPage()),
     );
   }
 
@@ -39,7 +39,7 @@ class HomePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CadasterProperty_page(),
+                        builder: (context) => CadasterPropertyPage(),
                       ),
                     );
                   },

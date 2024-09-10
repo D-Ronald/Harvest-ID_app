@@ -1,26 +1,69 @@
+import 'package:debug_no_cell/pages/coordinates.dart';
 import 'package:debug_no_cell/services/auth.dart';
-import 'package:flutter/material.dart';
-import 'package:csc_picker/csc_picker.dart';
-import 'package:csc_picker/model/select_status_model.dart';
-import 'package:debug_no_cell/utils/routes.dart';
-import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:debug_no_cell/utils/base.dart';
+import 'package:flutter/material.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-}
 
-class CadasterProperty_page extends StatefulWidget {
+
+class CadasterPropertyPage extends StatefulWidget {
   @override
   _CadasterPropertyPageState createState() => _CadasterPropertyPageState();
 }
 
-class _CadasterPropertyPageState extends State<CadasterProperty_page> {
+class _CadasterPropertyPageState extends State<CadasterPropertyPage> {
   AutenthicationService _autenthicationService = AutenthicationService();
-  TextEditingController _cepController = TextEditingController();
   TextEditingController _propertyNameController = TextEditingController();
   TextEditingController _propertySizeController = TextEditingController();
+
   bool isChecked = false;
+  var locationMessage = "";
+  double? latitude;
+  double? longitude;
+
+  void getCurrentLocation({LocationAccuracy accuracy = LocationAccuracy.high}) async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: accuracy);
+      setState(() {
+        latitude = position.latitude;
+        longitude = position.longitude;
+        locationMessage = 'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
+      });
+    } catch (e) {
+      setState(() {
+        locationMessage = "Erro ao obter localização: ${e.toString()}";
+      });
+    }
+  }
+
+  Future<void> _navigateAndDisplaySelection(BuildContext context) async {
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => CoordenadasPage()),
+  );
+  
+  if (result != null && result is Map<String, String>) {
+    setState(() {
+      latitude = double.tryParse(result['latitude'] ?? '');
+      longitude = double.tryParse(result['longitude'] ?? '');
+      locationMessage = 'Latitude: $latitude, Longitude: $longitude';
+});
+}
+}
+
+  Widget _buildLocationButton({required String label, required VoidCallback onPressed}) {
+    return TextButton(
+      style: TextButton.styleFrom(
+        backgroundColor: const Color.fromARGB(63, 0, 0, 0),
+      ),
+      onPressed: onPressed,
+      child: Text(
+        label,
+        style: const TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
   void _exibirDialogoCadastroSucesso(BuildContext context) {
     showDialog(
       context: context,
@@ -39,6 +82,11 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
         );
       },
     );
+  }
+
+  Widget spacing(BuildContext context, double factor) {
+    // Retorna um SizedBox para adicionar espaçamento
+    return SizedBox(height: factor * 10);
   }
 
   @override
@@ -137,52 +185,62 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
                 ),
               ),
             ),
-             spacing(context, 1),
-            genericTextForm(
-                context: context,
-                controller: _cepController,
-                labeltext: "Digite o CEP da sua propriedade:",
-                labelColor: darkGrayBase,
-                heightPercentage: 8,
-                padding: 25,
-                color: blackBase,
-                backgroundColor: mediumGrayBase,
-                borderRadius: 10),
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Checkbox(
-                    value: isChecked,
-                    onChanged: (bool? checked) {
-                      if (checked != null) {
-                        setState(() {
-                          isChecked = checked;
-                        });
-                      }
-                    },
-                    activeColor: const Color(0x3F000000),
+            const SizedBox(height: 20),
+            Center(
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.location_on,
+                    size: 46,
                   ),
-                ),
-                const Text('Tomateiro'),
-              ],
+                  const SizedBox(height: 20),
+                  Text("Posição: $locationMessage"),
+                  _buildLocationButton(
+                    label: 'Usar localização atual',
+                    onPressed: () => getCurrentLocation(),
+                  ),
+                  _buildLocationButton(
+                    label: 'Informar coordenadas',
+                    onPressed: () => _navigateAndDisplaySelection(context),
+                  ),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: isChecked,
+                        onChanged: (bool? checked) {
+                          if (checked != null) {
+                            setState(() {
+                              isChecked = checked;
+                            });
+                          }
+                        },
+                        activeColor: const Color(0x3F000000),
+                      ),
+                      const Text('Tomateiro'),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            spacing(context, 3),
-            genericButton(
-              context,
-              darkGreenBase,
-              whiteBase,
-              "Cadastrar propriedade",
-              6,
-              25,
-              () {
-                _autenthicationService.cadasterProperty(
-                    context: context,
-                    propertyName: _propertyNameController.text,
-                    propertySize: _propertySizeController.text,
-                    cep: _cepController.text,
-                    isChecked: isChecked);
-              },
+            const SizedBox(height: 20),
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: const Color.fromARGB(63, 0, 0, 0),
+              ),
+              onPressed: () {
+                  _autenthicationService.cadasterProperty(
+                  context: context,
+                  propertyName: _propertyNameController.text,
+                  propertySize: _propertySizeController.text,
+                  isChecked: isChecked,
+                  latitude: latitude,
+                  longitude: longitude,
+    );
+  },
+              child: const Text(
+                'Cadastrar propriedade',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),

@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  win32: any
   intl:
   fl_chart: ^0.45.0
   flutter_zoom_drawer: ^3.0.0
@@ -49,7 +50,6 @@ dependencies:
   hive: ^2.2.3
   shared_preferences: ^2.2.2
   hidden_drawer_menu: ^3.0.1
-  image_cropper: ^5.0.1
 
 
 dev_dependencies:

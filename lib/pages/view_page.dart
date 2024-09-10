@@ -20,7 +20,7 @@ class ViewPage extends StatelessWidget {
           children: [
             HomePage(),
             CapturePage(),
-            CadasterProperty_page(),
+            CadasterPropertyPage(),
             ProfilePage(),
             UserProfilePage()
           ],

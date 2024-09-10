@@ -1,3 +1,4 @@
+import 'package:debug_no_cell/pages/coordinates.dart';
 import 'package:debug_no_cell/services/auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:debug_no_cell/utils/base.dart';
@@ -33,17 +34,20 @@ class _CadasterPropertyPageState extends State<CadasterPropertyPage> {
       });
     }
   }
-
-  Future<void> _navigateAndDisplaySelection(BuildContext context) async {
-    final result = await Navigator.pushNamed(context, '/map');
-    if (result != null && result is Map<String, String>) {
-      setState(() {
-        latitude = double.tryParse(result['latitude'] ?? '');
-        longitude = double.tryParse(result['longitude'] ?? '');
-        locationMessage = 'Latitude: $latitude, Longitude: $longitude';
-      });
-    }
-  }
+Future<void> _navigateAndDisplaySelection(BuildContext context) async {
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => CoordenadasPage()),
+  );
+  
+  if (result != null && result is Map<String, String>) {
+    setState(() {
+      latitude = double.tryParse(result['latitude'] ?? '');
+      longitude = double.tryParse(result['longitude'] ?? '');
+      locationMessage = 'Latitude: $latitude, Longitude: $longitude';
+});
+}
+}
 
   Widget _buildLocationButton({required String label, required VoidCallback onPressed}) {
     return TextButton(

@@ -338,20 +338,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Cep: ${document['cep']}",
-                                  style: const TextStyle(
-                                    color: Color.fromARGB(255, 227, 220, 220),
-                                    fontSize: 12,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                              ],
-                            ),
+                            
                           ),
                         ],
                       ),

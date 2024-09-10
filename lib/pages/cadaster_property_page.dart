@@ -37,15 +37,19 @@ class _CadasterPropertyPageState extends State<CadasterPropertyPage> {
   }
 
   Future<void> _navigateAndDisplaySelection(BuildContext context) async {
-    final result = await Navigator.pushNamed(context, '/map');
-    if (result != null && result is Map<String, String>) {
-      setState(() {
-        latitude = double.tryParse(result['latitude'] ?? '');
-        longitude = double.tryParse(result['longitude'] ?? '');
-        locationMessage = 'Latitude: $latitude, Longitude: $longitude';
-      });
-    }
-  }
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => CoordenadasPage()),
+  );
+  
+  if (result != null && result is Map<String, String>) {
+    setState(() {
+      latitude = double.tryParse(result['latitude'] ?? '');
+      longitude = double.tryParse(result['longitude'] ?? '');
+      locationMessage = 'Latitude: $latitude, Longitude: $longitude';
+});
+}
+}
 
   Widget _buildLocationButton({required String label, required VoidCallback onPressed}) {
     return TextButton(

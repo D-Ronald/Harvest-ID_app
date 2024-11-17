@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:debug_no_cell/Repositories/Culture_repository.dart';
-import 'package:debug_no_cell/pages/inspection_page.dart';
+import 'package:debug_no_cell/pages/dashboard_page.dart';
 import 'package:debug_no_cell/utils/base.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key});
@@ -14,37 +14,51 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  int currentIndex = 0; // Índice da tela atual no drawer (menu lateral)
-  String currentPropertyName = ''; // Nome da propriedade atual
-
-  void updateCurrentIndex(int index, String propertyName) {
-    setState(() {
-      currentIndex = index; // Atualiza o índice com base no item selecionado
-      currentPropertyName = propertyName; // Atualiza o nome da propriedade
-    });
-  }
+  int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return ZoomDrawer(
-      controller: ZoomDrawerController(), // Controlador para o drawer
+      controller: ZoomDrawerController(),
       menuScreen: DrawerScreen(
-        setIndex: (index, propertyName) {
-          updateCurrentIndex(index, propertyName);
+        setIndex: (index) {
+          setState(() {
+            currentIndex = index;
+          });
         },
       ),
-      mainScreen: HomeScreen(propertytitle: currentPropertyName), // Exibe a tela correspondente ao índice atual
+      mainScreen: currentScreen(),
       borderRadius: 30,
       showShadow: true,
       angle: 0.0,
-      menuBackgroundColor: const Color.fromARGB(255, 49, 101, 103), // Cor de fundo do menu
+      menuBackgroundColor: const Color.fromARGB(255, 49, 101, 103),
     );
+  }
+
+  Widget currentScreen() {
+    switch (currentIndex) {
+      case 0:
+        return HomeScreen(
+          propertytitle: '',
+        );
+      case 1:
+        return Container(
+          color: Colors.red,
+        );
+      case 2:
+        return Container(
+          color: Colors.green,
+        );
+      default:
+        return HomeScreen(
+          propertytitle: '',
+        );
+    }
   }
 }
 
 class HomeScreen extends StatefulWidget {
-  final String propertytitle; // Título da propriedade (se houver)
-
+  final String propertytitle;
   const HomeScreen({Key? key, required this.propertytitle});
 
   @override
@@ -52,13 +66,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  void navigateToAnotherPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const DashboardPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         title: Text(
-          widget.propertytitle.isEmpty ? 'Home' : widget.propertytitle, // Define o título da AppBar
+          widget.propertytitle,
           style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -79,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
             bottomRight: Radius.circular(8),
           ),
         ),
-        leading: const DrawerWidget(), // Botão para abrir o drawer
+        leading: DrawerWidget(),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 16.0),
@@ -111,15 +132,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(
-                      'assets/images/Tomateiro.jpg',
-                      width: width(context, 50),
-                      height: height(context, 30),
-                      fit: BoxFit.cover, // Ajuste da imagem dentro do container
-                    ),
+                    child: Image.asset('assets/images/Tomateiro.jpg',
+                        width: width(context, 50),
+                        height: height(context, 30),
+                        fit: BoxFit.cover),
                   ),
                 ),
               ),
+              const SizedBox(width: 60),
               const SizedBox(height: 20),
               const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: TextStyle(
                             color: Color(0xFF13383A),
                             fontSize: 18,
-                            fontFamily: 'Inter',
+                            fontFamily: 'inter',
                             fontWeight: FontWeight.w600,
                             height: 0,
                           ),
@@ -151,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 18,
-                        fontFamily: 'Inter',
+                        fontFamily: 'inter',
                         fontWeight: FontWeight.w100,
                         height: 0,
                       ),
@@ -159,67 +179,58 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              
-              const SizedBox(height: 50), //espaçamento entre a imagem e a listaç
+              InkWell(
+                onTap: () {
+                  navigateToAnotherPage(context);
+                },
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: SizedBox(
+                            width: 69,
+                            height: 24,
+                            child: Text(
+                              'Ver mais',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'Cardo',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               Center(
                 child: Transform.rotate(
-                  angle: -3.14, // Rotaciona o container (180 graus)
+                  angle: -3.14,
                   child: Container(
                     width: 354,
                     decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
                           width: 1,
+                          strokeAlign: BorderSide.strokeAlignCenter,
                           color: Colors.black.withOpacity(0.25),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
-              Container(
-                child: ListView.separated(
-                  shrinkWrap: true, // Ajusta o tamanho da lista
-                  itemBuilder: (BuildContext context, int culture) {
-                    final tabela = CultureRepository.tabela; // Corrigido o uso da variável
-                    return ListTile(
-                      tileColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        side: const BorderSide(width: 1, color: Color(0xFF13383A)),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      contentPadding: const EdgeInsets.only(left: 20.0),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            tabela[culture].identificador,
-                            style: const TextStyle(
-                              color: Color(0xFF13383A),
-                              fontSize: 18,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(width: 220),
-                          tabela[culture].icone, // Adiciona o ícone ao Row
-                        ],
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const InspectionPage(), // Redireciona para a página InspectionPage
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  padding: const EdgeInsets.all(15),
-                  separatorBuilder: (_, __) => const Divider(
-                    color: Colors.transparent,
-                  ),
-                  itemCount: CultureRepository.tabela.length, // Corrigido o acesso ao length
                 ),
               ),
             ],
@@ -230,10 +241,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// Drawer para navegação
 class DrawerScreen extends StatefulWidget {
-  final void Function(int, String) setIndex;
-
+  final ValueSetter<int> setIndex;
   DrawerScreen({Key? key, required this.setIndex});
 
   @override
@@ -242,6 +251,7 @@ class DrawerScreen extends StatefulWidget {
 
 class _DrawerScreenState extends State<DrawerScreen> {
   late String userId;
+  late Widget propertyList;
 
   @override
   void initState() {
@@ -252,21 +262,24 @@ class _DrawerScreenState extends State<DrawerScreen> {
     }
   }
 
-  void onItemTapped(int index, String propertyName){
-    widget.setIndex(index, propertyName); // Atualiza o índice e o nome da propriedade
-    ZoomDrawer.of(context)!.toggle(); //fecha o drawer
+  void saveIDproperty(String propertyId) {
+    
+    setState(() {
+      propertyId = propertyId;
+    });
   }
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 49, 101, 103), // Cor de fundo do drawer
+      backgroundColor: const Color.fromARGB(255, 49, 101, 103),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('User')
             .doc(userId)
             .collection('properties')
-            .snapshots(), // Escuta alterações na coleção de propriedades do usuário
+            .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -302,12 +315,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
               ),
             );
           }
-          return Padding(
+          propertyList = Padding(
             padding: const EdgeInsets.only(top: 250.0),
             child: ListView.builder(
-              itemCount: snapshot.data!.docs.length, // Número de propriedades
+              itemCount: snapshot.data!.docs.length,
               itemBuilder: (BuildContext context, int index) {
-                DocumentSnapshot document = snapshot.data!.docs[index]; // Documento da propriedade
+                DocumentSnapshot document = snapshot.data!.docs[index];
                 return Column(
                   children: [
                     SizedBox(
@@ -332,30 +345,30 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     ),
                     if (index != snapshot.data!.docs.length - 1)
                       const Divider(
-                        height: 1.0, // Divisor entre propriedades
+                        height: 1.0,
                       ),
                   ],
                 );
               },
             ),
           );
+          return propertyList;
         },
       ),
     );
   }
 }
 
-// Widget para o botão de abrir o drawer
 class DrawerWidget extends StatelessWidget {
-  const DrawerWidget({Key? key}) : super(key: key);
+  const DrawerWidget({Key? key});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        ZoomDrawer.of(context)!.toggle(); // Alternar a abertura do drawer
+    return IconButton(
+      onPressed: () {
+        ZoomDrawer.of(context)!.toggle();
       },
-      child: const Icon(Icons.menu),
+      icon: const Icon(Icons.cached, color: Colors.white),
     );
   }
 }

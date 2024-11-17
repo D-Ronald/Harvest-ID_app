@@ -219,7 +219,7 @@ BottomNavigationBar navigationBar(
       ),
       //Icone de perfil
       BottomNavigationBarItem(
-        icon: Icon(Icons.perm_identity, color: iconColor),
+        icon: Icon(Icons.eco, color: iconColor),
         label: "",
       ),
     ],

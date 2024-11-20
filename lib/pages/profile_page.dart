@@ -338,7 +338,23 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
-                            
+                            subtitle: const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                //Text(
+                                  //"Latitude: ${document['cep']}", 
+                                  //style: const TextStyle(
+                                    //color: Color.fromARGB(255, 227, 220, 220),
+                                    //fontSize: 12,
+                                    //fontFamily: 'Inter',
+                                    //fontWeight: FontWeight.normal,
+                                  //),
+                                //),
+                              ],
+                            ),
+                            onTap: () {
+                              onItemTapped(index, document['name']); // Chama a função quando o item é pressionado
+                            },
                           ),
                         ],
                       ),

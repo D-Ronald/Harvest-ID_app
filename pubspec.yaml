@@ -49,6 +49,7 @@ dependencies:
   hive: ^2.2.3
   shared_preferences: ^2.2.2
   hidden_drawer_menu: ^3.0.1
+  win32: ^2.0.0
 
 
 dev_dependencies:

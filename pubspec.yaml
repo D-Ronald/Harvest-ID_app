@@ -50,9 +50,7 @@ dependencies:
   hive: ^2.2.3
   shared_preferences: ^2.2.2
   hidden_drawer_menu: ^3.0.1
-  geolocator: ^7.6.2
-  google_maps_flutter: ^2.5.3
-  
+  win32: ^2.0.0
 
 
 dev_dependencies:

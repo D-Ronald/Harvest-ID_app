@@ -93,7 +93,6 @@ class LoginPage extends StatelessWidget {
         ),
         spacing(context, 4),
         genericButton(context, darkGreenBase, whiteBase, "Entrar", 7, 70, () {
-          print("Login");
           _autenthicationService.login(
               context: context,
               email: _emailController.text,

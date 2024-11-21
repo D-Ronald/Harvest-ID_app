@@ -174,90 +174,95 @@ class _InspectionPageContentState extends State<_InspectionPageContent> {
                                     color: Colors.transparent,
                                     shape: RoundedRectangleBorder(
                                       side: BorderSide(
-                                          width: 1,
-                                          color: Color(0xFFC7592A)),
+                                          width: 1, color: Color(0xFFC7592A)),
                                     ),
                                   ),
                                   child: StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection('ngrok')
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasError) {
-                              return const Center(
-                                child: Text(
-                                  'Erro ao carregar dados.',
-                                  style: TextStyle(color: Colors.red),
+                                    stream: FirebaseFirestore.instance
+                                        .collection('ngrok')
+                                        .snapshots(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasError) {
+                                        return const Center(
+                                          child: Text(
+                                            'Erro ao carregar dados.',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        );
+                                      }
+
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+
+                                      final data = snapshot.data!;
+                                      if (data.docs.isEmpty) {
+                                        return const Center(
+                                          child: Text('Nenhum dado disponível.'),
+                                        );
+                                      }
+                                      final doc = data.docs.first;
+                                      final apiUrl = doc['url'];
+
+                                      // Chamando a função para consumir os dados da API
+                                      return FutureBuilder<Map<String, dynamic>>(
+                                        future: fetchApiData(apiUrl),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const Center(
+                                              child: CircularProgressIndicator(),
+                                            );
+                                          }
+                                          if (snapshot.hasError) {
+                                            return const Center(
+                                              child: Text(
+                                                'Erro ao carregar dados da API.',
+                                                style: TextStyle(color: Colors.red),
+                                              ),
+                                            );
+                                          }
+
+                                          final apiData = snapshot.data!;
+
+                                          // Exibindo os dados da API
+                                          return ListView(
+                                            children: apiData.entries.map((entry) {
+                                              return ListTile(
+                                                title: Text(entry.key),
+                                                subtitle: Text(entry.value.toString()),
+                                              );
+                                            }).toList(),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
                                 ),
-                              );
-                            }
-
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-
-                            final data = snapshot.data!;
-                            if (data.docs.isEmpty) {
-                              return const Center(
-                                child: Text('Nenhum dado disponível.'),
-                              );
-                            }
-                            final doc = data.docs.first;
-                            final apiUrl = doc['url'];
-
-                            //dados consumidos da API
-                            return FutureBuilder<Map<String, dynamic>>(
-                              future: fetchApiData(apiUrl),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                                if (snapshot.hasError) {
-                                  return const Center(
-                                    child: Text(
-                                      'Erro ao carregar dados da API.',
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  );
-                                }
-
-                                final apiData = snapshot.data!;
-                                return ListView(
-                                  children: apiData.entries.map((entry) {
-                                    return ListTile(
-                                      title: Text(entry.key),
-                                      subtitle: Text(entry.value.toString()),
-                                    );
-                                  }).toList(),
-                                );
-                              },
-                            );
-                          },
-                        ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-              ]
-              ),
+          ),
         ),
-      ]
       ),
-    ))));
+    );
   }
 
-  // Método para consumir a API
+  // Método para consumir a API e retornar os dados
   Future<Map<String, dynamic>> fetchApiData(String url) async {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
+      // Processando a resposta JSON
       return json.decode(response.body) as Map<String, dynamic>;
     } else {
       throw Exception('Erro ao carregar dados da API.');

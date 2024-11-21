@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:debug_no_cell/pages/ReadData/get_docs_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -176,20 +178,89 @@ class _InspectionPageContentState extends State<_InspectionPageContent> {
                                           color: Color(0xFFC7592A)),
                                     ),
                                   ),
+                                  child: StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('ngrok')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return const Center(
+                                child: Text(
+                                  'Erro ao carregar dados.',
+                                  style: TextStyle(color: Colors.red),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ],
+                              );
+                            }
+
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+
+                            final data = snapshot.data!;
+                            if (data.docs.isEmpty) {
+                              return const Center(
+                                child: Text('Nenhum dado disponível.'),
+                              );
+                            }
+                            final doc = data.docs.first;
+                            final apiUrl = doc['url'];
+
+                            //dados consumidos da API
+                            return FutureBuilder<Map<String, dynamic>>(
+                              future: fetchApiData(apiUrl),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                                if (snapshot.hasError) {
+                                  return const Center(
+                                    child: Text(
+                                      'Erro ao carregar dados da API.',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  );
+                                }
+
+                                final apiData = snapshot.data!;
+                                return ListView(
+                                  children: apiData.entries.map((entry) {
+                                    return ListTile(
+                                      title: Text(entry.key),
+                                      subtitle: Text(entry.value.toString()),
+                                    );
+                                  }).toList(),
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-          ),
+              ]
+              ),
         ),
+      ]
       ),
-    );
+    ))));
+  }
+
+  // Método para consumir a API
+  Future<Map<String, dynamic>> fetchApiData(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return json.decode(response.body) as Map<String, dynamic>;
+    } else {
+      throw Exception('Erro ao carregar dados da API.');
+    }
   }
 }

@@ -1,6 +1,9 @@
 import 'dart:math';
-
+import 'package:debug_no_cell/pages/generics_dialogs.dart' as custom;
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debug_no_cell/utils/base.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:path/path.dart' as path;
@@ -45,7 +48,7 @@ class SendImage {
       var responseString = await response.stream.bytesToString();
       print(responseString);
       if (responseString == "no plants") {
-        Dialog.dialog(
+        custom.Dialog.dialog(
           context: context,
           color: redBase,
           title: "Isso não se parece com uma colheita",
@@ -53,7 +56,7 @@ class SendImage {
               "Não foi possível identificar nenhuma colheita na imagem.\n${responseString}",
         );
       } else if (responseString == "plants") {
-        Dialog.dialog(
+        custom.Dialog.dialog(
           context: context,
           color: darkGreenBase,
           title: "Análise bem sucedida",
@@ -61,7 +64,7 @@ class SendImage {
               "Você pode verificar o resultado na aba de inspeções.\n${responseString}",
         );
       } else {
-        Dialog.dialog(
+        custom.Dialog.dialog(
           context: context,
           color: redBase,
           title: "Tente Novamente",
@@ -71,7 +74,7 @@ class SendImage {
       }
     } on ClientException catch (e) {
       if (e.message == "Connection reset by peer") {
-        Dialog.dialog(
+        custom.Dialog.dialog(
           color: redBase,
           context: context,
           title: "Falha na comunicação",
@@ -80,5 +83,27 @@ class SendImage {
         );
       }
     }
+  }
+}
+  Future<Map<String, dynamic>> fetchAndDisplayApiData() async {
+  // Buscando a URL no Firestore
+  final snapshot = await FirebaseFirestore.instance.collection('ngrok').get();
+
+  if (snapshot.docs.isEmpty) {
+    throw Exception('Nenhuma URL encontrada na coleção "ngrok".');
+  }
+
+  // Pega a URL do Firestore
+  final apiUrl = snapshot.docs.first['url'];
+
+  // Fazendo a requisição HTTP
+  final response = await http.get(Uri.parse(apiUrl));
+
+  if (response.statusCode == 200) {
+    // Se a resposta for bem-sucedida, decodifica os dados JSON e retorna como Map
+    return json.decode(response.body) as Map<String, dynamic>;
+  } else {
+    // Caso contrário, lança uma exceção
+    throw Exception('Erro ao carregar dados da API.');
   }
 }

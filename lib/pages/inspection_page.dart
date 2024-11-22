@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:debug_no_cell/services/send.dart';
 import 'package:http/http.dart' as http;
 import 'package:debug_no_cell/pages/ReadData/get_docs_firebase.dart';
 import 'package:flutter/material.dart';
@@ -41,21 +42,20 @@ class _InspectionPageContentState extends State<_InspectionPageContent> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(
-              Icons.info_outline,
-              color: Colors.white,
-               // Change the color here
-            ),
-            onPressed: () {
-            // Navegar para a página GetDocsFirebase
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const GetDocsFirebase(),
-                ),
-              );
-            }
-          )
+              icon: const Icon(
+                Icons.info_outline,
+                color: Colors.white,
+                // Change the color here
+              ),
+              onPressed: () {
+                // Navegar para a página GetDocsFirebase
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const GetDocsFirebase(),
+                  ),
+                );
+              })
         ],
         centerTitle: true,
         backgroundColor: const Color.fromRGBO(19, 56, 58, 1),
@@ -113,8 +113,10 @@ class _InspectionPageContentState extends State<_InspectionPageContent> {
                                 sections: [
                                   PieChartSectionData(
                                     color: isHealthy
-                                        ? const Color.fromARGB(255, 110, 170, 121)
-                                        : const Color.fromARGB(255, 203, 92, 84),
+                                        ? const Color.fromARGB(
+                                            255, 110, 170, 121)
+                                        : const Color.fromARGB(
+                                            255, 203, 92, 84),
                                     radius: 30,
                                   ),
                                 ],
@@ -178,20 +180,10 @@ class _InspectionPageContentState extends State<_InspectionPageContent> {
                                           width: 1, color: Color(0xFFC7592A)),
                                     ),
                                   ),
-                                  child: StreamBuilder<QuerySnapshot>(
-                                    stream: FirebaseFirestore.instance
-                                        .collection('ngrok')
-                                        .snapshots(),
+                                  child: FutureBuilder<Map<String, dynamic>>(
+                                    future:
+                                        fetchAndDisplayApiData(), // Chamada para buscar dados
                                     builder: (context, snapshot) {
-                                      if (snapshot.hasError) {
-                                        return const Center(
-                                          child: Text(
-                                            'Erro ao carregar dados.',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        );
-                                      }
-
                                       if (snapshot.connectionState ==
                                           ConnectionState.waiting) {
                                         return const Center(
@@ -199,78 +191,49 @@ class _InspectionPageContentState extends State<_InspectionPageContent> {
                                         );
                                       }
 
-                                      final data = snapshot.data!;
-                                      if (data.docs.isEmpty) {
-                                        return const Center(
-                                          child: Text('Nenhum dado disponível.'),
+                                      if (snapshot.hasError) {
+                                        return Center(
+                                          child: Text(
+                                            'Erro: ${snapshot.error}',
+                                            style: const TextStyle(
+                                                color: Colors.red),
+                                          ),
                                         );
                                       }
-                                      final doc = data.docs.first;
-                                      final apiUrl = doc['url'];
 
-                                      return WebView(
-                                    initialUrl: apiUrl,
-                                javascriptMode: JavascriptMode.unrestricted,
-                                  );
-                                        },
+                                      // Dados carregados com sucesso
+                                      final apiData = snapshot.data!;
 
-                                      // Chamando a função para consumir os dados da API                                    return FutureBuilder<Map<String, dynamic>>(
-//                                         future: fetchApiData(apiUrl),
-//                                         builder: (context, snapshot) {
-//                                           if (snapshot.connectionState ==
-//                                               ConnectionState.waiting) {
-//                                             return const Center(
-//                                               child: CircularProgressIndicator(),
-//                                             );
-//                                           }
-//                                           if (snapshot.hasError) {
-//                                             return const Center(
-//                                               child: Text(
-//                                                 'Erro ao carregar dados da API.',
-//                                                 style: TextStyle(color: Colors.red),
-//                                               ),
-//                                             );
-//                                           }
-
-//                                           final apiData = snapshot.data!;
-
-//                                           // Exibindo os dados da API
-//                                           return ListView(
-//                                             children: apiData.entries.map((entry) {
-//                                               return ListTile(
-//                                                 title: Text(entry.key),
-//                                                 subtitle: Text(entry.value.toString()),
-//                                               );
-//                                             }).toList(),
-//                                           );
-//                                         },
-//                                       );
-//                                     },
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ListView(
+                                          children:
+                                              apiData.entries.map((entry) {
+                                            return Text(
+                                              '${entry.key}: ${entry.value}',
+                                              style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
                               ],
-                             ),                           ),
-                      ],
-                     ),
-                ],
-             ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-         ],
-         ),
-         ),
-     ),
-     ),
-  );
-//   }
-
-//   // Método para consumir a API e retornar os dados
-//   Future<Map<String, dynamic>> fetchApiData(String url) async {
-//     final response = await http.get(Uri.parse(url));
-//     if (response.statusCode == 200) {
-//       // Processando a resposta JSON
-//       return json.decode(response.body) as Map<String, dynamic>;
-//     } else {
-//       throw Exception('Erro ao carregar dados da API.');
-//     }
- }
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

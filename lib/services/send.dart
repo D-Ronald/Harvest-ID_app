@@ -12,6 +12,7 @@ import 'package:debug_no_cell/utils/routes.dart';
 import 'dart:convert';
 import 'package:debug_no_cell/pages/generics_dialogs.dart';
 import 'package:debug_no_cell/services/auth.dart';
+import "package:firebase_storage/firebase_storage.dart";
 
 class SendImage {
   final File? file;
@@ -33,8 +34,37 @@ class SendImage {
     }
   }
 
+  Future<void> downloadAndSaveImage(String firebasePath) async {
+    var fileName = 'image.jpg';
+    try {
+      // 1. Obtenha o URL da imagem no Firebase Storage
+      final ref = FirebaseStorage.instance.ref(firebasePath);
+      final imageUrl = await ref.getDownloadURL();
+
+      // 2. Faça o download da imagem usando o pacote http
+      final response = await http.get(Uri.parse(imageUrl));
+
+      if (response.statusCode == 200) {
+        // 3. Obtenha o diretório local onde o arquivo será salvo
+        final directory = 'assets/images';
+
+        // 4. Crie o arquivo no diretório local
+        final file = File('${directory}/$fileName');
+
+        // 5. Salve os bytes da imagem no arquivo
+        await file.writeAsBytes(response.bodyBytes);
+
+        print('Imagem salva em: ${file.path}');
+      } else {
+        print('Erro ao fazer o download da imagem: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Erro: $e');
+    }
+  }
+
   Future<void> sendImage(context) async {
-    var url = Uri.parse('https://79b1-35-245-146-92.ngrok-free.app/predict');
+    var url = Uri.parse('https://66f4-35-245-146-92.ngrok-free.app/predict');
     var request = http.MultipartRequest('POST', url);
     request.files
         .add(await http.MultipartFile.fromPath('image', treatArchive(file)));
@@ -43,18 +73,20 @@ class SendImage {
       'Content-Type': 'multipart/form-data',
       'Authorization': 'Bearer ${token}'
     });
+
     try {
       var response = await request.send();
       var responseString = await response.stream.bytesToString();
       print(responseString);
-      if (responseString == "no plants") {
-        custom.Dialog.dialog(
-          context: context,
-          color: redBase,
-          title: "Isso não se parece com uma colheita",
-          message:
-              "Não foi possível identificar nenhuma colheita na imagem.\n${responseString}",
-        );
+      if (response.statusCode == 200) {
+        var json = jsonDecode(responseString);
+        var imageUrl = json['image_url'];
+        List<String> prediction = (json['predictions'] as List)
+          .map((prediction) => prediction['class'] as String).toList();
+        downloadAndSaveImage(imageUrl);
+        var image = '';
+        custom.Dialog.imageDialog(
+            context: context, title: "Resultado", imagePath: imageUrl, text: prediction);
       } else if (responseString == "plants") {
         custom.Dialog.dialog(
           context: context,
@@ -85,7 +117,8 @@ class SendImage {
     }
   }
 }
-  Future<Map<String, dynamic>> fetchAndDisplayApiData() async {
+
+Future<Map<String, dynamic>> fetchAndDisplayApiData() async {
   // Buscando a URL no Firestore
   final snapshot = await FirebaseFirestore.instance.collection('ngrok').get();
 

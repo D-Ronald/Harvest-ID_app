@@ -12,6 +12,7 @@ import 'package:debug_no_cell/Repositories/Culture_repository.dart';
 class AuthException implements Exception {
   String message;
   String? propertyId;
+
   AuthException(this.message);
 }
 
@@ -75,6 +76,7 @@ class AutenthicationService extends ChangeNotifier {
             Map<String, dynamic> userData = {
               'name': name,
               'email': email,
+              'userID': userId,
               //'property_id': propertyId,
             };
 

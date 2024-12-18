@@ -13,6 +13,9 @@ import 'dart:convert';
 import 'package:debug_no_cell/pages/generics_dialogs.dart';
 import 'package:debug_no_cell/services/auth.dart';
 import "package:firebase_storage/firebase_storage.dart";
+import 'package:firebase_auth/firebase_auth.dart';
+
+String? userId;
 
 class SendImage {
   final File? file;
@@ -140,3 +143,9 @@ Future<Map<String, dynamic>> fetchAndDisplayApiData() async {
     throw Exception('Erro ao carregar dados da API.');
   }
 }
+
+// Para resgatar ID de usuário:
+void fetchUserId() {
+  userId = FirebaseAuth.instance.currentUser?.uid;
+}
+

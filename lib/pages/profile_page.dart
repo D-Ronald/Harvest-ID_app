@@ -160,76 +160,46 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               
-              const SizedBox(height: 50), //espaçamento entre a imagem e a listaç
-              Center(
-                child: Transform.rotate(
-                  angle: -3.14, // Rotaciona o container (180 graus)
-                  child: Container(
-                    width: 354,
-                    decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          width: 1,
-                          color: Colors.black.withOpacity(0.25),
+              const SizedBox(height: 50),
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.all(15),
+              itemCount: 0, // CultureRepository.tabela.length,
+              itemBuilder: (context, index) {
+                // final tabela = CultureRepository.tabela;
+                return ListTile(
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(width: 1, color: Color(0xFF13383A)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  title: Row(
+                    children: [
+                      Text(
+                        'Identificador', // tabela[index].identificador,
+                        style: const TextStyle(
+                          color: Color(0xFF13383A),
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                    ),
+                      const Spacer(),
+                      Icon(Icons.edit, color: Color.fromRGBO(19, 56, 58, 1), size: 25), // tabela[index].icone,
+                    ],
                   ),
-                ),
-              ),
-              Container(
-                child: ListView.separated(
-                  shrinkWrap: true, // Ajusta o tamanho da lista
-                  itemBuilder: (BuildContext context, int culture) {
-                    final tabela = CultureRepository.tabela; // Corrigido o uso da variável
-                    return ListTile(
-                      tileColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        side: const BorderSide(width: 1, color: Color(0xFF13383A)),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      contentPadding: const EdgeInsets.only(left: 20.0),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            tabela[culture].identificador,
-                            style: const TextStyle(
-                              color: Color(0xFF13383A),
-                              fontSize: 18,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(width: 220),
-                          tabela[culture].icone, // Adiciona o ícone ao Row
-                        ],
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const InspectionPage(), // Redireciona para a página InspectionPage
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  padding: const EdgeInsets.all(15),
-                  separatorBuilder: (_, __) => const Divider(
-                    color: Colors.transparent,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const InspectionPage()),
                   ),
-                  itemCount: CultureRepository.tabela.length, // Corrigido o acesso ao length
-                ),
-              ),
-            ],
+                );
+              },
+              separatorBuilder: (_, __) => const Divider(color: Colors.transparent),
+            ),
           ),
-        ),
+        ],
       ),
-    );
+    )));
   }
 }
-
 // Drawer para navegação
 class DrawerScreen extends StatefulWidget {
   final void Function(int, String) setIndex;

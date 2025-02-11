@@ -19,6 +19,7 @@ class _PropertyRepositoryState extends State<PropertyRepository> {
   void initState() {
     super.initState();
     userId = FirebaseAuth.instance.currentUser!.uid;
+
   }
 
   @override

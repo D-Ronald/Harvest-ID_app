@@ -8,6 +8,13 @@ class CultureRepository extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (uid.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(title: Text("Inspections")),
+        body: Center(child: Text("Erro: ID de usuário inválido.")),
+      );
+    }
+
     CollectionReference userCollection = FirebaseFirestore.instance.collection("User");
     DocumentReference userDoc = userCollection.doc(uid);
     CollectionReference inspectionsCollection = userDoc.collection("inspection");
@@ -23,12 +30,12 @@ class CultureRepository extends StatelessWidget {
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(child: Text("Nenhuma inspeção encontrada."));
           }
-          return ListView.builder(
+          return ListView.separated(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
               var document = snapshot.data!.docs[index];
               Map<String, dynamic> prediction = document["prediction"] ?? {};
-              
+
               return Card(
                 margin: EdgeInsets.all(8.0),
                 child: ListTile(
@@ -45,6 +52,7 @@ class CultureRepository extends StatelessWidget {
                 ),
               );
             },
+            separatorBuilder: (context, index) => Divider(),
           );
         },
       ),

@@ -23,7 +23,9 @@ class _InspectionRepositoryState extends State<InspectionRepository> {
     return Scaffold(
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('inspection')
+            .collection('User') 
+            .doc(userId) 
+            .collection('inspection') 
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -49,8 +51,13 @@ class _InspectionRepositoryState extends State<InspectionRepository> {
               separatorBuilder: (BuildContext context, int index) => const Divider(),
               itemBuilder: (BuildContext context, int index) {
                 DocumentSnapshot document = snapshot.data!.docs[index];
-                Map<String, dynamic> prediction = document['prediction'] ?? {};
-                String timestamp = document['timestamp'] ?? 'N/A';
+
+                Map<String, dynamic>? prediction = document['prediction'] as Map<String, dynamic>?;
+
+                dynamic timestampRaw = document['timestamp'];
+                String timestamp = timestampRaw is Timestamp
+                    ? timestampRaw.toDate().toString() // Converte Timestamp para formato legível
+                    : (timestampRaw ?? 'N/A');
 
                 return SizedBox(
                   width: MediaQuery.of(context).size.width / 1.2,
@@ -60,7 +67,7 @@ class _InspectionRepositoryState extends State<InspectionRepository> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Classe: ${prediction['class'] ?? 'Desconhecido'}",
+                        "Classe: ${prediction?['class'] ?? 'Desconhecido'}",
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 16,
@@ -69,7 +76,7 @@ class _InspectionRepositoryState extends State<InspectionRepository> {
                         ),
                       ),
                       Text(
-                        "Confiança: ${prediction['average_confidence']?.toStringAsFixed(2) ?? 'N/A'}%",
+                        "Confiança: ${prediction?['average_confidence']?.toStringAsFixed(2) ?? 'N/A'}%",
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 14,
@@ -78,7 +85,7 @@ class _InspectionRepositoryState extends State<InspectionRepository> {
                         ),
                       ),
                       Text(
-                        "Ocorrências: ${prediction['occurrences'] ?? 'N/A'}",
+                        "Ocorrências: ${prediction?['occurrences'] ?? 'N/A'}",
                         style: const TextStyle(
                           color: Color.fromARGB(255, 151, 151, 151),
                           fontSize: 12,

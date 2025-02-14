@@ -1,3 +1,4 @@
+import 'package:debug_no_cell/Repositories/Culture_repository.dart';
 import 'package:debug_no_cell/pages/cadaster_property_page.dart';
 import 'package:debug_no_cell/pages/capture_page.dart';
 import 'package:debug_no_cell/pages/profile_page.dart';
@@ -22,7 +23,7 @@ class ViewPage extends StatelessWidget {
             CapturePage(),
             CadasterProperty_page(),
             ProfilePage(),
-            UserProfilePage()
+            UserProfilePage(),
           ],
         ),
         bottomNavigationBar: navigationBar(

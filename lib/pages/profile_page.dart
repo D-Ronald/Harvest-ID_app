@@ -52,6 +52,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late String userId;
+
+  @override
+  @override
+  void initState() {
+    super.initState();
+    userId = FirebaseAuth.instance.currentUser!.uid; // Obtém o ID do usuário autenticado
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.asset(
-                      'assets/images/Tomateiro.jpg',
+                      'assets/images/Bananeira.jpg',
                       width: width(context, 50),
                       height: height(context, 30),
                       fit: BoxFit.cover, // Ajuste da imagem dentro do container
@@ -120,6 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
               const SizedBox(height: 20),
               const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: 145,
                         height: 26,
                         child: Text(
-                          'TOMATE',
+                          'Bananeira',
                           style: TextStyle(
                             color: Color(0xFF13383A),
                             fontSize: 18,
@@ -147,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Padding(
                     padding: EdgeInsets.only(left: 80),
                     child: Text(
-                      'Solanum Lycopersicum',
+                      'Musa',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 18,
@@ -159,42 +169,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: 30),
+              Column(
+                children: [
+                  Container(
+                    height: 1,
+                    width: 370,
+                    color: const Color.fromARGB(255, 121, 121, 121),
+                  )
+                ],
+              ),
+              const SizedBox(height: 20),
               
-              const SizedBox(height: 50),
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.all(15),
-              itemCount: 0, // CultureRepository.tabela.length,
-              itemBuilder: (context, index) {
-                // final tabela = CultureRepository.tabela;
-                return ListTile(
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(width: 1, color: Color(0xFF13383A)),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  title: Row(
-                    children: [
-                      Text(
-                        'Identificador', // tabela[index].identificador,
-                        style: const TextStyle(
-                          color: Color(0xFF13383A),
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Spacer(),
-                      Icon(Icons.edit, color: Color.fromRGBO(19, 56, 58, 1), size: 25), // tabela[index].icone,
-                    ],
-                  ),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const InspectionPage()),
-                  ),
-                );
-              },
-              separatorBuilder: (_, __) => const Divider(color: Colors.transparent),
-            ),
-          ),
+              Expanded(
+                child: InspectionListView(userId: userId)
+              )
         ],
       ),
     )));

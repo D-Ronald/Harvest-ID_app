@@ -10,6 +10,7 @@ const blackBase = Color.fromRGBO(0, 0, 0, 1);
 const blueBase = Color.fromRGBO(1, 96, 113, 1);
 const transpartent = Color.fromRGBO(255, 255, 255, 0);
 const redBase = Colors.redAccent;
+const green = Color.fromARGB(255, 163, 189, 178);
 
 ///Recebe um contexto atual da aplicação e um inteiro entre 0 e 100
 ///e o transforma em uma altura proporcional a altura da tela de qualquer dipositivo

@@ -1,10 +1,8 @@
 import 'package:debug_no_cell/services/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:csc_picker/csc_picker.dart';
-import 'package:csc_picker/model/select_status_model.dart';
-import 'package:debug_no_cell/utils/routes.dart';
-import 'package:flutter/material.dart';
 import 'package:debug_no_cell/utils/base.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +19,53 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
   TextEditingController _propertyNameController = TextEditingController();
   TextEditingController _propertySizeController = TextEditingController();
   bool isChecked = false;
+
+  Future<void> _verificarERegistrarPropriedade() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    DocumentReference propertyRef = FirebaseFirestore.instance
+        .collection('properties')
+        .doc(user.uid);
+
+    DocumentSnapshot propertySnapshot = await propertyRef.get();
+    
+    if (propertySnapshot.exists) {
+      bool substituir = await _mostrarDialogoSubstituicao();
+      if (!substituir) return;
+    }
+    
+    await propertyRef.set({
+      'propertyName': _propertyNameController.text,
+      'propertySize': _propertySizeController.text,
+      'cep': _cepController.text,
+      'isChecked': isChecked,
+    });
+    
+    _exibirDialogoCadastroSucesso(context);
+  }
+
+  Future<bool> _mostrarDialogoSubstituicao() async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Propriedade já cadastrada"),
+          content: Text("Você já possui uma propriedade cadastrada. Deseja substituí-la?"),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Cancelar"),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            TextButton(
+              child: Text("Substituir"),
+              onPressed: () => Navigator.of(context).pop(true),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
+  }
   void _exibirDialogoCadastroSucesso(BuildContext context) {
     showDialog(
       context: context,
@@ -32,7 +77,7 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                Navigator.of(context).pop(); //
+                Navigator.of(context).pop(); 
               },
             ),
           ],

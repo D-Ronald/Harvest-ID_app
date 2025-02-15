@@ -24,49 +24,57 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    DocumentReference propertyRef = FirebaseFirestore.instance
-        .collection('properties')
-        .doc(user.uid);
+    DocumentReference propertyRef =
+        FirebaseFirestore.instance.collection('properties').doc(user.uid);
 
     DocumentSnapshot propertySnapshot = await propertyRef.get();
-    
+
     if (propertySnapshot.exists) {
       bool substituir = await _mostrarDialogoSubstituicao();
       if (!substituir) return;
+      await _removerPropriedadeExistente(propertyRef);
     }
-    
+
     await propertyRef.set({
       'propertyName': _propertyNameController.text,
       'propertySize': _propertySizeController.text,
       'cep': _cepController.text,
       'isChecked': isChecked,
     });
-    
-    _exibirDialogoCadastroSucesso(context);
+
+    _exibirDialogoCadastroSucesso();
+  }
+
+  Future<void> _removerPropriedadeExistente(
+      DocumentReference propertyRef) async {
+    await propertyRef.delete();
   }
 
   Future<bool> _mostrarDialogoSubstituicao() async {
     return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Propriedade já cadastrada"),
-          content: Text("Você já possui uma propriedade cadastrada. Deseja substituí-la?"),
-          actions: <Widget>[
-            TextButton(
-              child: Text("Cancelar"),
-              onPressed: () => Navigator.of(context).pop(false),
-            ),
-            TextButton(
-              child: Text("Substituir"),
-              onPressed: () => Navigator.of(context).pop(true),
-            ),
-          ],
-        );
-      },
-    ) ?? false;
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Propriedade já cadastrada"),
+              content: Text(
+                  "Você já possui uma propriedade cadastrada. Deseja substituí-la?"),
+              actions: <Widget>[
+                TextButton(
+                  child: Text("Cancelar"),
+                  onPressed: () => Navigator.of(context).pop(false),
+                ),
+                TextButton(
+                  child: Text("Substituir"),
+                  onPressed: () => Navigator.of(context).pop(true),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
   }
-  void _exibirDialogoCadastroSucesso(BuildContext context) {
+
+  void _exibirDialogoCadastroSucesso() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -77,7 +85,7 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                Navigator.of(context).pop(); 
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -182,7 +190,7 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
                 ),
               ),
             ),
-             spacing(context, 1),
+            spacing(context, 1),
             genericTextForm(
                 context: context,
                 controller: _cepController,
@@ -221,12 +229,7 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
               6,
               25,
               () {
-                _autenthicationService.cadasterProperty(
-                    context: context,
-                    propertyName: _propertyNameController.text,
-                    propertySize: _propertySizeController.text,
-                    cep: _cepController.text,
-                    isChecked: isChecked);
+                _verificarERegistrarPropriedade;
               },
             ),
           ],

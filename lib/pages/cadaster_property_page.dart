@@ -19,23 +19,27 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
   TextEditingController _propertyNameController = TextEditingController();
   TextEditingController _propertySizeController = TextEditingController();
   bool isChecked = false;
-
   Future<void> _verificarERegistrarPropriedade() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    DocumentReference propertyRef =
-        FirebaseFirestore.instance.collection('properties').doc(user.uid);
+    CollectionReference propertiesRef = FirebaseFirestore.instance
+        .collection('User')
+        .doc(user.uid)
+        .collection('properties');
 
-    DocumentSnapshot propertySnapshot = await propertyRef.get();
+    QuerySnapshot propertiesSnapshot = await propertiesRef.get();
 
-    if (propertySnapshot.exists) {
+    if (propertiesSnapshot.docs.isNotEmpty) {
       bool substituir = await _mostrarDialogoSubstituicao();
       if (!substituir) return;
-      await _removerPropriedadeExistente(propertyRef);
+
+      // Remove todas as propriedades antes de cadastrar uma nova
+      await _removerPropriedadeExistente(propertiesSnapshot);
     }
 
-    await propertyRef.set({
+    // Adiciona a nova propriedade
+    await propertiesRef.add({
       'propertyName': _propertyNameController.text,
       'propertySize': _propertySizeController.text,
       'cep': _cepController.text,
@@ -45,9 +49,12 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
     _exibirDialogoCadastroSucesso();
   }
 
+// Função para remover propriedades existentes
   Future<void> _removerPropriedadeExistente(
-      DocumentReference propertyRef) async {
-    await propertyRef.delete();
+      QuerySnapshot propertiesSnapshot) async {
+    for (var doc in propertiesSnapshot.docs) {
+      await doc.reference.delete();
+    }
   }
 
   Future<bool> _mostrarDialogoSubstituicao() async {

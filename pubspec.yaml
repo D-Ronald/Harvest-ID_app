@@ -51,6 +51,7 @@ dependencies:
   hidden_drawer_menu: ^3.0.1
   win32: ^2.0.0
   http: ^1.1.0 
+  image: ^3.0.1 
 
 dev_dependencies:
   flutter_test:

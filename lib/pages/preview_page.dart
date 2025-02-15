@@ -7,19 +7,16 @@ import 'dart:io';
 import 'package:debug_no_cell/services/auth.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
-
 class PreviewPage extends StatelessWidget {
   final File? archive;
   final String propertyId;
   final String cultureId;
   final firestore = FirebaseFirestore.instance;
-    
 
   captureSucessfully(context) async {
-    if (archive != null){
-      SendImage(file: archive).sendImage(context);
-
-    } 
+    if (archive != null) {
+      SendImage(file: archive).uploadImage(context);
+    }
   }
 
   PreviewPage({
@@ -32,55 +29,57 @@ class PreviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
+      body: Column(
         children: [
+          // Usar Expanded para ocupar todo o espaço restante
           Expanded(
-              child: Stack(
-            children: [
-              Positioned.fill(
+            child: Stack(
+              children: [
+                // A imagem agora vai ocupar toda a tela com BoxFit.contain
+                Positioned.fill(
                   child: Image.file(
-                archive!,
-                fit: BoxFit.cover,
-              )),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: EdgeInsets.all(height(context, 8)),
-                        child: CircleAvatar(
-                            radius: width(context, 8),
-                            backgroundColor: blackBase.withOpacity(0.6),
-                            child: Center(
-                              child: IconButton(
-                                icon: const Icon(Icons.check,
-                                    color: whiteBase, size: 30),
-                                onPressed: () => captureSucessfully(context),
-                                iconSize: 60,
-                              ),
-                            )),
-                      )),
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: EdgeInsets.all(height(context, 8)),
-                        child: CircleAvatar(
-                            radius: width(context, 8),
-                            backgroundColor: blackBase.withOpacity(0.6),
-                            child: Center(
-                              child: IconButton(
-                                icon: const Icon(Icons.close,
-                                    color: whiteBase, size: 30),
-                                onPressed: () => Navigator.of(context).pop(),
-                                iconSize: 60,
-                              ),
-                            )),
-                      ))
-                ],
-              )
-            ],
-          ))
+                    archive!,
+                    fit: BoxFit.contain, // Ajuste a imagem para caber sem cortar as laterais
+                    width: MediaQuery.of(context).size.width,  // Garantir largura da tela
+                    height: MediaQuery.of(context).size.height, // Garantir altura da tela
+                  ),
+                ),
+                // Botões fixos na parte inferior da tela
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: EdgeInsets.all(height(context, 2)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Botão de "Check"
+                        CircleAvatar(
+                          radius: width(context, 8),
+                          backgroundColor: blackBase.withOpacity(0.6),
+                          child: IconButton(
+                            icon: const Icon(Icons.check, color: whiteBase, size: 30),
+                            onPressed: () => captureSucessfully(context),
+                            iconSize: 60,
+                          ),
+                        ),
+                        SizedBox(width: 100),  // Espaçamento entre os botões
+                        // Botão de "Close"
+                        CircleAvatar(
+                          radius: width(context, 8),
+                          backgroundColor: blackBase.withOpacity(0.6),
+                          child: IconButton(
+                            icon: const Icon(Icons.close, color: whiteBase, size: 30),
+                            onPressed: () => Navigator.of(context).pop(),
+                            iconSize: 60,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

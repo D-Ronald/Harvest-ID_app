@@ -104,34 +104,7 @@ class _CadasterPropertyPageState extends State<CadasterProperty_page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Column(
-          children: [
-            Text(
-              'CADASTRO DE PROPRIEDADES',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w700,
-                height: 0,
-              ),
-            )
-          ],
-        ),
-        centerTitle: true,
-        backgroundColor: const Color.fromRGBO(19, 56, 58, 1),
-        shadowColor: const Color.fromRGBO(19, 56, 60, 38),
-        elevation: 10,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(1),
-            topRight: Radius.circular(1),
-            bottomLeft: Radius.circular(8),
-            bottomRight: Radius.circular(8),
-          ),
-        ),
-      ),
+      appBar: customAppBar(title: "CADASTRO DE PROPRIEDADE"),
       body: SingleChildScrollView(
         child: Column(
           children: [

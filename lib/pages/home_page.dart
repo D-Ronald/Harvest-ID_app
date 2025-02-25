@@ -23,8 +23,9 @@ class HomePage extends StatelessWidget {
               children: [
                 Image.asset(
                 'assets/images/logo_harvest_2.png',
+                
                 width: width(context, 100),
-                height: height(context, 50),
+                height: height(context, 45),
               )
               ]
             ),

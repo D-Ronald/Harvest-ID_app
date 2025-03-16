@@ -17,16 +17,17 @@ class AuthException implements Exception {
 }
 
 class AutenthicationService extends ChangeNotifier {
-  FirebaseAuth _firebasseAuth = FirebaseAuth.instance;
+  FirebaseAuth firebasseAuth = FirebaseAuth.instance;
   User? user;
   bool isLoading = true;
+  String? token;
 
   AuthService() {
     _authCheck();
   }
 
   _authCheck() {
-    _firebasseAuth.authStateChanges().listen((User? user) {
+    firebasseAuth.authStateChanges().listen((User? user) {
       user = (user == null) ? null : user;
       isLoading = false;
       notifyListeners();
@@ -34,7 +35,7 @@ class AutenthicationService extends ChangeNotifier {
   }
 
   _getUser() {
-    user = _firebasseAuth.currentUser;
+    user = firebasseAuth.currentUser;
     notifyListeners();
   }
 
@@ -59,7 +60,7 @@ class AutenthicationService extends ChangeNotifier {
     } else if (password == passwordConfirm && name != "") {
       try {
         UserCredential userCredential =
-            await _firebasseAuth.createUserWithEmailAndPassword(
+            await firebasseAuth.createUserWithEmailAndPassword(
           email: email,
           password: password,
         );
@@ -134,7 +135,7 @@ class AutenthicationService extends ChangeNotifier {
   }) async {
     try {
       UserCredential userCredential =
-          await _firebasseAuth.signInWithEmailAndPassword(
+          await firebasseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -172,13 +173,13 @@ class AutenthicationService extends ChangeNotifier {
   }
 
   logout() async {
-    await _firebasseAuth.signOut();
+    await firebasseAuth.signOut();
     _getUser();
   }
 
    resetPassword({required String email, required BuildContext context}) {
     try {
-      _firebasseAuth.sendPasswordResetEmail(email: email);
+      firebasseAuth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
       print(e);
     }
@@ -203,7 +204,7 @@ class AutenthicationService extends ChangeNotifier {
       _exibirDialogoErro(
           "O tamanho da propriedade deve ser um número inteiro", context);
     } else {
-      User? user = _firebasseAuth.currentUser;
+      User? user = firebasseAuth.currentUser;
       String uid = user!.uid;
       try {
         if (user.displayName != null) {

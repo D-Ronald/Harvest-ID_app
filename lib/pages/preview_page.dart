@@ -18,7 +18,12 @@ class PreviewPage extends StatelessWidget {
       SendImage(file: archive).uploadImage(context);
     }
   }
-
+  captureDenied(context) async {
+    if (archive != null) {
+      String? token = await AutenthicationService().firebasseAuth.currentUser?.getIdToken();
+      SendImage(file: archive).firebaseLogin(token!);
+    }
+  }
   PreviewPage({
     Key? key,
     required this.archive,

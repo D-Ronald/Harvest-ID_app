@@ -22,87 +22,61 @@ import 'dart:typed_data';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image/image.dart' as img;
-String? user_id;
+
 class SendImage {
   final File? file;
   const SendImage({this.file});
 
-  // Função para enviar a imagem para a API
-  Future<void> sendImage(context) async {
-    if (file == null) {
-      print('Nenhuma imagem selecionada');
-      return;
-    }
+  Future<String?> obterJwt(String firebaseToken) async {
+  final url = Uri.parse("http://34.134.226.132/token?token_cusum=$firebaseToken");
 
-    // 1. Abra a imagem e converta para bytes
-    Uint8List image_bytes = await file!.readAsBytes();
-
-    // 2. Envie os bytes como corpo da requisição POST
-    var url = Uri.parse('http://34.134.58.202/predict');
-    var response = await http.post(
+  try {
+    final response = await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/octet-stream',  // Definir tipo de conteúdo como binário
-      },
-      body: image_bytes,  // Envia os bytes diretamente no corpo da requisição
+      headers: {"Content-Type": "application/json"},
+
     );
 
-    // 3. Verifique a resposta da API
     if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      var prediction = jsonResponse['prediction'];
-
-      // Mostra o resultado na tela
-      custom.Dialog.dialog(
-        context: context,
-        title: "Resultado da Detecção",// URL da imagem retornada pela API
-        message: prediction.toString(),
-        color: base.darkGreenBase
-      );
+      final jsonResponse = jsonDecode(response.body);
+      return jsonResponse["access_token"];
     } else {
-      custom.Dialog.dialog(
-        context: context,
-        color: Colors.red,
-        title: "Erro ao enviar imagem",
-        message: "Erro: ${response.body}",
-      );
+      print("Erro ao obter JWT: ${response.statusCode} - ${response.body}");
+      return null;
     }
+  } catch (e) {
+    print("Erro na requisição: $e");
+    return null;
   }
+}
 
   Future<void> uploadImage(BuildContext context) async {
-  String? user_id = fetchUserId();  // Ensure you have a method to fetch the user ID
-  
-  if (user_id == null) {
-    // Handle the case where user_id is not available
-    print("User ID is missing!");
-    return;
-  }
-
+  String? firebaseToken = await AutenthicationService().firebasseAuth.currentUser?.getIdToken(true);  // Ensure you have a method to fetch the user ID
+  String? tokenApi = await obterJwt(firebaseToken!);
   // Read the image file as bytes
   Uint8List imageBytes = await file!.readAsBytes();
   img.Image? image = img.decodeImage(imageBytes);
-  img.Image resizedImage = img.copyResize(image!, width: 640, height: 384);
+  img.Image resizedImage = img.copyResize(image!, width: 8, height: 4);
   Uint8List resizedImageBytes = Uint8List.fromList(img.encodeJpg(resizedImage));
   
   // Define the URL for the API endpoint
-  var url = Uri.parse("http://34.134.58.202/upload/");
+  var url = Uri.parse("http://34.134.226.132/predict");
   
   // Create the multipart request
   var request = http.MultipartRequest('POST', url)
-    ..headers['userId'] = user_id // Set the userId in the headers
+    ..headers['Authorization'] = "Bearer $tokenApi"// Set the userId in the headers
     ..files.add(http.MultipartFile.fromBytes(
       'file', resizedImageBytes,
-      filename: 'image.jpg',  // Set the filename to something appropriate
+      filename: 'image.jpg',  
       contentType: MediaType('image', 'jpeg'),  // You can adjust based on the image type
     ));
   
   try {
     // Send the request and get the response
     var response =  await request.send();
-
+    var responseString = await response.stream.bytesToString();
+    var responseJson = jsonDecode(responseString);
     if (response.statusCode == 200) {
-      var responseString = await response.stream.bytesToString();
-      var responseJson = jsonDecode(responseString);
       var responsePrediction = responseJson['prediction']['class'];
       custom.Dialog.dialog(
         context: context,
@@ -128,13 +102,35 @@ class SendImage {
        message: "Houve falha no processamento da imagem, tente novamente!",
        color: base.darkGreenBase
        );
-       print(response.statusCode);
+       
     }
+    print(responseJson);
+    print(tokenApi);
   } catch (e) {
     print("Error uploading image: $e");
   }
 }
+
+  Future<void> firebaseLogin(String tokenFirebase) async {
+  // Adiciona o token como parâmetro na URL
+  var url = Uri.parse("http://34.134.226.132/firebase_login?token_firebase=$tokenFirebase");
+
+  var response = await http.post(
+    url,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  );
+
+  if (response.statusCode == 200) {
+    print("Sucesso: ${response.body}");
+  } else {
+    print("Erro ${response.statusCode}: ${response.body}");
+  }
 }
+
+}
+
 
 
 Future<Map<String, dynamic>> fetchAndDisplayApiData() async {
@@ -158,11 +154,6 @@ Future<Map<String, dynamic>> fetchAndDisplayApiData() async {
     // Caso contrário, lança uma exceção
     throw Exception('Erro ao carregar dados da API.');
   }
-}
-
-// Para resgatar ID de usuário:
-String? fetchUserId() {
-  return user_id = FirebaseAuth.instance.currentUser?.uid;
 }
 
 

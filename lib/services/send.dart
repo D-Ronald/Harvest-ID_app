@@ -56,7 +56,7 @@ class SendImage {
   // Read the image file as bytes
   Uint8List imageBytes = await file!.readAsBytes();
   img.Image? image = img.decodeImage(imageBytes);
-  img.Image resizedImage = img.copyResize(image!, width: 8, height: 4);
+  img.Image resizedImage = img.copyResize(image!, width: 640, height: 384);
   Uint8List resizedImageBytes = Uint8List.fromList(img.encodeJpg(resizedImage));
   
   // Define the URL for the API endpoint

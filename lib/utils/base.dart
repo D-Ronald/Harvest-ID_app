@@ -12,6 +12,46 @@ const transpartent = Color.fromRGBO(255, 255, 255, 0);
 const redBase = Colors.redAccent;
 const green = Color.fromARGB(255, 163, 189, 178);
 
+
+/// Função que retorna uma AppBar personalizada e reutilizável
+AppBar customAppBar({required String title}) {
+  return AppBar(
+    title: Text(
+      title,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 18,
+        fontFamily: 'Inter',
+        fontWeight: FontWeight.w700,
+        height: 0,
+      ),
+    ),
+    centerTitle: true,
+    backgroundColor: darkGreenBase,
+    shadowColor: darkGrayBase,
+    elevation: 10,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(1),
+        topRight: Radius.circular(1),
+        bottomLeft: Radius.circular(8),
+        bottomRight: Radius.circular(8),
+      ),
+    ),
+    leading: Builder(
+      builder: (context) {
+        return IconButton(
+          icon: const Icon(Icons.menu, color: Colors.white),
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
+        );
+      },
+    ),
+  );
+}
+
+
 ///Recebe um contexto atual da aplicação e um inteiro entre 0 e 100
 ///e o transforma em uma altura proporcional a altura da tela de qualquer dipositivo
 double height(context, int percentage) {
@@ -53,6 +93,7 @@ ElevatedButton genericButton(context, backgroundColor, textColor, String text,
     ),
   );
 }
+
 
 ElevatedButton genericIconButton(
     {required context,

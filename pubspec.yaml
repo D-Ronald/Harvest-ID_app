@@ -51,7 +51,26 @@ dependencies:
   hidden_drawer_menu: ^3.0.1
   win32: ^2.0.0
   http: ^1.1.0 
-  image: ^3.0.1 
+  image: 4.5.2 
+  flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.2.19
+
+flutter_native_splash:
+  color: "0xFF13383A"
+  image: assets/images/drone+planta.png
+  android: true
+  ios: true
+  
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/drone+planta.png"
+  background_color: "0xFF13383A"
+
+
+
 
 dev_dependencies:
   flutter_test:

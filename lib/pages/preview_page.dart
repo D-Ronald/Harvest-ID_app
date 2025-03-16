@@ -1,12 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debug_no_cell/services/send.dart';
 import 'package:debug_no_cell/utils/base.dart';
-import 'package:debug_no_cell/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:debug_no_cell/services/auth.dart';
-import 'package:get/get.dart';
-import 'package:http/http.dart';
 class PreviewPage extends StatelessWidget {
   final File? archive;
   final String propertyId;
@@ -67,7 +63,7 @@ class PreviewPage extends StatelessWidget {
                             iconSize: 60,
                           ),
                         ),
-                        SizedBox(width: 100),  // Espaçamento entre os botões
+                        const SizedBox(width: 100),  // Espaçamento entre os botões
                         // Botão de "Close"
                         CircleAvatar(
                           radius: width(context, 8),

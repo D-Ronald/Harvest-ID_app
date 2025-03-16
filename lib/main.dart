@@ -2,6 +2,7 @@ import 'package:debug_no_cell/pages/capture_page.dart';
 import 'package:debug_no_cell/pages/initial_page.dart';
 import 'package:debug_no_cell/pages/login_page.dart';
 import 'package:debug_no_cell/pages/preview_page.dart';
+import 'package:debug_no_cell/pages/profile_page.dart';
 import 'package:debug_no_cell/pages/register_page.dart';
 import 'package:debug_no_cell/pages/view_page.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
               propertyId: '',
               cultureId: '',
             ),
+        "/Dashboard": (context) => ProfilePage()
       },
       title: "Harvest-ID",
     );

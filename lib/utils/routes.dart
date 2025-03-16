@@ -26,6 +26,9 @@ openCamera(context) {
           builder: (_) => CameraCamera(onFile: (file) => print(file))));
 }
 
+openDashboard(context){
+  return Navigator.pushNamed(context, "/Dashboard");
+}
 switchCapturePage(context) {
   return Navigator.pushNamed(context, "/Capture");
 }

@@ -1,26 +1,12 @@
-import 'dart:ffi';
-import 'dart:math';
 import 'package:debug_no_cell/pages/generics_dialogs.dart' as custom;
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:debug_no_cell/utils/base.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
-import 'package:path/path.dart' as path;
 import 'dart:io';
-import 'package:debug_no_cell/utils/routes.dart';
 import 'dart:convert';
-import 'package:debug_no_cell/pages/generics_dialogs.dart';
 import 'package:debug_no_cell/services/auth.dart';
-import "package:firebase_storage/firebase_storage.dart";
-import 'package:firebase_auth/firebase_auth.dart';
 import "dart:typed_data";
-import "package:http/http.dart";
 import "package:debug_no_cell/utils/base.dart" as base;
-import 'dart:typed_data';
-import 'package:mime/mime.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:image/image.dart' as img;
 
 class SendImage {
@@ -51,46 +37,55 @@ class SendImage {
 }
 
   Future<void> uploadImage(BuildContext context) async {
-  String? firebaseToken = await AutenthicationService().firebasseAuth.currentUser?.getIdToken(true);  // Ensure you have a method to fetch the user ID
-  String? tokenApi = await obterJwt(firebaseToken!);
-  // Read the image file as bytes
-  Uint8List imageBytes = await file!.readAsBytes();
-  img.Image? image = img.decodeImage(imageBytes);
-  img.Image resizedImage = img.copyResize(image!, width: 640, height: 384);
-  Uint8List resizedImageBytes = Uint8List.fromList(img.encodeJpg(resizedImage));
+  String? firebaseToken = await AutenthicationService().firebasseAuth.currentUser?.getIdToken(true);
+
+if (firebaseToken == null) {
+  print("Erro: Token Firebase é nulo. O usuário está autenticado?");
+  return;
+}
+
+String? tokenApi = await obterJwt(firebaseToken);
+
+if (tokenApi == null) {
+  print("Erro: Falha ao obter o token JWT.");
+  return;
+}
+
   
-  // Define the URL for the API endpoint
+    Uint8List imageBytes = await file!.readAsBytes();
+    img.Image? image = img.decodeImage(imageBytes);
+    img.Image resizedImage = img.copyResize(image!, width: 640, height: 384);
+    Uint8List resizedImageBytes = Uint8List.fromList(img.encodeJpg(resizedImage));
+ 
+  
   var url = Uri.parse("http://34.134.226.132/predict");
   
-  // Create the multipart request
-  var request = http.MultipartRequest('POST', url)
-    ..headers['Authorization'] = "Bearer $tokenApi"// Set the userId in the headers
-    ..files.add(http.MultipartFile.fromBytes(
-      'file', resizedImageBytes,
-      filename: 'image.jpg',  
-      contentType: MediaType('image', 'jpeg'),  // You can adjust based on the image type
-    ));
+  var headers = {"Authorization": "Bearer $tokenApi"};
   
   try {
     // Send the request and get the response
-    var response =  await request.send();
-    var responseString = await response.stream.bytesToString();
+    var response =  await http.post(url, headers: headers, body: imageBytes);
+    var statusCode = response.statusCode;
+    var responseString = response.body;
+    print(response.body);
+    print(statusCode);
+    print(firebaseToken);
     var responseJson = jsonDecode(responseString);
-    if (response.statusCode == 200) {
-      var responsePrediction = responseJson['prediction']['class'];
+    if (statusCode == 200) {
+      var responsePrediction = responseJson['prediction']['main_prediction']['class'];
       custom.Dialog.dialog(
         context: context,
          title: "Resultado da inspeção",
-          message: responsePrediction,
+          message: "$responsePrediction \n\n Vá até o dashboard para ver mais detalhes!",
           color: base.darkGreenBase
           );
-    }else if(response.statusCode == 500) {
+    }else if(statusCode == 500) {
       custom.Dialog.dialog(context: context,
        title: "Isso não é uma planta",
        message: "O objeto da imagem não se parece com uma planta, tente novamente!",
        color: base.darkGreenBase
        );
-    }else if(response.statusCode == 502){
+    }else if(statusCode == 502){
       custom.Dialog.dialog(context: context,
        title: "Falha na comunicação com o servidor",
        message: "Houve um problema em nossos serviços, estamos trabalhando para corrigi-lo. tente novamente mais tarde!",
@@ -104,10 +99,9 @@ class SendImage {
        );
        
     }
-    print(responseJson);
-    print(tokenApi);
-  } catch (e) {
+  }catch (e) {
     print("Error uploading image: $e");
+    
   }
 }
 
